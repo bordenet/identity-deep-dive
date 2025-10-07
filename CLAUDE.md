@@ -48,8 +48,15 @@ Build 4 identity projects in 3 days to demonstrate rapid domain mastery for seni
 - `golang-jwt/jwt`, `go-redis/redis`, `gorilla/mux`, `spf13/cobra`, `spf13/viper`
 
 ## Resources
-- RFC 6749 (OAuth 2.0), RFC 7636 (PKCE), RFC 7519 (JWT)
-- OIDC Core spec, OWASP ASVS, NIST SP 800-63B
+
+ALWAYS link critical acroyms and industry standars within markdown files to authoritative references.
+
+- [RFC 6749 - OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
+- [RFC 7636 - Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636)
+- [RFC 7519 - JSON Web Token (JWT)](https://datatracker.ietf.org/doc/html/rfc7519)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [OWASP ASVS - Identity and Authentication](https://owasp.org/www-project-application-security-verification-standard/)
+- [NIST SP 800-63B - Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
 
 ## Secrets Management Framework
 

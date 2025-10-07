@@ -11,18 +11,18 @@
 ## 1. Executive Summary
 
 ### 1.1 Purpose
-Build a standards-compliant OAuth2 and OpenID Connect (OIDC) authorization server from scratch to demonstrate deep understanding of identity protocols. This is a learning project to show rapid domain mastery in identity/access management for senior leadership roles.
+Build a standards-compliant [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect (OIDC)](https://openid.net/specs/openid-connect-core-1_0.html) authorization server from scratch to demonstrate deep understanding of identity protocols. This is a learning project to show rapid domain mastery in identity/access management for senior leadership roles.
 
 ### 1.2 Goals
-- **Primary**: Implement OAuth2 authorization flows per RFC 6749
-- **Secondary**: Add OIDC identity layer per OpenID Connect Core 1.0 spec
+- **Primary**: Implement [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization flows per [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
+- **Secondary**: Add [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) identity layer per [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) spec
 - **Tertiary**: Demonstrate production-quality patterns (error handling, security, observability)
 
 ### 1.3 Non-Goals
 - Full production deployment (this is a learning/demonstration project)
 - User management system (simple in-memory users for demo)
 - Multi-tenancy (covered in Project 2)
-- Advanced features like OAuth2 Token Introspection, Device Flow, etc.
+- Advanced features like [OAuth2 Token Introspection](https://datatracker.ietf.org/doc/html/rfc7662), [Device Flow](https://datatracker.ietf.org/doc/html/rfc8628), etc.
 
 ---
 
@@ -32,15 +32,15 @@ Build a standards-compliant OAuth2 and OpenID Connect (OIDC) authorization serve
 Modern applications require secure, delegated authorization. Users need to grant third-party apps limited access to their resources without sharing passwords. Identity providers need to authenticate users and provide identity information to apps.
 
 ### 2.2 Why OAuth2 + OIDC?
-- **OAuth2**: Industry standard for authorization (RFC 6749)
-- **OIDC**: Identity layer on top of OAuth2 (authentication + user info)
+- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: Industry standard for authorization ([RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749))
+- **[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: Identity layer on top of OAuth2 (authentication + user info)
 - **Ubiquity**: Used by Google, Facebook, Microsoft, GitHub, etc.
-- **Security**: Proven patterns for web, mobile, SPA, and service-to-service auth
+- **Security**: Proven patterns for web, mobile, [SPA](https://en.wikipedia.org/wiki/Single-page_application), and service-to-service auth
 
 ### 2.3 Learning Objectives
-1. Understand OAuth2 vs OIDC differences (authorization vs authentication)
-2. Implement security best practices (PKCE, state parameter, short-lived tokens)
-3. Build stateless JWT validation with distributed Redis storage
+1. Understand [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) differences (authorization vs authentication)
+2. Implement security best practices ([PKCE](https://datatracker.ietf.org/doc/html/rfc7636), state parameter, short-lived tokens)
+3. Build stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation with distributed [Redis](https://redis.io) storage
 4. Design for horizontal scalability (stateless server, external session store)
 
 ---
@@ -48,25 +48,25 @@ Modern applications require secure, delegated authorization. Users need to grant
 ## 3. User Personas
 
 ### 3.1 Application Developer
-**Needs**: Easy integration with OAuth2/OIDC flows for their app
+**Needs**: Easy integration with [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) flows for their app
 **Pain Points**: Complex OAuth2 setup, unclear error messages, missing documentation
 **Success Criteria**: Can integrate with server in < 30 minutes using example client
 
 ### 3.2 Security Auditor
-**Needs**: Verify implementation follows OWASP identity best practices
-**Pain Points**: Hardcoded secrets, missing PKCE enforcement, overly permissive scopes
+**Needs**: Verify implementation follows [OWASP](https://owasp.org/www-project-application-security-verification-standard/) identity best practices
+**Pain Points**: Hardcoded secrets, missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) enforcement, overly permissive scopes
 **Success Criteria**: Can run security scanner (Project 3) and find zero critical issues
 
 ### 3.3 Platform Engineer
 **Needs**: Scalable, observable, operationally excellent identity infrastructure
 **Pain Points**: Stateful servers, no metrics, difficult to debug
-**Success Criteria**: Can deploy multiple instances, monitor with Prometheus, scale horizontally
+**Success Criteria**: Can deploy multiple instances, monitor with [Prometheus](https://prometheus.io), scale horizontally
 
 ---
 
 ## 4. Functional Requirements
 
-### 4.1 OAuth2 Authorization Code Flow (RFC 6749 Section 4.1)
+### 4.1 OAuth2 Authorization Code Flow ([RFC 6749 Section 4.1](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1))
 **Priority**: P0 (Must Have)
 
 **User Story**: As a web application, I want to obtain an access token via authorization code flow so that I can access protected resources on behalf of a user.
@@ -75,8 +75,8 @@ Modern applications require secure, delegated authorization. Users need to grant
 - [ ] `/authorize` endpoint returns authorization code after user consent
 - [ ] Authorization code expires in 10 minutes
 - [ ] Authorization code is single-use (invalidated after token exchange)
-- [ ] State parameter validated to prevent CSRF
-- [ ] Redirect URI validated against registered client URIs
+- [ ] State parameter validated to prevent [CSRF](https://owasp.org/www-community/attacks/csrf)
+- [ ] Redirect [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) validated against registered client URIs
 - [ ] Scope parameter supported and validated
 
 **Flow**:
@@ -88,24 +88,24 @@ Modern applications require secure, delegated authorization. Users need to grant
 5. Server returns access_token, refresh_token, expires_in
 ```
 
-### 4.2 PKCE Extension (RFC 7636)
+### 4.2 PKCE Extension ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636))
 **Priority**: P0 (Must Have)
 
-**User Story**: As a mobile app or SPA, I want PKCE protection so that authorization codes cannot be intercepted.
+**User Story**: As a mobile app or [SPA](https://en.wikipedia.org/wiki/Single-page_application), I want [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) protection so that authorization codes cannot be intercepted.
 
 **Acceptance Criteria**:
 - [ ] Support code_challenge and code_challenge_method in /authorize
-- [ ] Support S256 (SHA-256) and plain methods
+- [ ] Support S256 ([SHA-256](https://en.wikipedia.org/wiki/SHA-2)) and plain methods
 - [ ] Require PKCE for public clients (no client_secret)
 - [ ] Validate code_verifier matches code_challenge in /token request
 - [ ] Reject token exchange if PKCE validation fails
 
-**Security Rationale**: Prevents authorization code interception attacks on public clients (mobile, SPA) where client_secret cannot be kept confidential.
+**Security Rationale**: Prevents authorization code interception attacks on public clients (mobile, [SPA](https://en.wikipedia.org/wiki/Single-page_application)) where client_secret cannot be kept confidential.
 
-### 4.3 Client Credentials Flow (RFC 6749 Section 4.4)
+### 4.3 Client Credentials Flow ([RFC 6749 Section 4.4](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4))
 **Priority**: P0 (Must Have)
 
-**User Story**: As a backend service, I want to obtain an access token using my client credentials so that I can access APIs without user context.
+**User Story**: As a backend service, I want to obtain an access token using my client credentials so that I can access [APIs](https://en.wikipedia.org/wiki/API) without user context.
 
 **Acceptance Criteria**:
 - [ ] POST /token with grant_type=client_credentials, client_id, client_secret
@@ -116,7 +116,7 @@ Modern applications require secure, delegated authorization. Users need to grant
 
 **Use Case**: Service-to-service authentication (e.g., background jobs, microservices)
 
-### 4.4 Token Refresh Flow (RFC 6749 Section 6)
+### 4.4 Token Refresh Flow ([RFC 6749 Section 6](https://datatracker.ietf.org/doc/html/rfc6749#section-6))
 **Priority**: P0 (Must Have)
 
 **User Story**: As a client application, I want to refresh expired access tokens without user interaction so that my users don't have to re-authenticate frequently.
@@ -130,21 +130,21 @@ Modern applications require secure, delegated authorization. Users need to grant
 
 **Security**: Refresh token rotation prevents replay attacks.
 
-### 4.5 OIDC ID Token (OpenID Connect Core 1.0)
+### 4.5 OIDC ID Token ([OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html))
 **Priority**: P0 (Must Have)
 
-**User Story**: As a relying party, I want an ID token containing user identity claims so that I can authenticate the user.
+**User Story**: As a [relying party](https://openid.net/specs/openid-connect-core-1_0.html#Terminology), I want an [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) containing user identity claims so that I can authenticate the user.
 
 **Acceptance Criteria**:
 - [ ] ID token returned when scope includes "openid"
-- [ ] ID token is a signed JWT with claims: iss, sub, aud, exp, iat, nonce
+- [ ] ID token is a signed [JWT](https://datatracker.ietf.org/doc/html/rfc7519) with claims: iss, sub, aud, exp, iat, nonce
 - [ ] Optional claims: name, email, email_verified, profile, picture
-- [ ] ID token signed with RS256 (RSA-SHA256)
+- [ ] ID token signed with [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) (RSA-SHA256)
 - [ ] ID token expires in 1 hour
 
-**OIDC vs OAuth2**: ID token is for authentication (who the user is), access token is for authorization (what they can access).
+**[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) vs [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: ID token is for authentication (who the user is), access token is for authorization (what they can access).
 
-### 4.6 OIDC UserInfo Endpoint (OpenID Connect Core 1.0)
+### 4.6 OIDC UserInfo Endpoint ([OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo))
 **Priority**: P1 (Should Have)
 
 **User Story**: As a relying party, I want to fetch user profile information using an access token so that I can get additional claims not in the ID token.
@@ -174,17 +174,17 @@ Modern applications require secure, delegated authorization. Users need to grant
 **Priority**: P0
 
 - [ ] No hardcoded secrets (all from environment variables)
-- [ ] JWT signed with RS256 (asymmetric keys)
+- [ ] [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signed with [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) (asymmetric keys)
 - [ ] State parameter required for authorization flow
 - [ ] PKCE required for public clients
 - [ ] Access tokens short-lived (15 min), refresh tokens long-lived (30 days)
-- [ ] HTTPS required in production (HTTP allowed for local dev)
+- [ ] [HTTPS](https://en.wikipedia.org/wiki/HTTPS) required in production (HTTP allowed for local dev)
 - [ ] No sensitive data in access tokens (opaque token preferred, but using JWT for learning)
 
 ### 5.2 Performance
 **Priority**: P1
 
-- [ ] Token validation < 10ms (JWT validation, no DB lookup)
+- [ ] Token validation < 10ms ([JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation, no DB lookup)
 - [ ] Authorization code generation < 50ms
 - [ ] Support 100 req/sec on single instance (local dev)
 - [ ] Stateless server (no in-memory sessions, all in Redis)
@@ -193,23 +193,23 @@ Modern applications require secure, delegated authorization. Users need to grant
 **Priority**: P1
 
 - [ ] Horizontal scaling (multiple server instances)
-- [ ] Redis for distributed state (auth codes, refresh tokens, revocation list)
+- [ ] [Redis](https://redis.io) for distributed state (auth codes, refresh tokens, revocation list)
 - [ ] No local state (all session data in Redis)
 
 ### 5.4 Observability
 **Priority**: P1
 
-- [ ] Structured JSON logging
+- [ ] Structured [JSON](https://www.json.org) logging
 - [ ] Log levels: DEBUG, INFO, WARN, ERROR
-- [ ] Metrics endpoint for Prometheus
+- [ ] Metrics endpoint for [Prometheus](https://prometheus.io)
 - [ ] Metrics: token_issued_total, token_validated_total, errors_total
-- [ ] Request ID propagation for tracing
+- [ ] Request ID propagation for [distributed tracing](https://opentelemetry.io/docs/concepts/observability-primer/#distributed-traces)
 
 ### 5.5 Operability
 **Priority**: P1
 
-- [ ] Docker Compose one-liner setup
-- [ ] Makefile with common commands (run, test, build, clean)
+- [ ] [Docker Compose](https://docs.docker.com/compose/) one-liner setup
+- [ ] [Makefile](https://www.gnu.org/software/make/manual/make.html) with common commands (run, test, build, clean)
 - [ ] Graceful shutdown (finish in-flight requests)
 - [ ] Health check endpoint: GET /health
 
@@ -229,9 +229,9 @@ Modern applications require secure, delegated authorization. Users need to grant
 ```
 
 **Components**:
-1. **Authorization Server**: Go HTTP server with OAuth2/OIDC handlers
-2. **Redis**: Stores authorization codes, refresh tokens, revocation list
-3. **JWT**: Stateless access tokens and ID tokens (RS256 signed)
+1. **Authorization Server**: [Go](https://go.dev) [HTTP](https://en.wikipedia.org/wiki/HTTP) server with [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) handlers
+2. **[Redis](https://redis.io)**: Stores authorization codes, refresh tokens, revocation list
+3. **[JWT](https://datatracker.ietf.org/doc/html/rfc7519)**: Stateless access tokens and ID tokens ([RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) signed)
 
 ### 6.2 Data Flow: Authorization Code Flow
 
@@ -252,13 +252,13 @@ Modern applications require secure, delegated authorization. Users need to grant
 
 | Component        | Technology                | Rationale                          |
 |------------------|---------------------------|------------------------------------|
-| Language         | Go 1.21+                  | Fast, concurrent, strong stdlib    |
-| HTTP Router      | gorilla/mux               | Mature, widely-used                |
-| JWT              | golang-jwt/jwt v5         | Standard JWT library               |
-| Redis Client     | go-redis/redis v9         | Official Redis client for Go       |
-| Config           | spf13/viper               | Env vars + YAML config             |
-| Logging          | slog (Go 1.21+)           | Structured logging in stdlib       |
-| Crypto           | crypto/rand, crypto/sha256| Go stdlib for security primitives  |
+| Language         | [Go](https://go.dev) 1.21+                  | Fast, concurrent, strong stdlib    |
+| HTTP Router      | [gorilla/mux](https://github.com/gorilla/mux)               | Mature, widely-used                |
+| JWT              | [golang-jwt/jwt](https://github.com/golang-jwt/jwt) v5         | Standard [JWT](https://datatracker.ietf.org/doc/html/rfc7519) library               |
+| Redis Client     | [go-redis/redis](https://github.com/redis/go-redis) v9         | Official [Redis](https://redis.io) client for Go       |
+| Config           | [spf13/viper](https://github.com/spf13/viper)               | Env vars + [YAML](https://yaml.org) config             |
+| Logging          | [slog](https://pkg.go.dev/log/slog) (Go 1.21+)           | Structured logging in stdlib       |
+| Crypto           | [crypto/rand](https://pkg.go.dev/crypto/rand), [crypto/sha256](https://pkg.go.dev/crypto/sha256)| Go stdlib for security primitives  |
 
 ### 6.4 Storage Schema (Redis)
 
@@ -372,18 +372,19 @@ Value: JSON{client_id, client_secret_hash, redirect_uris, name, type, scopes}
 ## 10. References
 
 ### Specifications
-- **OAuth 2.0**: [RFC 6749](https://tools.ietf.org/html/rfc6749)
-- **PKCE**: [RFC 7636](https://tools.ietf.org/html/rfc7636)
-- **JWT**: [RFC 7519](https://tools.ietf.org/html/rfc7519)
+- **OAuth 2.0**: [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
+- **PKCE**: [RFC 7636 - Proof Key for Code Exchange](https://datatracker.ietf.org/doc/html/rfc7636)
+- **JWT**: [RFC 7519 - JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519)
 - **OIDC Core**: [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ### Security
-- **OWASP ASVS**: Identity and Authentication Requirements
-- **OAuth 2.0 Security Best Practices**: [draft-ietf-oauth-security-topics](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
+- **OWASP ASVS**: [Application Security Verification Standard - Identity and Authentication](https://owasp.org/www-project-application-security-verification-standard/)
+- **OAuth 2.0 Security Best Practices**: [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
 
 ### Learning Resources
-- Auth0 Docs: OAuth2 and OIDC explained
-- Okta Developer: Identity best practices
+- **Auth0 Docs**: [OAuth 2.0 and OpenID Connect](https://auth0.com/docs/authenticate/protocols/oauth)
+- **Okta Developer**: [OAuth 2.0 and OIDC Overview](https://developer.okta.com/docs/concepts/oauth-openid/)
+- **NIST Digital Identity Guidelines**: [SP 800-63B - Authentication and Lifecycle Management](https://pages.nist.gov/800-63-3/sp800-63b.html)
 
 ---
 

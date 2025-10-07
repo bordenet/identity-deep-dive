@@ -2,7 +2,7 @@
 
 > **Learning identity protocols and patterns through implementation**
 
-A hands-on exploration of OAuth2, OIDC, SAML, and identity security - built in 3 days to demonstrate rapid domain mastery for senior engineering leadership roles.
+A hands-on exploration of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html), and identity security - built in 3 days to demonstrate rapid domain mastery for senior engineering leadership roles.
 
 ## 🎯 Learning Objectives
 
@@ -15,46 +15,46 @@ This monorepo demonstrates:
 ## 📦 Projects
 
 ### 1. OAuth2/OIDC Authorization Server
-**Status**: ✅ Complete | **Time**: 8 hours | **Language**: Go
+**Status**: ✅ Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
 
-A from-scratch implementation of OAuth2 and OpenID Connect authorization server supporting:
-- Authorization Code Flow (most secure for web apps)
-- PKCE Extension (mobile/SPA security)
-- Client Credentials Flow (service-to-service)
+A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) authorization server supporting:
+- [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1) (most secure for web apps)
+- [PKCE Extension](https://datatracker.ietf.org/doc/html/rfc7636) (mobile/[SPA](https://en.wikipedia.org/wiki/Single-page_application) security)
+- [Client Credentials Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4) (service-to-service)
 - Token Refresh (long-lived sessions)
-- OIDC ID Tokens + UserInfo endpoint
+- [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) ID Tokens + UserInfo endpoint
 
-**Why this matters**: Deep understanding of identity protocols (OAuth2, OIDC) by implementing the spec, not just using libraries.
+**Why this matters**: Deep understanding of identity protocols ([OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)) by implementing the spec, not just using libraries.
 
 [📁 View Project](./project-1-oauth2-oidc-demo/) | [📖 Detailed README](./project-1-oauth2-oidc-demo/README.md)
 
 ---
 
 ### 2. Identity Security Scanner (Static Analysis)
-**Status**: ✅ Complete | **Time**: 6 hours | **Language**: Go
+**Status**: ✅ Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
 
-CLI tool to audit OAuth2/OIDC/SAML configurations for security misconfigurations:
+[CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool to audit [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations for security misconfigurations:
 - Weak client secrets and key management issues
 - Overly permissive scopes
-- Insecure redirect URIs
-- JWT token vulnerabilities
-- SAML signature/encryption issues
+- Insecure redirect [URIs](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
+- [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token vulnerabilities
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) signature/encryption issues
 
-**Why this matters**: Applies proven security scanner pattern (from Stash Financial) to identity domain - innovation through simplification.
+**Why this matters**: Applies proven security scanner pattern to identity domain - innovation through simplification.
 
 [📁 View Project](./project-3-identity-security-scanner/) | [📖 Detailed README](./project-3-identity-security-scanner/README.md)
 
 ---
 
 ### 3. Identity Security Scanner (Runtime Analysis)
-**Status**: ✅ Complete | **Time**: 6 hours | **Language**: Go
+**Status**: ✅ Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
 
-Runtime security testing for live OAuth2/OIDC flows:
-- CSRF attack detection
+Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) flows:
+- [CSRF](https://owasp.org/www-community/attacks/csrf) attack detection
 - Token replay testing
 - Authorization code interception
-- Redirect URI manipulation
-- Algorithm confusion attacks
+- Redirect [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) manipulation
+- [Algorithm confusion attacks](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/)
 
 **Why this matters**: Defense in depth - static config analysis + runtime flow testing catches issues in code review AND production.
 
@@ -63,16 +63,16 @@ Runtime security testing for live OAuth2/OIDC flows:
 ---
 
 ### 4. Multi-Tenant Session Management
-**Status**: ✅ Complete | **Time**: 10 hours | **Language**: Go
+**Status**: ✅ Complete | **Time**: 10 hours | **Language**: [Go](https://go.dev)
 
-Distributed session management service with JWT tokens and Redis:
+Distributed session management service with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and [Redis](https://redis.io):
 - Multi-tenant session isolation (multi-brand architecture)
-- Stateless JWT validation (fast path)
-- Redis-backed revocation (security path)
+- Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation (fast path)
+- [Redis](https://redis.io)-backed revocation (security path)
 - Token refresh with sliding sessions
 - Load tested to 10K+ concurrent sessions
 
-**Why this matters**: Demonstrates thinking about identity at scale - global, multi-brand, high-availability requirements.
+**Why this matters**: Demonstrates thinking about identity at scale - global, multi-brand, [high-availability](https://en.wikipedia.org/wiki/High_availability) requirements.
 
 [📁 View Project](./project-2-session-management/) | [📖 Detailed README](./project-2-session-management/README.md)
 
@@ -81,9 +81,9 @@ Distributed session management service with JWT tokens and Redis:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Go 1.21+
-- Docker & Docker Compose
-- Redis (via Docker)
+- [Go](https://go.dev) 1.21+
+- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)
+- [Redis](https://redis.io) (via Docker)
 
 ### Run All Projects
 ```bash
@@ -104,45 +104,45 @@ cd project-3b-runtime-identity-scanner && make test
 ## 📚 Learning Journey
 
 ### Day 1: OAuth2/OIDC Fundamentals
-Started by implementing OAuth2 authorization server from RFC 6749 spec:
-- **Hour 1-3**: Authorization code flow, JWT token generation
-- **Hour 4-6**: PKCE, client credentials, token refresh
-- **Hour 7-8**: OIDC layer (ID tokens, UserInfo), Docker setup
+Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization server from [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) spec:
+- **Hour 1-3**: Authorization code flow, [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token generation
+- **Hour 4-6**: [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), client credentials, token refresh
+- **Hour 7-8**: [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) layer (ID tokens, UserInfo), [Docker](https://www.docker.com) setup
 
-**Key insight**: OIDC adds identity layer to OAuth2's authorization framework - understanding this distinction is critical.
+**Key insight**: [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) adds identity layer to [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)'s authorization framework - understanding this distinction is critical.
 
 ### Day 2: Security Deep Dive
 Built security scanning tools to internalize identity vulnerabilities:
-- **Hour 1-4**: Static config scanner for OAuth2/OIDC/SAML misconfigurations
-- **Hour 5-6**: Remediation engine, CI/CD integration
+- **Hour 1-4**: Static config scanner for [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) misconfigurations
+- **Hour 5-6**: Remediation engine, [CI/CD](https://en.wikipedia.org/wiki/CI/CD) integration
 - **Hour 7-9**: Runtime flow analyzer for attack simulation
 
 **Key insight**: Security patterns from previous roles (vulnerability scanners, compliance) apply directly to identity domain.
 
 ### Day 3: Scale & Operations
 Implemented session management thinking about multi-brand, global-scale requirements:
-- **Hour 1-4**: Session service with Redis, multi-tenant isolation
+- **Hour 1-4**: Session service with [Redis](https://redis.io), multi-tenant isolation
 - **Hour 5-8**: Load testing (10K concurrent sessions), observability
 - **Hour 9-10**: Documentation, architecture diagrams
 
-**Key insight**: Identity at scale = distributed systems problem. JWT for speed, Redis for consistency.
+**Key insight**: Identity at scale = distributed systems problem. [JWT](https://datatracker.ietf.org/doc/html/rfc7519) for speed, [Redis](https://redis.io) for consistency.
 
 ## 🎓 What I Learned
 
 ### Protocol Trade-offs
-- **OAuth2 vs OIDC**: Authorization vs Authentication - different problems, complementary solutions
-- **SAML vs OAuth2**: Enterprise partnerships vs modern apps - both have valid use cases
-- **JWT Validation**: Stateless (fast) vs stateful (revocable) - need both approaches
+- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: Authorization vs Authentication - different problems, complementary solutions
+- **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vs [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: Enterprise partnerships vs modern apps - both have valid use cases
+- **[JWT](https://datatracker.ietf.org/doc/html/rfc7519) Validation**: Stateless (fast) vs stateful (revocable) - need both approaches
 
 ### Security Considerations
-- **PKCE is non-negotiable** for mobile/SPA apps - prevents authorization code interception
-- **State parameter prevents CSRF** - must be cryptographically random, validated on callback
-- **Redirect URI validation is critical** - wildcard URIs = open redirect vulnerability
+- **[PKCE](https://datatracker.ietf.org/doc/html/rfc7636) is non-negotiable** for mobile/[SPA](https://en.wikipedia.org/wiki/Single-page_application) apps - prevents authorization code interception
+- **State parameter prevents [CSRF](https://owasp.org/www-community/attacks/csrf)** - must be cryptographically random, validated on callback
+- **Redirect [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) validation is critical** - wildcard URIs = [open redirect vulnerability](https://owasp.org/www-community/attacks/Unvalidated_Redirects_and_Forwards)
 - **Token lifetime trade-offs** - short access tokens (15min), longer refresh tokens (30d)
 
 ### Scale Thinking
 - **Multi-tenant isolation** requires separate signing keys per tenant
-- **Global deployments** need Redis replication, token validation must work offline
+- **Global deployments** need [Redis](https://redis.io) replication, token validation must work offline
 - **Observability is essential** - can't optimize what you don't measure
 
 ## 🏗️ Architecture Highlights
@@ -169,17 +169,17 @@ Implemented session management thinking about multi-brand, global-scale requirem
 
 ## 🔧 Technology Choices
 
-- **Go**: Fast, concurrent, single-binary deployment - matches enterprise scale requirements
-- **Redis**: Distributed cache for tokens/sessions - HA, global replication
-- **JWT**: Industry standard, stateless validation, flexible claims
-- **Docker**: Reproducible environments, easy deployment
-- **k6**: Modern load testing, API-focused, cloud-native
+- **[Go](https://go.dev)**: Fast, concurrent, single-binary deployment - matches enterprise scale requirements
+- **[Redis](https://redis.io)**: Distributed cache for tokens/sessions - [HA](https://en.wikipedia.org/wiki/High_availability), global replication
+- **[JWT](https://datatracker.ietf.org/doc/html/rfc7519)**: Industry standard, stateless validation, flexible claims
+- **[Docker](https://www.docker.com)**: Reproducible environments, easy deployment
+- **[k6](https://k6.io)**: Modern load testing, [API](https://en.wikipedia.org/wiki/API)-focused, cloud-native
 
 ## 📊 Metrics & Results
 
-- **OAuth2 Server**: All 4 flows working end-to-end
+- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) Server**: All 4 flows working end-to-end
 - **Security Scanner**: 35+ misconfiguration rules, zero false positives
-- **Session Service**: 10K+ concurrent sessions, <10ms p99 latency
+- **Session Service**: 10K+ concurrent sessions, <10ms [p99](https://en.wikipedia.org/wiki/Percentile) latency
 - **Code Quality**: Comprehensive error handling, observability hooks, production patterns
 - **Documentation**: Architecture diagrams, sequence flows, security considerations
 
@@ -188,17 +188,17 @@ Implemented session management thinking about multi-brand, global-scale requirem
 ### Multi-Brand Identity Platforms
 - **Challenge**: Unified identity across multiple brands in a portfolio
 - **Solution**: Multi-tenant session management with brand-specific signing keys
-- **Pattern**: OAuth2/OIDC for consumer apps, SAML for B2B partners
+- **Pattern**: [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) for consumer apps, [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) for [B2B](https://en.wikipedia.org/wiki/Business-to-business) partners
 
 ### Enterprise Security
 - **Challenge**: Audit identity configurations across 100+ microservices
-- **Solution**: Automated security scanning in CI/CD pipelines
-- **Pattern**: Shift-left security, fail builds on critical findings
+- **Solution**: Automated security scanning in [CI/CD](https://en.wikipedia.org/wiki/CI/CD) pipelines
+- **Pattern**: [Shift-left security](https://www.devsecops.org/blog/2016/5/20/-security), fail builds on critical findings
 
 ### Global Scale
 - **Challenge**: Identity for hundreds of millions of users across regions
-- **Solution**: Stateless JWT validation, Redis for global revocation
-- **Pattern**: Fast path (JWT), slow path (Redis), observable metrics
+- **Solution**: Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation, [Redis](https://redis.io) for global revocation
+- **Pattern**: Fast path ([JWT](https://datatracker.ietf.org/doc/html/rfc7519)), slow path ([Redis](https://redis.io)), observable metrics
 
 ## 🤝 Contributing
 
@@ -212,10 +212,11 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 Built with:
 - **Claude Code** (Anthropic) - AI pair programming for rapid learning
-- **OAuth 2.0 Spec** (RFC 6749) - Authorization framework
-- **OpenID Connect Spec** - Identity layer on OAuth2
-- **OWASP ASVS** - Security requirements for authentication
-- **Auth0 & Okta Docs** - Excellent learning resources
+- [RFC 6749 - OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
+- [RFC 7636 - PKCE Extension](https://datatracker.ietf.org/doc/html/rfc7636)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [OWASP ASVS - Identity and Authentication](https://owasp.org/www-project-application-security-verification-standard/)
+- [Auth0 Docs](https://auth0.com/docs/authenticate/protocols/oauth) & [Okta Developer](https://developer.okta.com/docs/concepts/oauth-openid/)
 
 ---
 
