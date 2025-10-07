@@ -61,31 +61,56 @@ else
     echo_info "✓ Go already installed ($(go version))"
 fi
 
-# Install Docker
-echo_info "Checking for Docker..."
-if ! command -v docker &> /dev/null; then
-    echo_warn "Docker not found. Installing Docker Desktop..."
-    brew install --cask docker
-    echo_warn "Please start Docker Desktop manually and then re-run this script"
-    exit 1
+# Install Podman (Docker alternative, no VM required)
+echo_info "Checking for Podman..."
+if ! command -v podman &> /dev/null; then
+    echo_warn "Podman not found. Installing Podman..."
+    brew install podman
+
+    # Initialize Podman machine
+    echo_info "Initializing Podman machine..."
+    podman machine init
+    echo_info "Starting Podman machine..."
+    podman machine start
+
+    echo_info "✓ Podman installed and machine started"
 else
-    echo_info "✓ Docker already installed ($(docker --version))"
+    echo_info "✓ Podman already installed ($(podman --version))"
+
+    # Check if Podman machine is running
+    if ! podman machine list | grep -q "Currently running"; then
+        echo_warn "Podman machine not running. Starting..."
+        podman machine start || echo_warn "Podman machine may already be starting"
+    fi
 fi
 
-# Check if Docker is running
-if ! docker info &> /dev/null; then
-    echo_error "Docker is installed but not running. Please start Docker Desktop and re-run this script"
-    exit 1
+# Create docker alias for podman (for compatibility)
+if ! grep -q "alias docker='podman'" ~/.zshrc 2>/dev/null && ! grep -q "alias docker='podman'" ~/.bashrc 2>/dev/null; then
+    echo_info "Creating 'docker' alias for podman..."
+    if [ -f ~/.zshrc ]; then
+        echo "alias docker='podman'" >> ~/.zshrc
+        echo_info "Added docker alias to ~/.zshrc"
+    fi
+    if [ -f ~/.bashrc ]; then
+        echo "alias docker='podman'" >> ~/.bashrc
+        echo_info "Added docker alias to ~/.bashrc"
+    fi
+    echo_warn "Please restart your terminal or run: source ~/.zshrc (or ~/.bashrc)"
 fi
 
-# Install Docker Compose (if not already included with Docker Desktop)
-echo_info "Checking for Docker Compose..."
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
-    echo_warn "Docker Compose not found. Installing Docker Compose..."
+# Install docker-compose (works with podman via docker socket)
+echo_info "Checking for docker-compose..."
+if ! command -v docker-compose &> /dev/null; then
+    echo_warn "docker-compose not found. Installing docker-compose..."
     brew install docker-compose
+    echo_info "✓ docker-compose installed"
 else
-    echo_info "✓ Docker Compose already installed"
+    echo_info "✓ docker-compose already installed ($(docker-compose --version))"
 fi
+
+# Enable Podman socket for docker-compose compatibility
+echo_info "Enabling Podman socket for docker-compose compatibility..."
+podman machine ssh sudo systemctl enable --now podman.socket 2>/dev/null || true
 
 # Install Redis
 echo_info "Checking for Redis..."
@@ -219,15 +244,18 @@ echo ""
 echo_info "========================================"
 echo_info "Next Steps:"
 echo_info "========================================"
-echo_info "1. Review and edit .env file with your secret values"
-echo_info "2. Source the .env file: source .env"
-echo_info "3. Run individual project setup:"
+echo_info "1. Restart your terminal (or run: source ~/.zshrc) to enable docker alias"
+echo_info "2. Review and edit .env file with your secret values"
+echo_info "3. Source the .env file: source .env"
+echo_info "4. Run individual project setup:"
 echo_info "   cd project-1-oauth2-oidc-demo && make setup"
 echo_info "   cd project-2-session-management && make setup"
 echo_info "   cd project-3-identity-security-scanner && make setup"
 echo_info "   cd project-3b-runtime-identity-scanner && make setup"
-echo_info "4. Or run all projects with Docker Compose:"
-echo_info "   docker-compose up"
+echo_info "5. Or run all projects with Podman Compose:"
+echo_info "   docker-compose up  # (uses podman via alias)"
+echo_info "   # OR directly: podman-compose up"
 echo ""
+echo_info "Note: Using Podman instead of Docker Desktop (lighter, no VM overhead)"
 echo_info "For more information, see README.md"
 echo ""
