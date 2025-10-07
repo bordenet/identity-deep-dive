@@ -1,4 +1,110 @@
+# Secrets and Environment Variables
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+secrets/
+.secrets/
 
+# Go Build Artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+/bin/
+/dist/
+/build/
+vendor/
 
-#Ignore vscode AI rules
+# Go Test Coverage
+*.coverprofile
+coverage.txt
+coverage.html
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
 .github/instructions/codacy.instructions.md
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Redis
+dump.rdb
+appendonly.aof
+*.rdb
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# JWT Keys (generated)
+jwt-*.key
+*.priv
+*.pub
+
+# k6 Load Test Results
+load-tests/results/*.json
+load-tests/results/*.html
+load-tests/results/*.csv
+
+# Prometheus & Grafana Data
+monitoring/prometheus/data/
+monitoring/grafana/data/
+
+# Node (if used for tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Python (if used for tooling)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Certificates and Keys
+ca.crt
+ca.key
+server.crt
+server.key
+client.crt
+client.key
+tls/
+
+# Config Files with Secrets
+config.local.yaml
+config.*.local.yaml
+*-local.yaml

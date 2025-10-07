@@ -50,3 +50,43 @@ Build 4 identity projects in 3 days to demonstrate rapid domain mastery for seni
 ## Resources
 - RFC 6749 (OAuth 2.0), RFC 7636 (PKCE), RFC 7519 (JWT)
 - OIDC Core spec, OWASP ASVS, NIST SP 800-63B
+
+## Secrets Management Framework
+
+### Setup Process
+1. **Initial Setup**: Run `./setup.sh` to install all dependencies and generate keys
+2. **Environment Variables**: All secrets stored in `.env` (gitignored)
+3. **Secret Scanning**: ggshield blocks commits AND pushes if secrets detected
+
+### File Structure
+- **`.env.example`**: Documents all required environment variables (checked into git)
+- **`.env`**: Contains actual secret values (NEVER committed, gitignored)
+- **`.secrets/`**: Directory for generated keys/certificates (gitignored)
+
+### Generated Secrets
+- **JWT Keys**: RSA 2048-bit keypair for token signing
+  - Private: `.secrets/jwt-private.pem`
+  - Public: `.secrets/jwt-public.pem`
+- **Session Secrets**: HMAC keys for session signing
+- **Tenant Keys**: Per-tenant signing keys for multi-tenant isolation
+
+### Using Secrets in Code
+```bash
+# Source environment variables
+source .env
+
+# Access in code via environment variables
+echo $JWT_PRIVATE_KEY_PATH
+```
+
+### Security Guardrails
+- **ggshield pre-commit hook**: Scans staged changes for secrets before commit
+- **ggshield pre-push hook**: Scans commits before push to remote
+- **`.gitignore`**: Comprehensive ignore patterns for secrets, keys, certificates
+- **No hardcoded secrets**: All secrets injected via environment variables
+
+### Adding New Secrets
+1. Document in `.env.example` with placeholder value
+2. Add actual value to `.env`
+3. Update code to read from environment variable
+4. Test with `git commit` to ensure ggshield doesn't flag it
