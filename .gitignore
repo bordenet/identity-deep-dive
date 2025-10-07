@@ -108,3 +108,28 @@ tls/
 config.local.yaml
 config.*.local.yaml
 *-local.yaml
+
+# External Tools/Binaries (installed locally)
+# Go binaries downloaded locally
+/tools/
+/bin/go/
+/bin/k6
+/bin/redis-server
+/bin/redis-cli
+/bin/ggshield
+
+# Homebrew local installations (if any)
+/opt/
+/usr/local/
+
+# Podman/Docker local data
+.podman/
+.docker/
+
+# Downloaded dependencies
+downloads/
+.downloads/
+
+# Third-party CLI tools
+cli-tools/
+external/
