@@ -58,6 +58,95 @@ ALWAYS link critical acroyms and industry standars within markdown files to auth
 - [OWASP ASVS - Identity and Authentication](https://owasp.org/www-project-application-security-verification-standard/)
 - [NIST SP 800-63B - Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
 
+## Documentation Standards
+
+**CRITICAL**: When editing markdown files (.md), ALWAYS hyperlink:
+- All RFCs (RFC 6749, RFC 7636, etc.) → https://datatracker.ietf.org/doc/html/rfcXXXX
+- All OIDC specs → https://openid.net/specs/
+- All technical terms (OAuth2, JWT, PKCE, SAML, etc.) → authoritative sources
+- All tools/libraries (Go, Redis, Docker, etc.) → official homepages or GitHub repos
+- All security concepts (CSRF, SPA, etc.) → OWASP, Wikipedia, or relevant docs
+- All local markdown docs → relative paths (e.g., [PRD](docs/PRD.md))
+- All source files → relative paths (e.g., [jwt.go](internal/tokens/jwt.go))
+
+This makes documentation self-navigating with one-click access to authoritative sources.
+
+## Project Status (as of Oct 7, 2025)
+
+### Completed
+- ✅ Repository setup with secrets management framework
+- ✅ setup.sh for macOS (Podman instead of Docker Desktop)
+- ✅ .gitignore comprehensive (secrets, binaries, build artifacts)
+- ✅ .env.example and .env for environment variables
+- ✅ ggshield pre-commit AND pre-push hooks
+- ✅ **Project 1**: OAuth2/OIDC foundation (~40% complete)
+  - Data models (OAuth2, OIDC)
+  - JWT token generation/validation (RS256)
+  - PKCE implementation
+  - Redis session store
+  - PRD document
+  - CHANGELOG progress report
+- ✅ All documentation comprehensively hyperlinked
+
+### Next Steps for Project 1 (OAuth2/OIDC Server)
+**Priority**: Continue building HTTP handlers and server
+
+**Remaining work** (~5-6 hours):
+1. **Authorization Handler** (`/authorize` endpoint) - 1 hour
+   - Parse authorization request
+   - Validate client, redirect_uri, PKCE
+   - Generate authorization code
+   - User authentication (simple form)
+
+2. **Token Handler** (`/token` endpoint) - 1.5 hours
+   - Authorization code flow
+   - Client credentials flow
+   - Refresh token flow
+   - PKCE validation
+   - Issue access + refresh + ID tokens
+
+3. **OIDC Handlers** - 1 hour
+   - UserInfo endpoint (`/userinfo`)
+   - Discovery endpoint (`/.well-known/openid-configuration`)
+   - Revocation endpoint (`/revoke`)
+
+4. **Main Server** - 1 hour
+   - HTTP server setup (gorilla/mux)
+   - Middleware (logging, CORS, error handling)
+   - Configuration loading (viper)
+   - Graceful shutdown
+   - Health check
+
+5. **Example Client** - 1 hour
+   - Simple web app demonstrating OAuth2 flow
+   - PKCE code generation
+   - Token exchange
+   - Display user info
+
+6. **Deployment & Docs** - 1 hour
+   - Docker Compose (Redis + authserver)
+   - Makefile
+   - README with architecture diagrams
+   - Test scripts
+
+**Files created so far**:
+- `pkg/models/oauth2.go` - OAuth2 data models
+- `pkg/models/oidc.go` - OIDC data models
+- `internal/tokens/jwt.go` - JWT generation/validation
+- `internal/tokens/pkce.go` - PKCE validation
+- `internal/session/redis.go` - Redis session store
+- `docs/PRD.md` - Product requirements
+- `CHANGELOG.md` - Progress report
+
+**Still need to create**:
+- `internal/authz/handlers.go` - Authorization & token endpoints
+- `internal/oidc/handlers.go` - OIDC-specific endpoints
+- `cmd/authserver/main.go` - Main server
+- `cmd/client/main.go` - Example client
+- `docker-compose.yml`
+- `Makefile`
+- `README.md` for project
+
 ## Secrets Management Framework
 
 ### Setup Process

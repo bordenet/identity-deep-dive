@@ -130,7 +130,7 @@ Implemented session management thinking about multi-brand, global-scale requirem
 ## 🎓 What I Learned
 
 ### Protocol Trade-offs
-- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: Authorization vs Authentication - different problems, complementary solutions
+- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: AuthN vs AuthZ - different problems, complementary solutions
 - **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vs [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: Enterprise partnerships vs modern apps - both have valid use cases
 - **[JWT](https://datatracker.ietf.org/doc/html/rfc7519) Validation**: Stateless (fast) vs stateful (revocable) - need both approaches
 
