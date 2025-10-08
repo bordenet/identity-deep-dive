@@ -133,3 +133,6 @@ downloads/
 # Third-party CLI tools
 cli-tools/
 external/
+
+# Codacy CLI
+.codacy/

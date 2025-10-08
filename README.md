@@ -26,7 +26,11 @@ A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/
 
 **Why this matters**: Deep understanding of identity protocols ([OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)) by implementing the spec, not just using libraries.
 
-[📁 View Project](./project-1-oauth2-oidc-demo/) | [📖 Detailed README](./project-1-oauth2-oidc-demo/README.md)
+**📚 Documentation**:
+- [📁 View Project](./project-1-oauth2-oidc-demo/) | [📖 Project README](./project-1-oauth2-oidc-demo/README.md)
+- [📋 Product Requirements (PRD)](./project-1-oauth2-oidc-demo/docs/PRD.md) | [📝 Progress Tracking](./project-1-oauth2-oidc-demo/CHANGELOG.md)
+- [🔐 OIDC Flow Walkthrough](./project-1-oauth2-oidc-demo/docs/OIDC_Walk_Thru.md) - Complete OIDC Authorization Code Flow with diagrams, security features, and error handling
+- [🔑 PKCE Deep Dive](./project-1-oauth2-oidc-demo/docs/PKCE_Deep_Dive.md) - Comprehensive PKCE explanation with attack scenarios, code examples, and best practices
 
 ---
 

@@ -3,13 +3,158 @@
 This document walks through the [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) (OIDC) authentication flow step-by-step, showing both native authentication and third-party [federated identity](https://en.wikipedia.org/wiki/Federated_identity) scenarios.
 
 <details>
-    <summary>OIDC Flow Diagram</summary>
+    <summary>OIDC Flow Diagrams - Click to Expand</summary>
 
-![OIDC Authorization Code Flow](OIDC_diagram_Perplexity.png)
+### Direct Authentication with Example.com
 
-This diagram illustrates the complete [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) [Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth) with [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), showing browser redirects, backend token exchange, and [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) validation.
+```mermaid
+sequenceDiagram
+  participant U as User (Browser)
+  participant C as Client App
+  participant A as AuthZ Server
+  participant T as Token Endpoint
+
+  Note over U,C: 1. User requests protected resource
+
+  U->>C: GET /protected
+  C->>U: 302 Redirect to /authorize
+
+  Note over U,A: Authorization request with PKCE
+
+  U->>A: GET /authorize?response_type=code<br/>&client_id=app&scope=openid profile<br/>&state=xyz&nonce=abc&code_challenge=SHA256
+
+  A->>U: Show login page
+  U->>A: Submit credentials
+  A->>A: Authenticate user
+  A->>U: 302 Redirect with code
+  U->>C: GET /callback?code=ABC&state=xyz
+
+  Note over C,T: 2. Exchange authorization code for tokens
+
+  C->>T: POST /token<br/>code=ABC&code_verifier=...
+  T->>T: Validate PKCE
+  T->>C: Return tokens<br/>(ID token, access token, refresh token)
+
+  Note over C: 3. Validate ID token
+
+  C->>C: Verify signature (JWKs)<br/>Validate claims (iss, aud, exp)<br/>Check nonce, at_hash
+
+  Note over C,U: 4. Authenticated session established
+
+  C->>U: 200 OK (protected resource)
+
+  Note over C,T: 5. Optional: Fetch UserInfo
+
+  C->>T: GET /userinfo<br/>Bearer {access_token}
+  T->>C: Return user claims
+
+  Note over C,T: 6. Token refresh
+
+  C->>T: POST /token<br/>grant_type=refresh_token
+  T->>C: New access token
+```
+
+### Federated Authentication via Third-Party ([Google](https://developers.google.com/identity/protocols/oauth2/openid-connect))
+
+```mermaid
+sequenceDiagram
+  participant U as User (Browser)
+  participant C as Client App
+  participant L as Local AuthZ
+  participant G as Google AuthZ
+  participant GT as Google Token
+
+  Note over U,C: 1. User requests protected resource
+
+  U->>C: GET /protected
+  C->>U: 302 Redirect to Local AuthZ
+  U->>L: GET /authorize
+  L->>U: Show "Sign in with Google" button
+  U->>L: Click "Sign in with Google"
+
+  Note over L,G: 2. Redirect to Google for authentication
+
+  L->>U: 302 Redirect to Google
+  U->>G: GET /auth?response_type=code<br/>&scope=openid email profile<br/>&state=abc&nonce=nnn
+
+  G->>U: Show Google login
+  U->>G: Submit credentials and consent
+  G->>U: 302 Redirect with code
+  U->>C: GET /callback?code=XYZ&state=abc
+
+  Note over C,GT: 3. Exchange code for Google tokens
+
+  C->>GT: POST /token<br/>code=XYZ&client_secret=...
+  GT->>C: Return tokens<br/>(Google ID token, access token)
+
+  Note over C: 4. Validate Google ID token
+
+  C->>C: Verify Google signature<br/>Validate claims<br/>Map Google sub to local user
+
+  Note over C,U: 5. Create local session
+
+  C->>U: 200 OK (protected resource)
+
+  Note over C,GT: 6. Optional: Fetch Google UserInfo
+
+  C->>GT: GET /userinfo<br/>Bearer {access_token}
+  GT->>C: Return user profile
+
+  Note over C,GT: 7. Token refresh
+
+  C->>GT: POST /token<br/>grant_type=refresh_token
+  GT->>C: New Google tokens
+```
 
 </details>
+
+---
+
+## [OIDC Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html)
+
+Before initiating authentication, clients discover the [Authorization Server](https://openid.net/specs/openid-connect-core-1_0.html#Terminology)'s configuration using the [OIDC Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) protocol.
+
+### Discovery Endpoint
+
+```
+GET https://auth.example.com/.well-known/openid-configuration
+```
+
+### Discovery Document Response
+
+Returns a [JSON](https://www.json.org/) document with all [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) endpoints and capabilities:
+
+```json
+{
+  "issuer": "https://auth.example.com",
+  "authorization_endpoint": "https://auth.example.com/authorize",
+  "token_endpoint": "https://auth.example.com/oauth2/token",
+  "userinfo_endpoint": "https://auth.example.com/userinfo",
+  "jwks_uri": "https://auth.example.com/.well-known/jwks.json",
+  "revocation_endpoint": "https://auth.example.com/oauth2/revoke",
+  "end_session_endpoint": "https://auth.example.com/logout",
+
+  "response_types_supported": ["code", "token", "id_token", "code id_token"],
+  "response_modes_supported": ["query", "fragment", "form_post"],
+  "grant_types_supported": ["authorization_code", "refresh_token", "client_credentials"],
+  "subject_types_supported": ["public", "pairwise"],
+  "id_token_signing_alg_values_supported": ["RS256", "RS384", "RS512", "ES256"],
+  "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post", "private_key_jwt"],
+
+  "scopes_supported": ["openid", "profile", "email", "address", "phone", "offline_access"],
+  "claims_supported": ["sub", "iss", "aud", "exp", "iat", "auth_time", "nonce", "name", "email", "picture"],
+
+  "code_challenge_methods_supported": ["S256", "plain"]
+}
+```
+
+### Benefits
+
+- **Dynamic Configuration**: No hardcoded endpoints in client code
+- **Algorithm Discovery**: Learn supported signing algorithms ([RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.1), [ES256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.4), etc.)
+- **Capability Negotiation**: Discover supported flows, scopes, and authentication methods
+- **JWKs Endpoint**: Location to fetch public keys for [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signature validation
+- **Standards Compliance**: Per [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html)
 
 ---
 
@@ -40,10 +185,140 @@ This diagram illustrates the complete [OIDC](https://openid.net/specs/openid-con
 - **Implementation**: Cryptographically random value, stored in session, validated on callback
 
 ### [ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation)
-- **Signature**: Verify [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.1) signature using [Authorization Server](https://openid.net/specs/openid-connect-core-1_0.html#Terminology)'s public key ([JWK](https://datatracker.ietf.org/doc/html/rfc7517))
-- **Claims**: Validate `iss` (issuer), `aud` (audience), `exp` (expiration), `iat` (issued at)
-- **Nonce**: Prevents [token replay attacks](https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes)
-- **at_hash**: Binds [access token](https://datatracker.ietf.org/doc/html/rfc6749#section-1.4) to [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) (prevents substitution)
+
+Per [OIDC Core Section 3.1.3.7](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation), clients MUST validate [ID tokens](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) using this checklist:
+
+1. **Algorithm Validation**: Verify `alg` header matches expected algorithm ([RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.1), [ES256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.4)). MUST reject `none` algorithm.
+2. **Signature Verification**: Verify [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signature using [Authorization Server](https://openid.net/specs/openid-connect-core-1_0.html#Terminology)'s public key from [JWKs endpoint](https://datatracker.ietf.org/doc/html/rfc7517)
+3. **Issuer (`iss`)**: MUST exactly match expected Authorization Server issuer URL
+4. **Audience (`aud`)**: MUST contain client's `client_id`
+5. **Authorized Party (`azp`)**: If present and `aud` contains multiple audiences, `azp` MUST match client's `client_id`
+6. **Expiration (`exp`)**: Current time MUST be before expiration time
+7. **Issued At (`iat`)**: Token MUST have `iat` claim (issue timestamp)
+8. **Not Before (`nbf`)**: If present, current time MUST be after `nbf` timestamp
+9. **Nonce**: If `nonce` was sent in authorization request, ID token MUST contain matching `nonce` claim. Prevents [token replay attacks](https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes).
+10. **at_hash**: If ID token issued with access token, `at_hash` claim MUST be present and match hash of access token. Prevents [token substitution attacks](https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation).
+11. **c_hash**: If issued with authorization code (hybrid flow), `c_hash` must match code hash
+
+### [OIDC Scopes](https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims)
+
+[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) defines standard scopes that control which user claims are returned:
+
+#### Required Scope
+
+- **`openid`** (REQUIRED): Indicates this is an [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) request (not plain [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)). Triggers [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) issuance.
+
+#### Standard Optional Scopes
+
+- **`profile`**: Requests access to default profile claims: `name`, `family_name`, `given_name`, `middle_name`, `nickname`, `preferred_username`, `profile`, `picture`, `website`, `gender`, `birthdate`, `zoneinfo`, `locale`, `updated_at`
+- **`email`**: Requests `email` and `email_verified` claims
+- **`address`**: Requests `address` claim (formatted address JSON object)
+- **`phone`**: Requests `phone_number` and `phone_number_verified` claims
+- **`offline_access`**: Requests a [refresh token](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5) for offline access (long-lived sessions)
+
+#### Custom Scopes
+
+Authorization Servers can define custom scopes for application-specific claims (e.g., `employee_id`, `department`, `role`).
+
+### [UserInfo Endpoint](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo)
+
+The [UserInfo Endpoint](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo) ([OIDC Core Section 5.3](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo)) returns additional user claims beyond those in the [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
+
+**Endpoint**: `GET https://auth.example.com/userinfo`
+
+**Authentication**: Requires valid [access token](https://datatracker.ietf.org/doc/html/rfc6749#section-1.4) in `Authorization: Bearer {token}` header
+
+**Response**: [JSON](https://www.json.org/) object with user claims based on requested scopes:
+
+```json
+{
+  "sub": "248289761001",
+  "name": "Jane Doe",
+  "given_name": "Jane",
+  "family_name": "Doe",
+  "preferred_username": "jane.doe",
+  "email": "jane.doe@example.com",
+  "email_verified": true,
+  "picture": "https://example.com/jane.jpg",
+  "updated_at": 1311280970
+}
+```
+
+**Use Cases**:
+- Fetching large claims that don't fit in [ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) (e.g., detailed address)
+- Retrieving fresh user data after ID token issued
+- Accessing claims not included in ID token's scope
+
+### [Token Endpoint Authentication](https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication)
+
+Per [OIDC Core Section 9](https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication), clients authenticate to the token endpoint using one of these methods:
+
+#### Confidential Clients (Backend Servers)
+
+- **`client_secret_basic`** (RECOMMENDED): [HTTP Basic authentication](https://datatracker.ietf.org/doc/html/rfc7617) with `client_id:client_secret` in `Authorization` header
+  ```
+  Authorization: Basic BASE64(client_id:client_secret)
+  ```
+
+- **`client_secret_post`**: Send `client_id` and `client_secret` in [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) body
+  ```
+  POST /oauth2/token
+  Content-Type: application/x-www-form-urlencoded
+
+  client_id=abc&client_secret=xyz&grant_type=authorization_code&code=...
+  ```
+
+- **`client_secret_jwt`**: Client creates [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signed with shared secret ([HS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.2))
+
+- **`private_key_jwt`** (MOST SECURE): Client creates [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signed with private key ([RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.1), [ES256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.4)). Server validates with client's public key.
+
+#### Public Clients (Mobile, SPA)
+
+- **No client secret**: Public clients cannot securely store secrets
+- **PKCE REQUIRED**: Use [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) (`code_verifier`) to authenticate the client
+- **Send `client_id` only**: No `client_secret` in token request
+
+### Error Handling
+
+Per [OIDC Core Section 3.1.2.6](https://openid.net/specs/openid-connect-core-1_0.html#AuthError) and [OAuth2 RFC 6749 Section 4.1.2.1](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1):
+
+#### Authorization Endpoint Errors
+
+**Invalid `redirect_uri`**:
+- **Response**: Error page (DO NOT redirect - prevents open redirect attacks)
+- **Reason**: Cannot safely redirect if `redirect_uri` is invalid
+
+**Valid `redirect_uri`, other errors**:
+- **Response**: Redirect to `redirect_uri` with error parameters
+- **Format**: `https://app.example.com/callback?error=ERROR_CODE&error_description=DESCRIPTION&state=STATE`
+
+**Common Error Codes**:
+- `invalid_request`: Missing or invalid required parameter
+- `unauthorized_client`: Client not authorized for this grant type
+- `access_denied`: User denied authorization
+- `unsupported_response_type`: Authorization server doesn't support this `response_type`
+- `invalid_scope`: Requested scope is invalid or unknown
+- `server_error`: Internal server error (HTTP 500 equivalent)
+- `temporarily_unavailable`: Server temporarily unavailable (HTTP 503 equivalent)
+
+#### Token Endpoint Errors
+
+**Response Format**: [JSON](https://www.json.org/) with HTTP 400 status
+
+```json
+{
+  "error": "invalid_grant",
+  "error_description": "Authorization code has expired"
+}
+```
+
+**Common Error Codes**:
+- `invalid_request`: Malformed request
+- `invalid_client`: Client authentication failed
+- `invalid_grant`: Authorization code invalid, expired, or revoked
+- `unauthorized_client`: Client not authorized for this grant type
+- `unsupported_grant_type`: Grant type not supported
+- `invalid_scope`: Requested scope exceeds authorized scope
 
 ### [Token Lifetimes](https://datatracker.ietf.org/doc/html/rfc6749#section-10.3)
 - **Access Token**: Short-lived (15 minutes) - minimizes exposure
