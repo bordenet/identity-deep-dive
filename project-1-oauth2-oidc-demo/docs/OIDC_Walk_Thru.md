@@ -2,10 +2,28 @@
 
 This document walks through the [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) (OIDC) authentication flow step-by-step, showing both native authentication and third-party [federated identity](https://en.wikipedia.org/wiki/Federated_identity) scenarios.
 
-<details>
-    <summary>OIDC Flow Diagrams - Click to Expand</summary>
+## OIDC Flow Diagrams
 
 ### Direct Authentication with Example.com
+
+<details>
+  <summary>Click to expand simple version</summary>
+
+```mermaid
+sequenceDiagram
+    User->>Client: Request protected resource
+    Client->>AuthZ: Redirect to authorization
+    AuthZ->>User: Show login page
+    User->>AuthZ: Submit credentials
+    AuthZ->>Client: Return authorization code
+    Client->>Token: Exchange code for tokens
+    Token->>Client: Return ID token and access token
+    Client->>User: Serve protected resource
+```
+</details>
+
+<details>
+  <summary>Click to expand detailed version</summary>
 
 ```mermaid
 sequenceDiagram
@@ -36,7 +54,27 @@ sequenceDiagram
     Token->>Client: New tokens
 ```
 
+</details>
+
 ### Federated Authentication via Third-Party ([Google](https://developers.google.com/identity/protocols/oauth2/openid-connect))
+<details>
+  <summary>Click to expand simple version</summary>
+
+```mermaid
+sequenceDiagram
+    User->>Client: Request protected resource
+    Client->>LocalAuthZ: Redirect to local AuthZ
+    LocalAuthZ->>User: Show login options
+    User->>Google: Select Google and authenticate
+    Google->>Client: Return authorization code
+    Client->>GoogleToken: Exchange code for tokens
+    GoogleToken->>Client: Return Google ID token
+    Client->>Client: Validate and map to local user
+    Client->>User: Serve protected resource
+```
+</details>
+<details>
+  <summary>Click to expand detailed version</summary>
 
 ```mermaid
 sequenceDiagram
@@ -70,9 +108,7 @@ sequenceDiagram
     Client->>GoogleToken: 7. Refresh tokens (as needed)
     GoogleToken->>Client: New Google tokens
 ```
-
 </details>
-
 ---
 
 ## [OIDC Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html)
