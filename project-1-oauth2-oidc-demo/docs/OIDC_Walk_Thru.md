@@ -9,101 +9,66 @@ This document walks through the [OpenID Connect](https://openid.net/specs/openid
 
 ```mermaid
 sequenceDiagram
-  participant U as User (Browser)
-  participant C as Client App
-  participant A as AuthZ Server
-  participant T as Token Endpoint
+    participant User
+    participant Client
+    participant AuthZ
+    participant Token
 
-  Note over U,C: 1. User requests protected resource
+    User->>Client: 1. Request protected resource
+    Client->>User: Redirect to AuthZ
 
-  U->>C: GET /protected
-  C->>U: 302 Redirect to /authorize
+    User->>AuthZ: 2. GET /authorize + PKCE challenge
+    AuthZ->>User: Login page
+    User->>AuthZ: Submit credentials
+    AuthZ->>User: Redirect with authorization code
 
-  Note over U,A: Authorization request with PKCE
+    User->>Client: 3. Callback with code
+    Client->>Token: POST /token + code_verifier
+    Token->>Client: ID token + access token + refresh token
 
-  U->>A: GET /authorize?response_type=code<br/>&client_id=app&scope=openid profile<br/>&state=xyz&nonce=abc&code_challenge=SHA256
+    Client->>Client: 4. Validate ID token
+    Client->>User: Serve protected resource
 
-  A->>U: Show login page
-  U->>A: Submit credentials
-  A->>A: Authenticate user
-  A->>U: 302 Redirect with code
-  U->>C: GET /callback?code=ABC&state=xyz
+    Client->>Token: 5. GET /userinfo (optional)
+    Token->>Client: User claims
 
-  Note over C,T: 2. Exchange authorization code for tokens
-
-  C->>T: POST /token<br/>code=ABC&code_verifier=...
-  T->>T: Validate PKCE
-  T->>C: Return tokens<br/>(ID token, access token, refresh token)
-
-  Note over C: 3. Validate ID token
-
-  C->>C: Verify signature (JWKs)<br/>Validate claims (iss, aud, exp)<br/>Check nonce, at_hash
-
-  Note over C,U: 4. Authenticated session established
-
-  C->>U: 200 OK (protected resource)
-
-  Note over C,T: 5. Optional: Fetch UserInfo
-
-  C->>T: GET /userinfo<br/>Bearer {access_token}
-  T->>C: Return user claims
-
-  Note over C,T: 6. Token refresh
-
-  C->>T: POST /token<br/>grant_type=refresh_token
-  T->>C: New access token
+    Client->>Token: 6. Refresh token (as needed)
+    Token->>Client: New tokens
 ```
 
 ### Federated Authentication via Third-Party ([Google](https://developers.google.com/identity/protocols/oauth2/openid-connect))
 
 ```mermaid
 sequenceDiagram
-  participant U as User (Browser)
-  participant C as Client App
-  participant L as Local AuthZ
-  participant G as Google AuthZ
-  participant GT as Google Token
+    participant User
+    participant Client
+    participant LocalAuthZ
+    participant Google
+    participant GoogleToken
 
-  Note over U,C: 1. User requests protected resource
+    User->>Client: 1. Request protected resource
+    Client->>LocalAuthZ: Redirect to local AuthZ
+    LocalAuthZ->>User: Show login options
 
-  U->>C: GET /protected
-  C->>U: 302 Redirect to Local AuthZ
-  U->>L: GET /authorize
-  L->>U: Show "Sign in with Google" button
-  U->>L: Click "Sign in with Google"
+    User->>LocalAuthZ: 2. Select "Sign in with Google"
+    LocalAuthZ->>Google: Redirect to Google
+    Google->>User: Google login page
 
-  Note over L,G: 2. Redirect to Google for authentication
+    User->>Google: 3. Submit credentials and consent
+    Google->>Client: Redirect with authorization code
 
-  L->>U: 302 Redirect to Google
-  U->>G: GET /auth?response_type=code<br/>&scope=openid email profile<br/>&state=abc&nonce=nnn
+    Client->>GoogleToken: 4. Exchange code for tokens
+    GoogleToken->>Client: Google ID token + access token
 
-  G->>U: Show Google login
-  U->>G: Submit credentials and consent
-  G->>U: 302 Redirect with code
-  U->>C: GET /callback?code=XYZ&state=abc
+    Client->>Client: 5. Validate Google ID token
+    Client->>Client: Map Google user to local account
+    Client->>User: Serve protected resource
 
-  Note over C,GT: 3. Exchange code for Google tokens
+    Client->>GoogleToken: 6. GET /userinfo (optional)
+    GoogleToken->>Client: User profile
 
-  C->>GT: POST /token<br/>code=XYZ&client_secret=...
-  GT->>C: Return tokens<br/>(Google ID token, access token)
-
-  Note over C: 4. Validate Google ID token
-
-  C->>C: Verify Google signature<br/>Validate claims<br/>Map Google sub to local user
-
-  Note over C,U: 5. Create local session
-
-  C->>U: 200 OK (protected resource)
-
-  Note over C,GT: 6. Optional: Fetch Google UserInfo
-
-  C->>GT: GET /userinfo<br/>Bearer {access_token}
-  GT->>C: Return user profile
-
-  Note over C,GT: 7. Token refresh
-
-  C->>GT: POST /token<br/>grant_type=refresh_token
-  GT->>C: New Google tokens
+    Client->>GoogleToken: 7. Refresh tokens (as needed)
+    GoogleToken->>Client: New Google tokens
 ```
 
 </details>
