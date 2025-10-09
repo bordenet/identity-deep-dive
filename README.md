@@ -67,7 +67,7 @@ Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html
 ---
 
 ### 4. Multi-Tenant Session Management
-**Status**: ✅ Complete | **Time**: 10 hours | **Language**: [Go](https://go.dev)
+**Status**: 🚧 In Progress | **Time**: 10 hours (target) | **Language**: [Go](https://go.dev)
 
 Distributed session management service with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and [Redis](https://redis.io):
 - Multi-tenant session isolation (multi-brand architecture)
@@ -78,7 +78,9 @@ Distributed session management service with [JWT](https://datatracker.ietf.org/d
 
 **Why this matters**: Demonstrates thinking about identity at scale - global, multi-brand, [high-availability](https://en.wikipedia.org/wiki/High_availability) requirements.
 
-[📁 View Project](./project-2-session-management/) | [📖 Detailed README](./project-2-session-management/README.md)
+**📚 Documentation**:
+- [📁 View Project](./project-2-session-management/) | [📖 Project README](./project-2-session-management/README.md) (pending)
+- [📋 Product Requirements (PRD)](./project-2-session-management/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-2-session-management/CHANGELOG.md)
 
 ---
 
