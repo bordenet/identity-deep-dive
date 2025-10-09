@@ -7,6 +7,7 @@
 - [README](../README.md) - Project overview and introduction
 - **Quick Start** (this document) - Setup and running instructions
 - [Architecture](./ARCHITECTURE.md) - System design and technology choices
+- [Quality Controls](./QUALITY_CONTROLS.md) - Pre-commit validation and cleanup
 - [Learning Journey](./LEARNING_JOURNEY.md) - Three-day learning chronicle
 - [Resources](./RESOURCES.md) - External learning materials and references
 
@@ -145,27 +146,41 @@ make load-test
 
 ## Development Workflow
 
-### Pre-commit Hooks
+### Quality Controls & Pre-Commit Validation
 
-All commits are automatically checked for:
+**📖 Full Documentation**: See [QUALITY_CONTROLS.md](./QUALITY_CONTROLS.md) for complete details.
+
+All commits are automatically validated for:
 - **Secrets scanning** (ggshield) - blocks commits with hardcoded secrets
-- **Go linting** (golangci-lint) - enforces code quality standards
-- **Unit tests** (go test) - ensures tests pass before commit
+- **Go formatting** (gofmt) - enforces consistent code style
+- **Static analysis** (go vet) - catches common mistakes
+- **Build validation** (go build) - ensures code compiles
+- **Module consistency** (go mod tidy) - validates dependencies
 
 ```bash
-# Hooks are installed automatically by setup.sh
-# To manually trigger checks:
-git commit -m "your message"  # Runs all checks automatically
+# Hooks are installed automatically by setup-macos.sh
+# To manually install:
+make install-hooks
+
+# Commit triggers all checks automatically:
+git commit -m "feat: Add new feature"
+
+# Fix any issues reported and retry
 ```
 
-### Pre-push Hooks
+### Container Cleanup
 
-All pushes are automatically checked for:
-- **Secrets scanning** (ggshield) - prevents pushing secrets to remote
+After development, clean up containers and images:
 
 ```bash
-git push origin main  # Runs secret scan automatically
+# Remove all project containers, images, volumes
+make cleanup
+
+# or run directly:
+./scripts/cleanup.sh
 ```
+
+See [QUALITY_CONTROLS.md](./QUALITY_CONTROLS.md) for detailed cleanup options.
 
 ## Logging and Debugging
 

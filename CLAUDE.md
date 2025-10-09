@@ -38,12 +38,12 @@ Build 4 identity projects in 3 days to brush up on key concepts ahead of senior 
 **Scale**: 10K+ concurrent sessions, <10ms p99 latency
 
 ## Tech Stack
-- **Go**: Fast, concurrent, single binary, strong stdlib
-- **Redis**: Distributed cache, HA, TTL support
-- **JWT**: Stateless validation, standard claims
-- **k6**: Load testing
-- **Prometheus + Grafana**: Observability
-- **Containerization**: Podman
+- **[Go](https://go.dev/)**: Fast, concurrent, single binary, strong stdlib
+- **[Redis](https://redis.io/)**: Distributed cache, HA, TTL support
+- **[JWT](https://jwt.io/)**: Stateless validation, standard claims
+- **[k6](https://k6.io/)**: Load testing
+- **[Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/)**: Observability
+- **[Podman](https://podman.io/)**: Rootless, daemonless container engine (NOT Docker - we migrated from Docker to Podman for better security and VM-less operation on macOS)
 
 ## Key Libraries
 - `golang-jwt/jwt`, `go-redis/redis`, `gorilla/mux`, `spf13/cobra`, `spf13/viper`

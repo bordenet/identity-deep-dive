@@ -1,4 +1,4 @@
-.PHONY: build-all test-all lint-all clean-all help
+.PHONY: build-all test-all lint-all clean-all cleanup help install-hooks
 
 # Root Makefile for identity-deep-dive monorepo
 # Runs commands across all projects
@@ -79,17 +79,33 @@ deps-all:
 	@echo "✓ All dependencies installed"
 	@echo "========================================="
 
+# Clean up containers, images, and volumes
+cleanup:
+	@echo "========================================="
+	@echo "Running cleanup script..."
+	@echo "========================================="
+	@./scripts/cleanup.sh
+
+# Install git hooks for quality checks
+install-hooks:
+	@echo "========================================="
+	@echo "Installing git hooks..."
+	@echo "========================================="
+	@./scripts/install-hooks.sh
+
 # Show help
 help:
 	@echo "Identity Deep Dive - Monorepo Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  build-all   - Build all projects"
-	@echo "  test-all    - Run tests for all projects"
-	@echo "  lint-all    - Run linting for all projects"
-	@echo "  clean-all   - Clean all projects"
-	@echo "  deps-all    - Install dependencies for all projects"
-	@echo "  help        - Show this help message"
+	@echo "  build-all      - Build all projects"
+	@echo "  test-all       - Run tests for all projects"
+	@echo "  lint-all       - Run linting for all projects"
+	@echo "  clean-all      - Clean all projects (build artifacts)"
+	@echo "  cleanup        - Clean up containers, images, volumes"
+	@echo "  deps-all       - Install dependencies for all projects"
+	@echo "  install-hooks  - Install git hooks for quality checks"
+	@echo "  help           - Show this help message"
 	@echo ""
 	@echo "Projects:"
 	@for project in $(PROJECTS); do \

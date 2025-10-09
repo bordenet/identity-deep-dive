@@ -2,11 +2,18 @@
 .env
 .env.local
 .env.*.local
+
+# PKI Assets (NEVER commit these!)
 *.key
 *.pem
 *.crt
+*.cer
+*.der
 *.p12
+*.pfx
 *.jks
+*.pub
+*.priv
 secrets/
 .secrets/
 
@@ -19,10 +26,11 @@ secrets/
 *.test
 *.out
 go.work
-/bin/
-/dist/
-/build/
+bin/
+dist/
+build/
 vendor/
+keys/
 
 # Go Test Coverage
 *.coverprofile
@@ -68,10 +76,7 @@ temp/
 *.sqlite
 *.sqlite3
 
-# JWT Keys (generated)
-jwt-*.key
-*.priv
-*.pub
+# JWT Keys (covered by PKI patterns above)
 
 # k6 Load Test Results
 load-tests/results/*.json
@@ -95,13 +100,8 @@ __pycache__/
 venv/
 ENV/
 
-# Certificates and Keys
-ca.crt
-ca.key
-server.crt
-server.key
-client.crt
-client.key
+# Certificates and Keys (covered by PKI patterns above)
+# Additional specific patterns:
 tls/
 
 # Config Files with Secrets

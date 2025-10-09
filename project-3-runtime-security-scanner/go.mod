@@ -1,6 +1,6 @@
 module github.com/bordenet/identity-deep-dive/project-3-runtime-security-scanner
 
-go 1.25.2
+go 1.23
 
 require (
 	github.com/rs/zerolog v1.34.0

@@ -186,9 +186,22 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 		log.Fatal().Str("path", config.PrivateKeyPath).Msg("Failed to parse PEM block containing private key")
 	}
 
-	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	// Try PKCS#8 format first (modern format), fallback to PKCS#1 (legacy RSA format)
+	var privateKey *rsa.PrivateKey
+	parsedKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to parse private key")
+		// Fallback to PKCS#1 format
+		privateKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to parse private key (tried PKCS#8 and PKCS#1)")
+		}
+	} else {
+		// PKCS#8 parsed successfully, assert to RSA key
+		var ok bool
+		privateKey, ok = parsedKey.(*rsa.PrivateKey)
+		if !ok {
+			log.Fatal().Msg("Private key is not an RSA key")
+		}
 	}
 
 	// Load public key
@@ -202,9 +215,22 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 		log.Fatal().Str("path", config.PublicKeyPath).Msg("Failed to parse PEM block containing public key")
 	}
 
-	publicKey, err := x509.ParsePKCS1PublicKey(block.Bytes)
+	// Try PKIX (X.509) format first (standard), fallback to PKCS#1 (legacy RSA format)
+	var publicKey *rsa.PublicKey
+	parsedPubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to parse public key")
+		// Fallback to PKCS#1 format
+		publicKey, err = x509.ParsePKCS1PublicKey(block.Bytes)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to parse public key (tried PKIX and PKCS#1)")
+		}
+	} else {
+		// PKIX parsed successfully, assert to RSA key
+		var ok bool
+		publicKey, ok = parsedPubKey.(*rsa.PublicKey)
+		if !ok {
+			log.Fatal().Msg("Public key is not an RSA key")
+		}
 	}
 
 	log.Info().
@@ -241,8 +267,8 @@ func seedDemoClients(ctx context.Context, sessionStore *session.RedisStore) {
 				"myapp://callback",
 				"http://localhost:3000/mobile/callback",
 			},
-			Name:   "Demo Mobile App",
-			Type:   "public",
+			Name: "Demo Mobile App",
+			Type: "public",
 			Scopes: []string{
 				"openid",
 				"profile",

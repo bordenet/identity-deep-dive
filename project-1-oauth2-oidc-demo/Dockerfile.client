@@ -1,16 +1,20 @@
 # Multi-stage build for OAuth2/OIDC Demo Client
 
 # Stage 1: Build
-FROM golang:1.21-alpine AS builder
+# Use latest Go image to support local Go 1.25.2 development
+FROM golang:alpine AS builder
 
 WORKDIR /app
 
-# Copy go mod files
-COPY go.mod go.sum ./
+# Copy shared pkg directory first
+COPY pkg/ pkg/
+
+# Copy project files
+COPY project-1-oauth2-oidc-demo/go.mod project-1-oauth2-oidc-demo/go.sum ./
 RUN go mod download
 
-# Copy source code
-COPY . .
+# Copy project source code
+COPY project-1-oauth2-oidc-demo/ .
 
 # Build the client binary
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o client ./cmd/client

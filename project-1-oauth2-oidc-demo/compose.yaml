@@ -19,19 +19,19 @@ services:
   # OAuth2/OIDC Authorization Server
   authserver:
     build:
-      context: .
-      containerfile: Dockerfile
+      context: ..
+      dockerfile: project-1-oauth2-oidc-demo/Dockerfile
     container_name: oauth2-authserver
     ports:
-      - "8080:8080"
+      - "${SERVER_PORT:-8080}:8080"
+    env_file:
+      - ../.env
     environment:
-      - REDIS_URL=redis:6379
-      - ISSUER=http://localhost:8080
-      - PORT=:8080
-      - PRIVATE_KEY_PATH=/keys/private.pem
-      - PUBLIC_KEY_PATH=/keys/public.pem
+      - REDIS_ADDR=redis:6379
+      - PRIVATE_KEY_PATH=/secrets/jwt-private.pem
+      - PUBLIC_KEY_PATH=/secrets/jwt-public.pem
     volumes:
-      - ./keys:/keys:ro
+      - ../.secrets:/secrets:ro
     depends_on:
       redis:
         condition: service_healthy
@@ -40,8 +40,8 @@ services:
   # Demo Client Application
   client:
     build:
-      context: .
-      containerfile: Dockerfile.client
+      context: ..
+      dockerfile: project-1-oauth2-oidc-demo/Dockerfile.client
     container_name: oauth2-client
     ports:
       - "3000:3000"

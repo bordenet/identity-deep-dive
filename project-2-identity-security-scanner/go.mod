@@ -1,6 +1,6 @@
 module github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner
 
-go 1.21
+go 1.23
 
 require (
 	github.com/fatih/color v1.16.0
