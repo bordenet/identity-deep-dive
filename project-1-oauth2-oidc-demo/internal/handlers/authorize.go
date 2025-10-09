@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
+	"github.com/rs/zerolog/log"
 )
 
 // AuthorizeHandler handles the OAuth2/OIDC authorization endpoint
@@ -31,6 +32,7 @@ func NewAuthorizeHandler(sessionStore SessionStore) *AuthorizeHandler {
 
 // ServeHTTP handles GET /authorize requests
 func (h *AuthorizeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("MERMAID: AuthZ Server: 2. GET /authorize + PKCE challenge")
 	// Only accept GET requests
 	if r.Method != http.MethodGet {
 		h.writeError(w, r, models.ErrorInvalidRequest, "Only GET method allowed", http.StatusMethodNotAllowed)
@@ -79,6 +81,7 @@ func (h *AuthorizeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Debug().Msg("MERMAID: AuthZ Server: 3. AuthZ Server stores code_challenge with code")
 	// Generate authorization code
 	code, err := h.generateAuthorizationCode(r.Context(), authReq, userID)
 	if err != nil {

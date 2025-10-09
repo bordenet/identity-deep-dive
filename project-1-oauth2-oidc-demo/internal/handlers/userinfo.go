@@ -7,6 +7,7 @@ import (
 
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/tokens"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
+	"github.com/rs/zerolog/log"
 )
 
 // UserInfoHandler handles the OIDC UserInfo endpoint
@@ -25,6 +26,7 @@ func NewUserInfoHandler(jwtManager *tokens.JWTManager, userStore UserStore) *Use
 
 // ServeHTTP handles GET /userinfo requests
 func (h *UserInfoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("MERMAID: UserInfo Endpoint: 5. GET /userinfo (optional)")
 	// Only accept GET requests
 	if r.Method != http.MethodGet {
 		h.writeError(w, "invalid_request", "Only GET method allowed", http.StatusMethodNotAllowed)

@@ -11,6 +11,7 @@ import (
 
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/tokens"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
+	"github.com/rs/zerolog/log"
 )
 
 // TokenHandler handles the OAuth2/OIDC token endpoint
@@ -45,6 +46,7 @@ func NewTokenHandler(sessionStore SessionStoreExtended, jwtManager *tokens.JWTMa
 
 // ServeHTTP handles POST /oauth2/token requests
 func (h *TokenHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("MERMAID: Token Endpoint: 4. Token request with code_verifier")
 	// Only accept POST requests
 	if r.Method != http.MethodPost {
 		h.writeError(w, models.ErrorInvalidRequest, "Only POST method allowed", http.StatusMethodNotAllowed)
@@ -148,6 +150,7 @@ func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *mo
 		}
 	}
 
+	log.Debug().Msg("MERMAID: Token Endpoint: 5. Token endpoint validates PKCE")
 	// Validate PKCE
 	if err := tokens.ValidatePKCE(req.CodeVerifier, authCode.CodeChallenge, authCode.CodeChallengeMethod); err != nil {
 		return nil, fmt.Errorf(models.ErrorInvalidGrant + ": PKCE validation failed: " + err.Error())
