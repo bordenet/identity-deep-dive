@@ -10,9 +10,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### In Progress
-- Redis Session Store (refresh tokens, revocation blocklist)
 - HTTP handlers (create, validate, refresh, revoke sessions)
-- Multi-tenant Key Manager (isolated RSA keys per tenant)
+- Load testing and performance optimization
+- Observability (Prometheus metrics, Grafana dashboard)
+
+---
+
+## [0.3.0] - 2025-10-08
+
+### Added - Multi-Tenant Key Manager and Redis Session Store
+
+**Commit:** (pending) - Implement Key Manager and Redis Session Store
+
+**Multi-Tenant Key Manager** (`internal/tokens/keymanager.go` - 250+ lines):
+- TenantKeyManager with in-memory cache and persistent storage
+- GetPrivateKey/GetPublicKey for tenant-specific keys
+- GetJWKS for public key distribution (RFC 7517)
+- Automatic RSA-2048 key generation on first use
+- Key rotation support with cache invalidation
+- Thread-safe concurrent access (sync.RWMutex)
+- Double-check locking for cache misses
+
+**Redis Session Store** (`internal/session/redis.go` - 270+ lines):
+- Complete refresh token management (store/get/update/delete)
+- Revocation blocklist with TTL auto-cleanup
+- Bulk revocation (RevokeAllUserTokens)
+- RSA key pair storage (implements KeyStore interface)
+- Namespaced Redis keys per tenant
+- Health check (Ping)
+
+**Security:** Per-tenant key isolation, immediate revocation, TTL-based cleanup
+
+**Next:** HTTP handlers for session create/validate/refresh/revoke
 
 ---
 
