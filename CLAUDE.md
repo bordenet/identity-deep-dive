@@ -77,17 +77,17 @@ This makes documentation self-navigating with one-click access to authoritative 
 - We aren't claiming to have "mastered" *anything*. We are merely learning and brushing up on the simplest stuff. No "high flying" language across this repo.
 
 ## Code Quality
-- You will not disable linting in order to cut corners for speed
+- You will not disable linting in order to cut corners for speed.
 - You will not disable tests in order to save time or cut corners. You will fix tests as we go. If we make fundamental changes in the code, you *may* alter tests, remove tests, as needed. But you will not shortcut.
-- You will not disable pre-commit hooks
-- You will not commit -n to bypass pre-commit hooks
+- You will not disable pre-commit hooks.
+- You will not commit -n to bypass pre-commit hooks.
 
 ## Project Status (as of Oct 9, 2025)
 
 ### ✅ Completed Projects
 
 #### Project 1: OAuth2/OIDC Authorization Server (Complete)
-**Time**: 8 hours | **Status**: Production-ready
+**Time**: 8 hours | **Status**: Functional implementation
 
 **What Was Built**:
 - OAuth2/OIDC authorization server from RFC specs
@@ -116,7 +116,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 ---
 
 #### Project 2: Identity Security Scanner (Static Analysis) (Complete)
-**Time**: 8 hours | **Status**: Production-ready
+**Time**: 8 hours | **Status**: Functional implementation
 
 **What Was Built**:
 - CLI static analysis tool for OAuth2/OIDC/JWT configurations
@@ -285,7 +285,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 | Project 2: Security Scanner | ✅ | 8h | ~3100 | 12 detectors, <5ms |
 | Project 3: Runtime Scanner | 📋 | 6-8h | TBD | 15+ attack sims |
 | Project 4: Session Mgmt | 🚧 | 6h+4h | ~1800 | 10K sessions |
-| **Total** | **50%** | **22h/~30h** | **~7400+** | **Production-ready** |
+| **Total** | **50%** | **22h/~30h** | **~7400+** | **Functional** |
 
 ### Security Guardrails
 - **ggshield pre-commit hook**: Scans staged changes for secrets before commit

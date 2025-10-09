@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,16 +13,21 @@ import (
 	"time"
 
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/handlers"
+	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/logger"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/session"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/store"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/tokens"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
 	"github.com/gorilla/mux"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	log.Println("Starting OAuth2/OIDC Authorization Server...")
+	// Initialize structured logging
+	logger.InitLogger("oauth2-oidc-server")
+
+	log.Info().Msg("Starting OAuth2/OIDC Authorization Server")
 
 	// Load configuration from environment
 	config := loadConfig()
@@ -88,11 +92,14 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("Server listening on %s", config.Port)
-		log.Printf("Issuer: %s", config.Issuer)
-		log.Printf("Discovery endpoint: %s/.well-known/openid-configuration", config.Issuer)
+		log.Info().
+			Str("addr", config.Port).
+			Str("issuer", config.Issuer).
+			Str("discovery", config.Issuer+"/.well-known/openid-configuration").
+			Msg("Server starting")
+
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Server failed to start: %v", err)
+			log.Fatal().Err(err).Msg("Server failed to start")
 		}
 	}()
 
@@ -101,17 +108,17 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("Shutting down server...")
+	log.Info().Msg("Shutting down server")
 
 	// Graceful shutdown with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Server forced to shutdown: %v", err)
+		log.Fatal().Err(err).Msg("Server forced to shutdown")
 	}
 
-	log.Println("Server stopped")
+	log.Info().Msg("Server stopped")
 }
 
 // Config holds server configuration
@@ -159,10 +166,10 @@ func initRedis(config *Config) *redis.Client {
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
-		log.Fatalf("Failed to connect to Redis: %v", err)
+		log.Fatal().Err(err).Str("addr", config.RedisAddr).Msg("Failed to connect to Redis")
 	}
 
-	log.Println("Connected to Redis")
+	log.Info().Str("addr", config.RedisAddr).Msg("Connected to Redis")
 	return client
 }
 
@@ -171,36 +178,39 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 	// Load private key
 	privateKeyData, err := os.ReadFile(config.PrivateKeyPath)
 	if err != nil {
-		log.Fatalf("Failed to read private key: %v", err)
+		log.Fatal().Err(err).Str("path", config.PrivateKeyPath).Msg("Failed to read private key")
 	}
 
 	block, _ := pem.Decode(privateKeyData)
 	if block == nil {
-		log.Fatal("Failed to parse PEM block containing private key")
+		log.Fatal().Str("path", config.PrivateKeyPath).Msg("Failed to parse PEM block containing private key")
 	}
 
 	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		log.Fatalf("Failed to parse private key: %v", err)
+		log.Fatal().Err(err).Msg("Failed to parse private key")
 	}
 
 	// Load public key
 	publicKeyData, err := os.ReadFile(config.PublicKeyPath)
 	if err != nil {
-		log.Fatalf("Failed to read public key: %v", err)
+		log.Fatal().Err(err).Str("path", config.PublicKeyPath).Msg("Failed to read public key")
 	}
 
 	block, _ = pem.Decode(publicKeyData)
 	if block == nil {
-		log.Fatal("Failed to parse PEM block containing public key")
+		log.Fatal().Str("path", config.PublicKeyPath).Msg("Failed to parse PEM block containing public key")
 	}
 
 	publicKey, err := x509.ParsePKCS1PublicKey(block.Bytes)
 	if err != nil {
-		log.Fatalf("Failed to parse public key: %v", err)
+		log.Fatal().Err(err).Msg("Failed to parse public key")
 	}
 
-	log.Println("Loaded RSA keys")
+	log.Info().
+		Str("private_key_path", config.PrivateKeyPath).
+		Str("public_key_path", config.PublicKeyPath).
+		Msg("Loaded RSA keys")
 	return privateKey, publicKey
 }
 
@@ -258,9 +268,13 @@ func seedDemoClients(ctx context.Context, sessionStore *session.RedisStore) {
 
 	for _, client := range demoClients {
 		if err := sessionStore.StoreClient(ctx, client); err != nil {
-			log.Printf("Warning: Failed to seed client %s: %v", client.ID, err)
+			log.Warn().Err(err).Str("client_id", client.ID).Msg("Failed to seed client")
 		} else {
-			log.Printf("Seeded demo client: %s (%s)", client.Name, client.ID)
+			log.Info().
+				Str("client_id", client.ID).
+				Str("client_name", client.Name).
+				Str("client_type", client.Type).
+				Msg("Seeded demo client")
 		}
 	}
 }
