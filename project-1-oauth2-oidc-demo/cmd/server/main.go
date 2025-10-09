@@ -12,8 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bordenet/identity-deep-dive/pkg/logger"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/handlers"
-	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/logger"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/session"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/store"
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/internal/tokens"

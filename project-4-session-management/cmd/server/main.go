@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bordenet/identity-deep-dive/pkg/logger"
 	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/handlers"
-	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/logger"
 	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/session"
 	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/tokens"
 	"github.com/gorilla/mux"
