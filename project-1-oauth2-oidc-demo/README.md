@@ -354,7 +354,7 @@ project-1-oauth2-oidc-demo/
 │   └── PKCE_Deep_Dive.md
 ├── keys/               # RSA keys (git-ignored)
 ├── Makefile
-├── docker-compose.yml
+├── compose.yaml
 └── README.md
 ```
 
