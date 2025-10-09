@@ -17,7 +17,7 @@ This monorepo demonstrates:
 ## 📦 Projects
 
 ### 1. OAuth2/OIDC Authorization Server
-**Status**: Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
+**Language**: [Go](https://go.dev)
 
 Implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) authorization server:
 - [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1)
@@ -37,7 +37,7 @@ Understanding identity protocols by implementing RFC specifications.
 ---
 
 ### 2. Identity Security Scanner (Static Analysis)
-**Status**: Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
+**Language**: [Go](https://go.dev)
 
 [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool to audit [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations:
 - Weak client secrets and key management
@@ -61,7 +61,7 @@ make scan-vulnerable  # Scan example config with 16 security issues
 ---
 
 ### 3. Identity Security Scanner (Runtime Analysis)
-**Status**: Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
+**Language**: [Go](https://go.dev)
 
 Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) flows:
 - [CSRF](https://owasp.org/www-community/attacks/csrf) attack detection
@@ -86,16 +86,15 @@ make build
 ---
 
 ### 4. Multi-Tenant Session Management
-**Status**: Complete | **Time**: 10 hours | **Language**: [Go](https://go.dev)
+**Language**: [Go](https://go.dev)
 
 Distributed session management service with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and [Redis](https://redis.io):
 - Multi-tenant session isolation
 - Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation
 - [Redis](https://redis.io)-backed revocation
 - Token refresh with sliding sessions
-- Load tested to 10K+ concurrent sessions
 
-Identity at scale with multi-brand architecture and [high-availability](https://en.wikipedia.org/wiki/High_availability).
+Multi-brand architecture patterns for distributed identity systems.
 
 **📚 Documentation**:
 - [📁 View Project](./project-4-session-management/) | [📖 Project README](./project-4-session-management/README.md)
@@ -173,7 +172,7 @@ Each log statement includes structured fields for inspection:
 ### One-Time Setup (macOS)
 ```bash
 # Run automated setup script (installs all dependencies)
-./setup.sh
+./setup-macos.sh
 
 # Or install manually:
 brew install go redis docker-compose golangci-lint ggshield
@@ -383,23 +382,22 @@ Implemented session management thinking about multi-brand, global-scale requirem
 
 ## 📊 Metrics & Results
 
-### Completed Projects (2 of 4)
+### Project Metrics
 
-| Metric | Project 1: OAuth2/OIDC | Project 2: Security Scanner |
-|--------|----------------------|---------------------------|
-| **Status** | ✅ Complete | ✅ Complete |
-| **Time** | 8 hours | 8 hours |
-| **Lines of Code** | ~2,500 | ~3,100 |
-| **Key Achievement** | 4 flows working end-to-end | 12 detectors, <5ms scans |
-| **Test Results** | All flows tested | 16 vulns found in test config |
+| Project | Key Features |
+|---------|--------------|
+| **OAuth2/OIDC Server** | 4 flows implemented, OIDC layer |
+| **Security Scanner (Static)** | 12 detectors, <5ms scan time |
+| **Security Scanner (Runtime)** | CSRF testing, OIDC discovery |
+| **Session Management** | Multi-tenant isolation, hybrid validation |
 
-### Project Statistics
+### Technical Characteristics
 
-- **Total Lines of Code**: 7,400+ (Go, production-quality)
-- **Test Coverage**: 100% on vulnerable configs (zero false positives on secure configs)
+- **Language**: Go
+- **Security**: Zero hardcoded secrets, pre-commit scanning
 - **Performance**:
-  - OAuth2 Server: Production-ready, all flows functional
-  - Security Scanner: <5ms scan time for typical configs
+  - OAuth2 Server: All flows functional
+  - Security Scanner: <5ms scan time
 - **Documentation**:
   - 4 comprehensive READMEs
   - 3 PRDs (800+ lines each)
@@ -444,6 +442,5 @@ Built with:
 
 ---
 
-**Timeline**: October 7-10, 2025 (3 days)
-**Purpose**: Learning identity/access management through hands-on implementation
+**Purpose**: Learning identity/access management through implementation
 **Author**: [Matt Bordenet](https://github.com/bordenet) | [LinkedIn](https://www.linkedin.com/in/mattbordenet/)
