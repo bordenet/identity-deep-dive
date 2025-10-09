@@ -2,6 +2,7 @@ package detector
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner/internal/parser"
@@ -412,7 +413,10 @@ func parseDurationToSeconds(duration string) int {
 	// Parse simple duration formats: 24h, 1d, 60m, 3600s
 	var value int
 	var unit string
-	fmt.Sscanf(duration, "%d%s", &value, &unit)
+	if _, err := fmt.Sscanf(duration, "%d%s", &value, &unit); err != nil {
+		log.Printf("parseDurationToSeconds: failed to parse duration %q: %v", duration, err)
+		return -1
+	}
 
 	switch unit {
 	case "s", "sec", "second", "seconds":
