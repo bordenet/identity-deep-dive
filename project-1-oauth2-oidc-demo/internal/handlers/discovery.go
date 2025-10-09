@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/rs/zerolog/log"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
@@ -92,7 +93,9 @@ func (h *DiscoveryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(doc)
+	if err := json.NewEncoder(w).Encode(doc); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }
 
 // JWKSHandler handles the JWKs endpoint
@@ -123,7 +126,9 @@ func (h *JWKSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(jwks)
+	if err := json.NewEncoder(w).Encode(jwks); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }
 
 // rsaPublicKeyToJWK converts an RSA public key to JWK format

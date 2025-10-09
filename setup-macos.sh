@@ -224,6 +224,15 @@ else
     echo_warn "Not a git repository. Skipping git hooks installation"
 fi
 
+echo_info "Ensuring the build is healthy..."
+make build-all
+
+echo_info "Running all tests..."
+make test-all
+
+echo_info "Linting project code..."
+make lint-all
+
 echo ""
 echo_info "========================================"
 echo_info "Next Steps:"

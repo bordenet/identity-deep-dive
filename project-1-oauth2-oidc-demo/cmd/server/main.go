@@ -34,7 +34,11 @@ func main() {
 
 	// Initialize Redis
 	redisClient := initRedis(config)
-	defer redisClient.Close()
+	defer func() {
+		if err := redisClient.Close(); err != nil {
+			log.Warn().Err(err).Msg("Failed to close Redis client")
+		}
+	}()
 
 	// Initialize session store
 	sessionStore := session.NewRedisStore(redisClient, "identity:")
@@ -75,7 +79,9 @@ func main() {
 	// Health check endpoint
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "OK")
+		if _, err := fmt.Fprint(w, "OK"); err != nil {
+			log.Error().Err(err).Msg("Failed to write health check response")
+		}
 	}).Methods("GET")
 
 	// Seed demo clients
@@ -184,6 +190,7 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 	block, _ := pem.Decode(privateKeyData)
 	if block == nil {
 		log.Fatal().Str("path", config.PrivateKeyPath).Msg("Failed to parse PEM block containing private key")
+		return nil, nil // Unreachable but satisfies staticcheck
 	}
 
 	// Try PKCS#8 format first (modern format), fallback to PKCS#1 (legacy RSA format)
@@ -213,6 +220,7 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 	block, _ = pem.Decode(publicKeyData)
 	if block == nil {
 		log.Fatal().Str("path", config.PublicKeyPath).Msg("Failed to parse PEM block containing public key")
+		return nil, nil // Unreachable but satisfies staticcheck
 	}
 
 	// Try PKIX (X.509) format first (standard), fallback to PKCS#1 (legacy RSA format)

@@ -128,7 +128,7 @@ func (h *AuthorizeHandler) parseAuthorizationRequest(r *http.Request) (*models.A
 		// OIDC request - nonce recommended
 		if authReq.Nonce == "" {
 			// Nonce is recommended for OIDC but not strictly required for code flow
-			// We'll allow it but log a warning in production
+			log.Debug().Msg("No nonce provided (optional for code flow)")
 		}
 	}
 
@@ -190,21 +190,25 @@ func (h *AuthorizeHandler) getAuthenticatedUser(r *http.Request) string {
 func (h *AuthorizeHandler) writeError(w http.ResponseWriter, r *http.Request, errorCode, description string, httpStatus int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
-	fmt.Fprintf(w, `{"error":"%s","error_description":"%s"}`, errorCode, description)
+	if _, err := fmt.Fprintf(w, `{"error":"%s","error_description":"%s"}`, errorCode, description); err != nil {
+		log.Error().Err(err).Msg("Failed to write error response")
+	}
 }
 
 // writeErrorPage writes an HTML error page (for cases where redirect is unsafe)
 func (h *AuthorizeHandler) writeErrorPage(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusBadRequest)
-	fmt.Fprintf(w, `<!DOCTYPE html>
+	if _, err := fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
 <head><title>Authorization Error</title></head>
 <body>
 <h1>Authorization Error</h1>
 <p>%s</p>
 </body>
-</html>`, message)
+</html>`, message); err != nil {
+		log.Error().Err(err).Msg("Failed to write error page")
+	}
 }
 
 // redirectError redirects to client with error in query parameters

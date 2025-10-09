@@ -363,7 +363,9 @@ func (h *TokenHandler) writeTokenResponse(w http.ResponseWriter, tokenResp *mode
 	w.Header().Set("Pragma", "no-cache")
 	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(w).Encode(tokenResp)
+	if err := json.NewEncoder(w).Encode(tokenResp); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }
 
 // writeError writes an OAuth2 error response
@@ -376,5 +378,7 @@ func (h *TokenHandler) writeError(w http.ResponseWriter, errorCode, description 
 		ErrorDescription: description,
 	}
 
-	json.NewEncoder(w).Encode(errorResp)
+	if err := json.NewEncoder(w).Encode(errorResp); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }

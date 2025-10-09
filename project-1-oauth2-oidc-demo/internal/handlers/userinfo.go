@@ -60,7 +60,9 @@ func (h *UserInfoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Write response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(userInfo)
+	if err := json.NewEncoder(w).Encode(userInfo); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }
 
 // extractBearerToken extracts the Bearer token from Authorization header
@@ -124,5 +126,7 @@ func (h *UserInfoHandler) writeError(w http.ResponseWriter, errorCode, descripti
 		"error_description": description,
 	}
 
-	json.NewEncoder(w).Encode(errorResp)
+	if err := json.NewEncoder(w).Encode(errorResp); err != nil {
+		log.Error().Err(err).Msg("Failed to encode JSON response")
+	}
 }

@@ -71,6 +71,27 @@ else
     done
     echo_info "go vet checks passed"
 
+    # 4.5. golangci-lint check (comprehensive static analysis)
+    echo ""
+    echo "4.5. Running golangci-lint..."
+    if ! command -v golangci-lint &> /dev/null; then
+        echo_warn "golangci-lint not installed - skipping lint checks"
+        echo_warn "Install with: brew install golangci-lint"
+    else
+        for project in project-1-oauth2-oidc-demo project-2-identity-security-scanner \
+                       project-3-runtime-security-scanner project-4-session-management; do
+            if echo "$STAGED_GO_FILES" | grep -q "^$project/"; then
+                echo "  Linting $project..."
+                if ! (cd "$project" && golangci-lint run 2>&1); then
+                    echo_error "golangci-lint failed in $project"
+                    echo "Fix with: cd $project && golangci-lint run --fix"
+                    FAILED=1
+                fi
+            fi
+        done
+        echo_info "golangci-lint checks passed"
+    fi
+
     # 5. Build check for modified projects
     echo ""
     echo "5. Building modified projects..."

@@ -53,7 +53,9 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 </body>
 </html>`
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, html)
+	if _, err := fmt.Fprint(w, html); err != nil {
+		log.Printf("ERROR: Failed to write HTTP response: %v", err)
+	}
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -169,7 +171,11 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("WARN: Failed to close response body: %v", err)
+		}
+	}()
 
 	body, _ := io.ReadAll(resp.Body)
 
@@ -193,7 +199,11 @@ func fetchUserInfo(accessToken string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("WARN: Failed to close response body: %v", err)
+		}
+	}()
 
 	body, _ := io.ReadAll(resp.Body)
 
@@ -245,12 +255,16 @@ func displayTokens(w http.ResponseWriter, tokens *TokenResponse, userInfo map[st
 	)
 
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, html)
+	if _, err := fmt.Fprint(w, html); err != nil {
+		log.Printf("ERROR: Failed to write HTTP response: %v", err)
+	}
 }
 
 func generateRandomString(length int) string {
 	b := make([]byte, length)
-	rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		log.Fatalf("Failed to generate random bytes: %v", err)
+	}
 	return base64.RawURLEncoding.EncodeToString(b)[:length]
 }
 
