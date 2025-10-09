@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/pkg/models"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/pkg/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 

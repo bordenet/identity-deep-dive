@@ -10,7 +10,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/pkg/models"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/pkg/models"
 )
 
 // TenantKeyManager manages RSA keys for multiple tenants

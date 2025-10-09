@@ -451,6 +451,25 @@ session_validation_duration_seconds_bucket{tenant_id="brand-a",le="0.005"} 9500
                  └───────────────────┘
 ```
 
+### Flows
+
+#### Session Validation Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Service
+    participant Redis
+
+    Client->>Service: 1. POST /sessions/validate (access_token)
+    Service->>Service: 2. Parse JWT and validate signature
+    alt Revocation check enabled
+        Service->>Redis: 3. Check revocation list
+        Redis-->>Service: 4. Not revoked
+    end
+    Service->>Client: 5. Return validation result
+```
+
 ---
 
 ### Data Flow: Session Validation (Fast Path)

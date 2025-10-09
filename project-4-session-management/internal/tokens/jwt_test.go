@@ -53,7 +53,7 @@ func TestGenerateAccessToken(t *testing.T) {
 	}
 
 	// Validate token
-	claims, err := manager.ValidateToken("tenant1", token)
+	claims, err := manager.ValidateToken(token)
 	if err != nil {
 		t.Fatalf("ValidateToken failed: %v", err)
 	}
@@ -71,7 +71,7 @@ func TestGenerateRefreshToken(t *testing.T) {
 	km := newMockKeyManager()
 	manager := NewJWTManager("test-issuer", 15*time.Minute, 30*24*time.Hour, km)
 
-	token, err := manager.GenerateRefreshToken("tenant1", "user123", "session456")
+	token, _, err := manager.GenerateRefreshToken("tenant1", "user123", "session456", nil)
 	if err != nil {
 		t.Fatalf("GenerateRefreshToken failed: %v", err)
 	}
@@ -81,7 +81,7 @@ func TestGenerateRefreshToken(t *testing.T) {
 	}
 
 	// Validate token
-	claims, err := manager.ValidateToken("tenant1", token)
+	claims, err := manager.ValidateToken(token)
 	if err != nil {
 		t.Fatalf("ValidateToken failed: %v", err)
 	}
@@ -106,7 +106,7 @@ func TestValidateToken_Expired(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	_, err = manager.ValidateToken("tenant1", token)
+	_, err = manager.ValidateToken(token)
 	if err == nil {
 		t.Error("ValidateToken should fail for expired token")
 	}
@@ -116,12 +116,22 @@ func TestValidateToken_WrongTenant(t *testing.T) {
 	km := newMockKeyManager()
 	manager := NewJWTManager("test-issuer", 15*time.Minute, 30*24*time.Hour, km)
 
+	// Generate key for tenant2
+	_, err := km.GetPrivateKey("tenant2")
+	if err != nil {
+		t.Fatalf("failed to generate key for tenant2: %v", err)
+	}
+
 	token, _, err := manager.GenerateAccessToken("tenant1", "user123", "read", nil)
 	if err != nil {
 		t.Fatalf("GenerateAccessToken failed: %v", err)
 	}
 
-	_, err = manager.ValidateToken("tenant2", token)
+	// Create a new key manager to simulate a different environment
+	km2 := newMockKeyManager()
+	manager2 := NewJWTManager("test-issuer", 15*time.Minute, 30*24*time.Hour, km2)
+
+	_, err = manager2.ValidateToken(token)
 	if err == nil {
 		t.Error("ValidateToken should fail when using wrong tenant key")
 	}

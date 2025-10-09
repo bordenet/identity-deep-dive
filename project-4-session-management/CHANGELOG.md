@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.0.0] - 2025-10-09
 
-### In Progress
-- [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) handlers (create, validate, refresh, revoke sessions)
-- Load testing and performance optimization
-- Observability ([Prometheus](https://prometheus.io/) metrics, [Grafana](https://grafana.com/) dashboard)
+### Added
+- **Complete working multi-tenant session management service** 🎉
+- **HTTP Server**: `cmd/server/main.go` with graceful shutdown.
+- **Handlers**: `CreateSession`, `ValidateSession`, `RefreshSession`, `RevokeSession`, `RevokeAllSessions`, and `GetJWKS`.
+- **Logging**: Structured logging with `zerolog` and debug breakpoints.
+- **Documentation**: Mermaid diagram in `PRD.md` for session validation flow.
+- **Dependencies**: Added `github.com/rs/zerolog` to `go.mod`.
+
+### Changed
+- Fixed import paths in `session.go`, `jwks.go`, and `jwt.go`.
+- Fixed `jwt_test.go` to match function signatures.
+- Fixed `go.mod` to have the correct module path.
 
 ---
 
@@ -20,14 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Unit Tests**: Added comprehensive test coverage for token management
-  - `internal/tokens/jwt_test.go` - [JWT](https://datatracker.ietf.org/doc/html/rfc7519) access token and refresh token generation/validation tests for multi-tenant scenarios
+  - `internal/tokens/jwt_test.go` - JWT access token and refresh token generation/validation tests for multi-tenant scenarios
   - `internal/tokens/keymanager_test.go` - Multi-tenant key manager tests including key caching and tenant isolation
-- **Code Quality**: Integrated [golangci-lint](https://golangci-lint.run/) for automated code quality checks
-- **[CI/CD](https://en.wikipedia.org/wiki/CI/CD)**: Pre-commit hooks now run unit tests and linting automatically
+- **Code Quality**: Integrated golangci-lint for automated code quality checks
+- **CI/CD**: Pre-commit hooks now run unit tests and linting automatically
 
 ### Changed
 - Enhanced development workflow with automated testing and quality checks
-- Improved pre-commit hook to include Go tests and [golangci-lint](https://golangci-lint.run/)
+- Improved pre-commit hook to include Go tests and golangci-lint
 
 ---
 
@@ -40,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Multi-Tenant Key Manager** (`internal/tokens/keymanager.go` - 250+ lines):
 - TenantKeyManager with in-memory cache and persistent storage
 - GetPrivateKey/GetPublicKey for tenant-specific keys
-- GetJWKS for public key distribution ([RFC 7517](https://datatracker.ietf.org/doc/html/rfc7517))
+- GetJWKS for public key distribution (RFC 7517)
 - Automatic RSA-2048 key generation on first use
 - Key rotation support with cache invalidation
 - Thread-safe concurrent access (sync.RWMutex)
@@ -56,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Security:** Per-tenant key isolation, immediate revocation, TTL-based cleanup
 
-**Next:** [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) handlers for session create/validate/refresh/revoke
+**Next:** HTTP handlers for session create/validate/refresh/revoke
 
 ---
 
@@ -67,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Commit:** (pending) - Implement JWT Manager with RS256 signing
 
 **JWT Manager:**
-- `internal/tokens/jwt.go` - Complete [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token management (300+ lines)
+- `internal/tokens/jwt.go` - Complete JWT token management (300+ lines)
 
 **Core Functionality:**
 
@@ -80,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 `GenerateAccessToken(tenantID, userID, scope, metadata)`:
 - Returns: token string, expiration time, error
-- Signing: [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) with tenant-specific private key
+- Signing: RS256 with tenant-specific private key
 - Claims: Standard (sub, iss, aud, exp, iat, nbf, jti) + Custom (tenant_id, scope, metadata, token_type)
 - Token ID: 256-bit cryptographically random (base64url)
 - Token Type: "access" marker for validation logic
@@ -100,16 +108,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   1. Parse unverified to extract tenant_id
   2. Get tenant's public key
   3. Parse with signature validation
-- **Algorithm verification**: Ensures [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) (prevents algorithm confusion attacks)
+- **Algorithm verification**: Ensures RS256 (prevents algorithm confusion attacks)
 - **Issuer validation**: Verifies issuer matches expected value
 - **Error handling**: Specific errors for expired, invalid, signature failures
 - **Claims extraction**: Safely extracts all standard and custom claims
 
 **Security Features:**
-- **[RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) (asymmetric)**: Private key signs, public key validates
+- **RS256 (asymmetric)**: Private key signs, public key validates
 - **Per-tenant keys**: Complete cryptographic isolation between tenants
 - **Unique token IDs**: 256-bit random jti prevents token collision
-- **Algorithm enforcement**: Only [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) allowed (prevents "none" attack)
+- **Algorithm enforcement**: Only RS256 allowed (prevents "none" attack)
 - **Issuer validation**: Prevents token substitution from other issuers
 - **Safe claim extraction**: Type-safe getters prevent panic on malformed tokens
 
@@ -120,8 +128,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Helper Functions:**
 - `generateTokenID()` - 256-bit cryptographically random token ID
-- `getStringClaim()` - Safe string extraction from [JWT](https://datatracker.ietf.org/doc/html/rfc7519) MapClaims
-- `getInt64Claim()` - Safe int64 extraction from [JWT](https://datatracker.ietf.org/doc/html/rfc7519) MapClaims
+- `getStringClaim()` - Safe string extraction from JWT MapClaims
+- `getInt64Claim()` - Safe int64 extraction from JWT MapClaims
 
 **Design Decisions:**
 - **Interface-based**: KeyManager interface allows flexible key storage (Redis, Vault, etc.)
@@ -131,12 +139,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Metadata support**: Extensible custom claims via map[string]string
 
 **Dependencies Added:**
-- `github.com/golang-jwt/jwt/v5` - Standard Go [JWT](https://datatracker.ietf.org/doc/html/rfc7519) library
+- `github.com/golang-jwt/jwt/v5` - Standard Go JWT library
 
 **Next Steps:**
 - Implement KeyManager interface (multi-tenant key storage/retrieval)
 - Implement Redis Session Store (refresh tokens, revocation blocklist)
-- Build [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) handlers using [JWT](https://datatracker.ietf.org/doc/html/rfc7519) Manager
+- Build HTTP handlers using JWT Manager
 
 ---
 
@@ -171,9 +179,9 @@ project-2-session-management/
 
 - `TokenPair` - Access and refresh token response
   - Fields: AccessToken, RefreshToken, TokenType, ExpiresIn
-  - Standard [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) token response format
+  - Standard OAuth2 token response format
 
-- `TokenClaims` - [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token claims ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519))
+- `TokenClaims` - JWT token claims (RFC 7519)
   - Standard claims: sub, iss, aud, exp, iat, nbf, jti
   - Custom claims: tenant_id, scope, metadata, token_type
   - Distinguishes access tokens from refresh tokens
@@ -218,16 +226,16 @@ project-2-session-management/
 **pkg/models/tenant.go** (28 lines):
 - `Tenant` - Multi-tenant entity with isolated RSA keys
   - Fields: ID, Name, PrivateKey, PublicKey, KeyID, CreatedAt, UpdatedAt
-  - Private key never serialized to [JSON](https://www.json.org/) (security)
+  - Private key never serialized to JSON (security)
   - Supports key rotation via UpdatedAt timestamp
 
-- `JWKSDocument` - [JSON Web Key Set](https://datatracker.ietf.org/doc/html/rfc7517) ([RFC 7517](https://datatracker.ietf.org/doc/html/rfc7517))
+- `JWKSDocument` - JSON Web Key Set (RFC 7517)
   - Fields: keys (array of JWK)
   - Standard format for public key distribution
 
-- `JWK` - [JSON Web Key](https://datatracker.ietf.org/doc/html/rfc7517) ([RFC 7517](https://datatracker.ietf.org/doc/html/rfc7517))
+- `JWK` - JSON Web Key (RFC 7517)
   - Fields: kty, use, alg, kid, n (modulus), e (exponent)
-  - Enables client-side [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation
+  - Enables client-side JWT validation
   - Supports key rotation via kid (key ID)
 
 **Design Decisions:**
@@ -239,9 +247,9 @@ project-2-session-management/
 - **Type Safety**: Separate types for access vs refresh tokens
 
 **Next Steps:**
-- Implement [JWT](https://datatracker.ietf.org/doc/html/rfc7519) Manager ([RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) signing, token generation/validation)
+- Implement JWT Manager (RS256 signing, token generation/validation)
 - Implement Redis Session Store (refresh tokens, revocation blocklist)
-- Build [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) handlers (create, validate, refresh, revoke)
+- Build HTTP handlers (create, validate, refresh, revoke)
 - Multi-tenant Key Manager (load/store/cache RSA keys)
 
 ---
@@ -257,29 +265,29 @@ project-2-session-management/
 
 **Problem Statement:**
 - Multi-brand session isolation at global scale (100M+ users)
-- Hybrid approach: Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) (fast path) + Redis (security path)
+- Hybrid approach: Stateless JWT (fast path) + Redis (security path)
 - Performance requirement: < 10ms p99 latency for validation
 - Security requirement: Immediate session revocation capability
 
 **User Personas:**
 1. **Platform Engineer (Sarah Chen)**
    - Goals: 100M+ users, < 10ms p99 latency, immediate logout, brand isolation
-   - Pain Points: Monolithic session bottleneck, can't revoke [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens, no per-brand metrics
+   - Pain Points: Monolithic session bottleneck, can't revoke JWT tokens, no per-brand metrics
 
 2. **Security Engineer (Marcus Rodriguez)**
    - Goals: Immediate revocation, cryptographic isolation, audit trail, key rotation
-   - Pain Points: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) can't revoke, shared keys, no audit, restart for rotation
+   - Pain Points: JWT can't revoke, shared keys, no audit, restart for rotation
 
 3. **Application Developer (Jessica Kim)**
    - Goals: Simple SDK, clear docs, local dev environment, good errors
    - Pain Points: Complex logic, hard to test, unclear token usage, poor errors
 
 **Functional Requirements (6):**
-1. **FR-1: Session Creation** - Generate [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens with tenant-specific keys
+1. **FR-1: Session Creation** - Generate JWT tokens with tenant-specific keys
    - API: POST /sessions
    - Returns: access_token (15min), refresh_token (30d)
 
-2. **FR-2: Session Validation** - Fast-path [JWT](https://datatracker.ietf.org/doc/html/rfc7519) + slow-path revocation check
+2. **FR-2: Session Validation** - Fast-path JWT + slow-path revocation check
    - API: POST /sessions/validate
    - Performance: < 5ms p99 (JWT-only), < 10ms p99 (with revocation)
 
@@ -292,17 +300,17 @@ project-2-session-management/
    - Redis blocklist with TTL matching token expiration
 
 5. **FR-5: Multi-Tenant Key Management** - Isolated RSA keys per tenant
-   - RSA-2048 per tenant, [JWKS](https://datatracker.ietf.org/doc/html/rfc7517) endpoint, key rotation support
+   - RSA-2048 per tenant, JWKS endpoint, key rotation support
 
 6. **FR-6: Health & Observability** - Metrics, logging, tracing
-   - [Prometheus](https://prometheus.io/) metrics per tenant, health checks, structured logging
+   - Prometheus metrics per tenant, health checks, structured logging
 
 **Non-Functional Requirements:**
 - **Performance**: < 5ms p99 (JWT), < 10ms p99 (with revocation), 10K+ concurrent
 - **Availability**: 99.9% uptime, graceful degradation, graceful shutdown
 - **Scalability**: Horizontal scaling, Redis cluster, multi-region ready
-- **Security**: [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3), key isolation, 15min access tokens, immediate revocation
-- **Observability**: [Prometheus](https://prometheus.io/), structured logs, [OpenTelemetry](https://opentelemetry.io/) hooks
+- **Security**: RS256, key isolation, 15min access tokens, immediate revocation
+- **Observability**: Prometheus, structured logs, OpenTelemetry hooks
 
 **Technical Architecture:**
 ```
@@ -321,15 +329,15 @@ Redis Cluster (distributed storage)
 ```
 
 **Data Flow:**
-- **Fast Path Validation**: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signature check only (~2-5ms)
-- **Slow Path Validation**: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) + Redis revocation check (~5-10ms)
+- **Fast Path Validation**: JWT signature check only (~2-5ms)
+- **Slow Path Validation**: JWT + Redis revocation check (~5-10ms)
 
 **Technology Stack:**
 - Go 1.21+ (performance, concurrency)
-- [JWT](https://datatracker.ietf.org/doc/html/rfc7519) ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)) with [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) ([RFC 7518](https://datatracker.ietf.org/doc/html/rfc7518))
+- JWT (RFC 7519) with RS256 (RFC 7518)
 - Redis 7+ (distributed, TTL support)
 - gorilla/mux, golang-jwt/jwt, go-redis/redis
-- Docker, k6, [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
+- Docker, k6, Prometheus, Grafana
 
 **Implementation Plan (10 hours):**
 - Phase 1: Core session management (4h) - create/validate/refresh
@@ -342,7 +350,7 @@ Redis Cluster (distributed storage)
 - ✅ 10K+ concurrent sessions sustained
 - ✅ < 10ms p99 validation latency
 - ✅ Complete API documentation
-- ✅ [Grafana](https://grafana.com/) dashboard with metrics
+- ✅ Grafana dashboard with metrics
 - ✅ Load test report
 
 **Risks & Mitigations:**
@@ -364,10 +372,10 @@ Redis Cluster (distributed storage)
 5. **Production Patterns** - Health checks, metrics, graceful shutdown
 
 ### Technical Demonstrations
-- Hybrid [JWT](https://datatracker.ietf.org/doc/html/rfc7519) (fast path) + Redis (revocation path) approach
+- Hybrid JWT (fast path) + Redis (revocation path) approach
 - Multi-tenant key isolation (separate RSA keys per tenant)
 - Load testing with 10K+ concurrent sessions
-- [Prometheus](https://prometheus.io/) metrics with tenant-specific labels
+- Prometheus metrics with tenant-specific labels
 - Graceful degradation (continue if Redis temporarily down)
 
 ### Interview Preparation

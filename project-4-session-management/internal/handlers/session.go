@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/internal/session"
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/internal/tokens"
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/pkg/models"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/session"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/tokens"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/pkg/models"
+	"github.com/rs/zerolog/log"
 )
 
 // SessionHandler handles session management endpoints
@@ -86,6 +87,7 @@ func (h *SessionHandler) CreateSession(w http.ResponseWriter, r *http.Request) {
 
 // ValidateSession handles POST /sessions/validate
 func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("MERMAID: Client->>Service: 1. POST /sessions/validate (access_token)")
 	// Parse request
 	var req models.ValidateSessionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -99,6 +101,7 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	log.Debug().Msg("MERMAID: Service->>Service: 2. Parse JWT and validate signature")
 	// Validate JWT token
 	claims, err := h.jwtManager.ValidateToken(req.AccessToken)
 	if err != nil {
@@ -128,6 +131,7 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	log.Debug().Msg("MERMAID: Service->>Redis: 3. Check revocation list")
 	// Check revocation blocklist
 	isRevoked, err := h.sessionStore.IsTokenRevoked(r.Context(), claims.TenantID, claims.JTI)
 	if err != nil {
@@ -146,12 +150,14 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	log.Debug().Msg("MERMAID: Redis-->>Service: 4. Not revoked")
 	// Token is valid
 	response := models.ValidateSessionResponse{
 		Valid:  true,
 		Claims: claims,
 	}
 
+	log.Debug().Msg("MERMAID: Service->>Client: 5. Return validation result")
 	h.writeJSON(w, http.StatusOK, response)
 }
 
@@ -231,8 +237,7 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 
 	// Update last used timestamp
 	if err := h.sessionStore.UpdateRefreshTokenLastUsed(r.Context(), claims.TenantID, claims.JTI); err != nil {
-		// Log error but don't fail the request
-		// This is a non-critical operation
+		log.Warn().Err(err).Msg("Failed to update refresh token last used time")
 	}
 
 	// Build response (reuse same refresh token - no rotation for simplicity)
@@ -293,8 +298,9 @@ func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
 
 	// If it's a refresh token, also delete from Redis
 	if claims != nil && claims.TokenType == "refresh" {
-		h.sessionStore.DeleteRefreshToken(r.Context(), claims.TenantID, claims.JTI)
-		// Ignore error - token might already be deleted
+		if err := h.sessionStore.DeleteRefreshToken(r.Context(), claims.TenantID, claims.JTI); err != nil {
+			log.Warn().Err(err).Msg("Failed to delete refresh token")
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)
@@ -336,7 +342,9 @@ func (h *SessionHandler) RevokeAllSessions(w http.ResponseWriter, r *http.Reques
 func (h *SessionHandler) writeJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Error().Err(err).Msg("Failed to write JSON response")
+	}
 }
 
 func (h *SessionHandler) writeError(w http.ResponseWriter, status int, errorCode, description string) {
@@ -346,3 +354,4 @@ func (h *SessionHandler) writeError(w http.ResponseWriter, status int, errorCode
 	}
 	h.writeJSON(w, status, response)
 }
+

@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/bordenet/identity-deep-dive/project-2-session-management/internal/tokens"
+	"github.com/bordenet/identity-deep-dive/project-4-session-management/internal/tokens"
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog/log"
 )
 
 // JWKSHandler handles JWKS endpoint for public key distribution
@@ -40,5 +41,7 @@ func (h *JWKSHandler) GetJWKS(w http.ResponseWriter, r *http.Request) {
 	// Return JWKS document
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(jwks)
+	if err := json.NewEncoder(w).Encode(jwks); err != nil {
+		log.Error().Err(err).Msg("Failed to write JWKS response")
+	}
 }
