@@ -1,8 +1,8 @@
 # Identity Security Scanner (Static Analysis)
 
-> **Automated security analysis for [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [JWT](https://datatracker.ietf.org/doc/html/rfc7519), and [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations**
+> **Automated security analysis for OAuth2, OIDC, JWT, and SAML configurations**
 
-A command-line static analysis tool that detects security misconfigurations in identity and access management systems before they reach production. Built to demonstrate "innovation through simplification" by automating expert security reviews.
+A command-line static analysis tool that detects security misconfigurations in identity and access management systems before they reach production.
 
 ## 🎯 What It Does
 
@@ -279,10 +279,28 @@ See [examples/vulnerable/oauth2-config.yaml](examples/vulnerable/oauth2-config.y
 
 See [examples/secure/oauth2-config.yaml](examples/secure/oauth2-config.yaml) for security best practices.
 
-## 📚 Documentation
+## 📚 Documentation & References
 
+### Project-Specific Documentation
 - **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
+
+### Specifications
+- [RFC 6749 - OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
+- [RFC 7636 - PKCE Extension](https://tools.ietf.org/html/rfc7636)
+- [RFC 7519 - JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+
+### Security Best Practices
+- [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
+- [OWASP ASVS - Authentication](https://owasp.org/www-project-application-security-verification-standard/)
+- [OWASP Cheat Sheet - OAuth2](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
+- [OWASP Cheat Sheet - JWT](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
+
+### Related Work
+- [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/)
+- [Semgrep](https://semgrep.dev/) - Static analysis tool
+- [Trivy](https://github.com/aquasecurity/trivy) - Security scanner
 
 ## 🎓 Learning Outcomes
 
@@ -291,13 +309,13 @@ See [examples/secure/oauth2-config.yaml](examples/secure/oauth2-config.yaml) for
 This project demonstrates several security engineering patterns:
 
 1. **[Shift-Left Security](https://www.devsecops.org/blog/2016/5/20/-security)**: Catch issues in development, not production
-2. **[Defense in Depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))**: Multiple layers of checks ([OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [JWT](https://datatracker.ietf.org/doc/html/rfc7519), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html))
+2. **[Defense in Depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))**: Multiple layers of checks
 3. **[Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)**: Detect overly permissive scopes
 4. **[Secure by Default](https://en.wikipedia.org/wiki/Secure_by_default)**: Identify insecure default configurations
 
 ### Technical Skills Demonstrated
 
-- **Protocol Expertise**: Deep understanding of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [JWT](https://datatracker.ietf.org/doc/html/rfc7519) specifications
+- **Protocol Expertise**: Deep understanding of OAuth2, OIDC, JWT specifications
 - **Static Analysis**: [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) parsing, pattern matching, vulnerability detection
 - **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: User-friendly command-line tools with [Cobra](https://cobra.dev/) framework
 - **Security Mindset**: Identifying attack vectors and remediation strategies
@@ -321,7 +339,7 @@ This project demonstrates several security engineering patterns:
 
 ### v2.0 - Runtime Analysis
 - Complement static analysis with dynamic testing
-- Probe live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) endpoints
+- Probe live OAuth2/OIDC endpoints
 - Attack simulation ([CSRF](https://owasp.org/www-community/attacks/csrf), token replay, etc.)
 
 ## 🤝 Contributing
@@ -344,39 +362,6 @@ The detector pattern makes it easy:
 3. Register in `internal/rules/registry.go`
 4. Add tests and documentation
 
-## 📖 References
-
-### Specifications
-- [RFC 6749 - OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
-- [RFC 7636 - PKCE Extension](https://tools.ietf.org/html/rfc7636)
-- [RFC 7519 - JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
-- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
-
-### Security Best Practices
-- [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [OWASP ASVS - Authentication](https://owasp.org/www-project-application-security-verification-standard/)
-- [OWASP Cheat Sheet - OAuth2](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
-- [OWASP Cheat Sheet - JWT](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
-
-### Related Work
-- [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/)
-- [Semgrep](https://semgrep.dev/) - Static analysis tool
-- [Trivy](https://github.com/aquasecurity/trivy) - Security scanner
-
 ## 📝 License
 
 MIT License - see [LICENSE](../LICENSE) for details.
-
-## 🙏 Acknowledgments
-
-Built as part of identity protocol learning for senior engineering leadership roles. Demonstrates:
-- **Rapid domain mastery**: Learning [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[JWT](https://datatracker.ietf.org/doc/html/rfc7519) specifications
-- **Bias for action**: Building while learning, not just reading
-- **Innovation through simplification**: Automating manual security reviews
-- **Production thinking**: Clear error messages, remediation guidance, exit codes
-
----
-
-**Author**: [Matt Bordenet](https://github.com/bordenet) | [LinkedIn](https://www.linkedin.com/in/mattbordenet/)
-**Project**: Identity Deep Dive - [Main Repository](../)
-**Timeline**: October 7-10, 2025

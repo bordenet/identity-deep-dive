@@ -84,32 +84,20 @@ else
     fi
 fi
 
-# Create docker alias for podman (for compatibility)
-if ! grep -q "alias docker='podman'" ~/.zshrc 2>/dev/null && ! grep -q "alias docker='podman'" ~/.bashrc 2>/dev/null; then
-    echo_info "Creating 'docker' alias for podman..."
-    if [ -f ~/.zshrc ]; then
-        echo "alias docker='podman'" >> ~/.zshrc
-        echo_info "Added docker alias to ~/.zshrc"
-    fi
-    if [ -f ~/.bashrc ]; then
-        echo "alias docker='podman'" >> ~/.bashrc
-        echo_info "Added docker alias to ~/.bashrc"
-    fi
-    echo_warn "Please restart your terminal or run: source ~/.zshrc (or ~/.bashrc)"
-fi
+# Podman is used directly, no docker alias needed.
 
-# Install docker-compose (works with podman via docker socket)
-echo_info "Checking for docker-compose..."
-if ! command -v docker-compose &> /dev/null; then
-    echo_warn "docker-compose not found. Installing docker-compose..."
-    brew install docker-compose
-    echo_info "✓ docker-compose installed"
+# Install podman-compose (native podman compose tool)
+echo_info "Checking for podman-compose..."
+if ! command -v podman-compose &> /dev/null; then
+    echo_warn "podman-compose not found. Installing podman-compose..."
+    brew install podman-compose
+    echo_info "✓ podman-compose installed"
 else
-    echo_info "✓ docker-compose already installed ($(docker-compose --version))"
+    echo_info "✓ podman-compose already installed ($(podman-compose --version))"
 fi
 
-# Enable Podman socket for docker-compose compatibility
-echo_info "Enabling Podman socket for docker-compose compatibility..."
+# Ensure Podman socket is enabled for podman-compose
+echo_info "Ensuring Podman socket is enabled for podman-compose..."
 podman machine ssh sudo systemctl enable --now podman.socket 2>/dev/null || true
 
 # Install Redis
@@ -252,22 +240,20 @@ echo ""
 echo_info "========================================"
 echo_info "Next Steps:"
 echo_info "========================================"
-echo_info "1. Restart your terminal (or run: source ~/.zshrc) to enable docker alias"
-echo_info "2. Review and edit .env file with your secret values"
-echo_info "3. Source the .env file: source .env"
-echo_info "4. Build all projects:"
+echo_info "1. Review and edit .env file with your secret values"
+echo_info "2. Source the .env file: source .env"
+echo_info "3. Build all projects:"
 echo_info "   make build-all"
 echo_info ""
-echo_info "5. Or build individual projects:"
+echo_info "4. Or build individual projects:"
 echo_info "   cd project-1-oauth2-oidc-demo && make build"
 echo_info "   cd project-2-identity-security-scanner && make build"
 echo_info "   cd project-3-runtime-security-scanner && make build"
 echo_info "   cd project-4-session-management && make build"
 echo_info ""
-echo_info "6. Run projects:"
-echo_info "   cd project-1-oauth2-oidc-demo && docker-compose up"
+echo_info "5. Run projects:"
+echo_info "   cd project-1-oauth2-oidc-demo && podman-compose up"
 echo_info "   cd project-4-session-management && make run"
 echo ""
-echo_info "Note: Using Podman instead of Docker Desktop (lighter, no VM overhead)"
 echo_info "For more information, see README.md"
 echo ""

@@ -774,7 +774,7 @@ rules:
 
 **Acceptance Criteria**:
 - Secrets redacted in all output formats (show "[REDACTED]" instead of actual secret)
-- Respect `.gitignore` and `.dockerignore` patterns
+- Respect `.gitignore` and `.podmanignore` patterns
 - `go.sum` checked into repository
 - File system access limited to specified paths
 
@@ -1137,7 +1137,7 @@ type SeveritySummary struct {
 - [ ] Configuration file support (`.identity-scanner.yaml`)
 - [ ] Glob pattern file selection
 - [ ] Failure threshold configuration
-- [ ] Docker image (optional)
+- [ ] Podman image (optional)
 
 **Acceptance Criteria**:
 - GitHub Actions example works in demo repo

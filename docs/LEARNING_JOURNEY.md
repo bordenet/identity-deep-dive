@@ -12,7 +12,7 @@
 
 ---
 
-This document chronicles the three-day learning journey through identity protocols, security patterns, and distributed systems.
+This document chronicles the three-day learning journey through identity protocols, security patterns, and distributed systems that support identity implementations.
 
 ## 📚 Day 1: OAuth2/OIDC Fundamentals
 
@@ -45,13 +45,13 @@ Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) 
 - Refresh token rotation prevents token replay attacks
 - Client Credentials = machine-to-machine (no user context)
 
-### Hour 7-8: OIDC Layer & Docker Setup
+### Hour 7-8: OIDC Layer & Podman Setup
 
 **What I Built**:
 - [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) ID tokens with user claims
 - UserInfo endpoint (`/userinfo`)
 - Discovery endpoint (`/.well-known/openid-configuration`)
-- [Docker Compose](https://docs.docker.com/compose/) setup with [Redis](https://redis.io)
+- [Podman Compose](https://github.com/containers/podman-compose) setup with [Redis](https://redis.io)
 
 **Key Learnings**:
 - **[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) adds identity layer to [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)'s authorization framework** - this distinction is critical

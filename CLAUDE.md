@@ -12,7 +12,7 @@ Build 4 identity projects in 3 days to brush up on key concepts ahead of senior 
 ## Project Execution Order
 
 ### Priority 1: OAuth2/OIDC Server (6-8 hours)
-**Stack**: Go, Redis, JWT, Docker
+**Stack**: Go, Redis, JWT, Podman
 **Core Features**: Authorization Code Flow, PKCE, Client Credentials, Token Refresh, OIDC ID Tokens
 **Security**: State parameter (CSRF), short token lifetimes (15m access, 30d refresh), scope validation
 
@@ -43,6 +43,7 @@ Build 4 identity projects in 3 days to brush up on key concepts ahead of senior 
 - **JWT**: Stateless validation, standard claims
 - **k6**: Load testing
 - **Prometheus + Grafana**: Observability
+- **Containerization**: Podman
 
 ## Key Libraries
 - `golang-jwt/jwt`, `go-redis/redis`, `gorilla/mux`, `spf13/cobra`, `spf13/viper`
@@ -64,7 +65,7 @@ ALWAYS link critical acroyms and industry standars within markdown files to auth
 - All RFCs (RFC 6749, RFC 7636, etc.) → https://datatracker.ietf.org/doc/html/rfcXXXX
 - All OIDC specs → https://openid.net/specs/
 - All technical terms (OAuth2, JWT, PKCE, SAML, etc.) → authoritative sources
-- All tools/libraries (Go, Redis, Docker, etc.) → official homepages or GitHub repos
+- All tools/libraries (Go, Redis, Podman, etc.) → official homepages or GitHub repos
 - All security concepts (CSRF, SPA, etc.) → OWASP, Wikipedia, or relevant docs
 - All local markdown docs → relative paths (e.g., [PRD](docs/PRD.md))
 - All source files → relative paths (e.g., [jwt.go](internal/tokens/jwt.go))
@@ -95,7 +96,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 - OIDC layer: ID tokens, UserInfo endpoint, discovery endpoint
 - Redis-backed session and token storage
 - Error handling, logging, observability hooks
-- Docker Compose deployment with Redis cluster
+- Podman Compose deployment with Redis cluster
 - Documentation: PRD, README, OIDC walkthrough, PKCE deep dive
 - Unit tests for PKCE and JWT token generation/validation
 
@@ -209,7 +210,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 - Structured logging (ready for observability platforms)
 - Graceful shutdown and health checks
 - Configuration via environment (12-factor app)
-- Docker deployments with docker-compose
+- Podman deployments with podman-compose
 - Makefile for developer productivity
 
 ### Documentation

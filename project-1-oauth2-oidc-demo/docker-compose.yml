@@ -20,7 +20,7 @@ services:
   authserver:
     build:
       context: .
-      dockerfile: Dockerfile
+      containerfile: Dockerfile
     container_name: oauth2-authserver
     ports:
       - "8080:8080"
@@ -41,7 +41,7 @@ services:
   client:
     build:
       context: .
-      dockerfile: Dockerfile.client
+      containerfile: Dockerfile.client
     container_name: oauth2-client
     ports:
       - "3000:3000"

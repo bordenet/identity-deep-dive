@@ -7,8 +7,8 @@ This project demonstrates how to build a session management service that can han
 ## Features
 
 - **Multi-Tenant Session Isolation**: Cryptographically isolated sessions per tenant.
-- **Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) Validation**: Fast-path validation for high performance.
-- **[Redis](https://redis.io)-Backed Revocation**: Slow-path validation for immediate session revocation.
+- **Stateless JWT Validation**: Fast-path validation for high performance.
+- **Redis-Backed Revocation**: Slow-path validation for immediate session revocation.
 - **Token Refresh**: Long-lived sessions with refresh tokens.
 - **Horizontal Scalability**: Stateless service that can be scaled horizontally.
 
@@ -16,8 +16,8 @@ This project demonstrates how to build a session management service that can han
 
 ### Prerequisites
 - [Go](https://go.dev) 1.21+
-- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)
-- [Redis](https://redis.io) (via Docker)
+- [Podman](https://podman.io/) & [Podman Compose](https://github.com/containers/podman-compose)
+- [Redis](https://redis.io) (via Podman)
 
 ### Build and Run
 
@@ -141,10 +141,17 @@ project-4-session-management/
 make test
 ```
 
-## 📚 Documentation
+## 📚 Documentation & References
 
+### Project-Specific Documentation
 - **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
+
+### Specifications
+- [RFC 7519 - JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
+
+### Best Practices
+- [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 
 ## 🎓 Learning Outcomes
 
@@ -157,7 +164,7 @@ This project demonstrates several security engineering patterns:
 
 ### Technical Skills Demonstrated
 
-- **Protocol Expertise**: Deep understanding of [JWT](https://datatracker.ietf.org/doc/html/rfc7519) specifications.
+- **Protocol Expertise**: Deep understanding of JWT specifications.
 - **Distributed Systems**: Designing for scalability and high availability.
 - **[API](https://en.wikipedia.org/wiki/API) Design**: Building a RESTful API for session management.
 
@@ -169,14 +176,6 @@ This project demonstrates several security engineering patterns:
 ## 🤝 Contributing
 
 This is a learning/demonstration project, but feedback is welcome!
-
-## 📖 References
-
-### Specifications
-- [RFC 7519 - JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
-
-### Best Practices
-- [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 
 ## 📝 License
 

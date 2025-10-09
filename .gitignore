@@ -38,9 +38,9 @@ coverage.html
 .DS_Store
 .github/instructions/codacy.instructions.md
 
-# Docker
-docker-compose.override.yml
-.dockerignore
+# Podman
+podman-compose.override.yml
+.podmanignore
 
 # Redis
 dump.rdb
@@ -122,9 +122,8 @@ config.*.local.yaml
 /opt/
 /usr/local/
 
-# Podman/Docker local data
+# Podman local data
 .podman/
-.docker/
 
 # Downloaded dependencies
 downloads/

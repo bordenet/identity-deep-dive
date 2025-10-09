@@ -72,7 +72,7 @@ This document covers the architecture, technology choices, and design patterns u
   - Cryptographic signatures prevent tampering
   - Supports both symmetric (HS256) and asymmetric (RS256) algorithms
 
-- **[Docker](https://www.docker.com)**: Reproducible environments, easy deployment
+- **[Podman](https://podman.io/)**: Reproducible environments, easy deployment
   - Consistent development and production environments
   - Easy dependency management (Redis, etc.)
   - Container orchestration ready (Kubernetes, ECS)

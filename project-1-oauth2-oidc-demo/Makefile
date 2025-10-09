@@ -6,7 +6,7 @@ help:
 	@echo "OAuth2/OIDC Authorization Server - Available Commands:"
 	@echo ""
 	@echo "  make generate-keys    Generate RSA key pair for JWT signing"
-	@echo "  make redis-start      Start Redis server (Docker)"
+	@echo "  make redis-start      Start Redis server (Podman)"
 	@echo "  make redis-stop       Stop Redis server"
 	@echo "  make run-server       Run authorization server (port 8080)"
 	@echo "  make run-client       Run demo client (port 3000)"
@@ -22,17 +22,17 @@ generate-keys:
 	@openssl rsa -in keys/private.pem -pubout -out keys/public.pem
 	@echo "✓ Keys generated in keys/ directory"
 
-# Start Redis server using Docker
+# Start Redis server using Podman
 redis-start:
 	@echo "Starting Redis server..."
-	@docker run -d --name oauth2-redis -p 6379:6379 redis:7-alpine
+	@podman run -d --name oauth2-redis -p 6379:6379 redis:7-alpine
 	@echo "✓ Redis running on localhost:6379"
 
 # Stop Redis server
 redis-stop:
 	@echo "Stopping Redis server..."
-	@docker stop oauth2-redis || true
-	@docker rm oauth2-redis || true
+	@podman stop oauth2-redis || true
+	@podman rm oauth2-redis || true
 	@echo "✓ Redis stopped"
 
 # Run authorization server

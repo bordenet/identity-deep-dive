@@ -86,10 +86,18 @@ project-3-runtime-security-scanner/
 make test
 ```
 
-## 📚 Documentation
+## 📚 Documentation & References
 
+### Project-Specific Documentation
 - **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
+
+### Specifications
+- [RFC 6749 - OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+
+### Security Best Practices
+- [OWASP Cheat Sheet - OAuth2](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
 
 ## 🎓 Learning Outcomes
 
@@ -102,7 +110,7 @@ This project demonstrates several security engineering patterns:
 
 ### Technical Skills Demonstrated
 
-- **Protocol Expertise**: Deep understanding of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) specifications.
+- **Protocol Expertise**: Deep understanding of OAuth2 and OIDC specifications.
 - **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: User-friendly command-line tools with [Cobra](https://cobra.dev/) framework.
 - **Security Mindset**: Identifying attack vectors and remediation strategies.
 
@@ -114,15 +122,6 @@ This project demonstrates several security engineering patterns:
 ## 🤝 Contributing
 
 This is a learning/demonstration project, but feedback is welcome!
-
-## 📖 References
-
-### Specifications
-- [RFC 6749 - OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
-- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
-
-### Security Best Practices
-- [OWASP Cheat Sheet - OAuth2](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
 
 ## 📝 License
 

@@ -119,7 +119,7 @@ Modern identity platforms serving multiple brands face critical session manageme
 
 **Success Metrics**:
 - One-line session validation in app code
-- [Docker Compose](https://docs.docker.com/compose/) for local testing
+- [Podman Compose](https://github.com/containers/podman-compose) for local testing
 - < 5 minutes to integrate SDK
 - Actionable error messages with remediation steps
 
@@ -395,7 +395,7 @@ session_validation_duration_seconds_bucket{tenant_id="brand-a",le="0.005"} 9500
 
 ### NFR-6: Developer Experience
 - **Documentation**: Complete [API](https://en.wikipedia.org/wiki/API) reference, architecture diagrams
-- **Local Development**: [Docker Compose](https://docs.docker.com/compose/) one-liner
+- **Local Development**: [Podman Compose](https://github.com/containers/podman-compose) one-liner
 - **SDK**: Go client library for easy integration
 - **Examples**: Sample applications demonstrating all flows
 
@@ -552,8 +552,8 @@ TTL: None (cleaned up on revocation)
 - **Config**: [spf13/viper](https://github.com/spf13/viper) - Configuration management
 
 ### Infrastructure
-- **Container**: [Docker](https://www.docker.com) - Reproducible builds
-- **Orchestration**: [Docker Compose](https://docs.docker.com/compose/) - Local development
+- **Container**: [Podman](https://podman.io/) - Reproducible builds
+- **Orchestration**: [Podman Compose](https://github.com/containers/podman-compose) - Local development
 - **Load Testing**: [k6](https://k6.io) - Modern load testing
 - **Monitoring**: [Prometheus](https://prometheus.io) + [Grafana](https://grafana.com) - Observability
 

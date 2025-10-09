@@ -208,7 +208,7 @@ Modern applications require secure, delegated authorization. Users need to grant
 ### 5.5 Operability
 **Priority**: P1
 
-- [ ] [Docker Compose](https://docs.docker.com/compose/) one-liner setup
+- [ ] [Podman Compose](https://github.com/containers/podman-compose) one-liner setup
 - [ ] [Makefile](https://www.gnu.org/software/make/manual/make.html) with common commands (run, test, build, clean)
 - [ ] Graceful shutdown (finish in-flight requests)
 - [ ] Health check endpoint: GET /health
@@ -350,7 +350,7 @@ Value: JSON{client_id, client_secret_hash, redirect_uris, name, type, scopes}
 
 ### Phase 4: Polish (1-2 hours)
 - [ ] Example client application
-- [ ] Docker Compose setup
+- [ ] Podman Compose setup
 - [ ] README with diagrams
 - [ ] Security documentation
 

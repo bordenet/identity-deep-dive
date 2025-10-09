@@ -17,8 +17,8 @@ This guide will help you get up and running with all four identity projects in t
 ## Prerequisites
 
 - [Go](https://go.dev) 1.21+
-- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)
-- [Redis](https://redis.io) (via Docker)
+- [Podman](https://podman.io/) & [Podman Compose](https://github.com/containers/podman-compose)
+- [Redis](https://redis.io) (via Podman)
 - [golangci-lint](https://golangci-lint.run) (for linting)
 
 ## One-Time Setup (macOS)
@@ -28,7 +28,7 @@ This guide will help you get up and running with all four identity projects in t
 ./setup-macos.sh
 
 # Or install manually:
-brew install go redis docker-compose golangci-lint ggshield
+brew install go redis podman podman-compose golangci-lint ggshield
 ```
 
 ## Building & Testing
@@ -79,8 +79,8 @@ cd project-4-session-management && golangci-lint run
 ```bash
 cd project-1-oauth2-oidc-demo
 
-# Start Redis and server with Docker Compose
-docker-compose up
+# Start Redis and server with Podman Compose
+podman-compose up
 
 # Or run locally (requires Redis running)
 make run
@@ -133,8 +133,8 @@ make build
 ```bash
 cd project-4-session-management
 
-# Start Redis cluster
-docker-compose up -d redis
+# Start Redis cluster with Podman Compose
+podman-compose up -d redis
 
 # Run session service
 make run

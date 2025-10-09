@@ -1,6 +1,6 @@
 # OAuth2/OIDC Authorization Server
 
-A complete OAuth2 and OpenID Connect (OIDC) authorization server implementation in Go, demonstrating industry-standard authentication and authorization flows.
+A complete OAuth2 and OpenID Connect (OIDC) authorization server implementation in Go.
 
 ## Features
 
@@ -31,11 +31,19 @@ A complete OAuth2 and OpenID Connect (OIDC) authorization server implementation 
 - **Multi-tenant Ready** - Separate keys and scopes per client
 - **Graceful Shutdown** - Proper cleanup on SIGINT/SIGTERM
 
-## Quick Start
+## 🚀 Getting Started
+
+The easiest way to run the entire stack (Authorization Server, Redis, and Demo Client) is using Podman Compose:
+
+```bash
+podman-compose up
+```
+
+Alternatively, you can run components individually:
 
 ### Prerequisites
 - Go 1.21+
-- Redis 7+ (or Docker)
+- Redis 7+ (or Podman)
 - OpenSSL (for key generation)
 
 ### 1. Generate RSA Keys
@@ -254,8 +262,6 @@ Three demo users are available for testing:
 | bob | bob@example.com | (auto-login in demo) | Bob Johnson |
 | charlie | charlie@example.com | (auto-login in demo) | Charlie Brown |
 
-**Note:** Demo server auto-authenticates as Alice. In production, you'd implement a login page.
-
 ## OAuth2 Scopes
 
 | Scope | Description |
@@ -374,12 +380,12 @@ Stop Redis:
 make redis-stop
 ```
 
-## Docker Compose
+## Podman Compose
 
 Run entire stack with one command:
 
 ```bash
-docker-compose up
+podman-compose up
 ```
 
 This starts:
@@ -410,7 +416,7 @@ This starts:
 
 ⚠️ **This is a learning/demo project. DO NOT use in production without hardening.**
 
-- Auto-login (no real authentication)
+- Auto-login (no real authentication; demo server auto-authenticates as Alice)
 - In-memory user store (lost on restart)
 - HTTP instead of HTTPS
 - Hardcoded client secrets
@@ -419,19 +425,18 @@ This starts:
 - Minimal error handling
 - No audit logging
 
-## Documentation
+## Documentation & References
 
+### Project-Specific Documentation
 - **[Product Requirements Document (PRD)](docs/PRD.md)** - High-level requirements and architecture
 - **[OIDC Authorization Code Flow Walkthrough](docs/OIDC_Walk_Thru.md)** - Step-by-step OIDC flow explanation
 - **[PKCE Deep Dive](docs/PKCE_Deep_Dive.md)** - PKCE attack scenarios and implementation
-
-## References
 
 ### RFCs and Standards
 - [RFC 6749 - OAuth 2.0](https://tools.ietf.org/html/rfc6749)
 - [RFC 7636 - OAuth 2.0 PKCE](https://tools.ietf.org/html/rfc7636)
 - [RFC 7519 - JSON Web Tokens (JWT)](https://tools.ietf.org/html/rfc7519)
-- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.0.html)
 - [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html)
 
 ### Best Practices
@@ -445,8 +450,4 @@ MIT License - See LICENSE file for details.
 
 ## Contributing
 
-This is a learning project for interview preparation. Contributions welcome for educational improvements.
-
-## Acknowledgments
-
-Built as part of identity deep-dive learning projects, demonstrating rapid domain mastery in OAuth2/OIDC protocols.
+Feedback and suggestions are welcome! Please feel free to open an issue.

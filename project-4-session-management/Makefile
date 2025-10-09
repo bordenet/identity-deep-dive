@@ -1,4 +1,4 @@
-.PHONY: build test lint clean run docker-up docker-down
+.PHONY: build test lint clean run podman-up podman-down
 
 # Binary output directory
 BIN_DIR := bin
@@ -32,19 +32,19 @@ clean:
 # Run the server (requires Redis)
 run: build
 	@echo "Starting session management server..."
-	@echo "Prerequisites: Redis must be running (docker-compose up redis or make docker-up)"
+	@echo "Prerequisites: Redis must be running (podman-compose up redis or make podman-up)"
 	$(BIN_DIR)/$(BINARY_NAME)
 
-# Start Redis with Docker
-docker-up:
-	@echo "Starting Redis with Docker..."
-	docker-compose up -d redis
+# Start Redis with Podman
+podman-up:
+	@echo "Starting Redis with Podman..."
+	podman-compose up -d redis
 	@echo "✓ Redis started"
 
-# Stop Docker services
-docker-down:
-	@echo "Stopping Docker services..."
-	docker-compose down
+# Stop Podman services
+podman-down:
+	@echo "Stopping Podman services..."
+	podman-compose down
 	@echo "✓ Services stopped"
 
 # Install dependencies
