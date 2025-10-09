@@ -10,10 +10,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### In Progress
-- JWT Manager implementation (RS256 signing, token generation/validation)
 - Redis Session Store (refresh tokens, revocation blocklist)
 - HTTP handlers (create, validate, refresh, revoke sessions)
 - Multi-tenant Key Manager (isolated RSA keys per tenant)
+
+---
+
+## [0.2.0] - 2025-10-08
+
+### Added - JWT Manager with RS256 Signing
+
+**Commit:** (pending) - Implement JWT Manager with RS256 signing
+
+**JWT Manager:**
+- `internal/tokens/jwt.go` - Complete JWT token management (300+ lines)
+
+**Core Functionality:**
+
+**JWTManager** - Token generation and validation:
+- Constructor: `NewJWTManager(issuer, accessTTL, refreshTTL, keyManager)`
+- Dependencies: KeyManager interface for multi-tenant key retrieval
+- Configurable TTLs: 15min access, 30day refresh (defaults)
+
+**Token Generation Methods:**
+
+`GenerateAccessToken(tenantID, userID, scope, metadata)`:
+- Returns: token string, expiration time, error
+- Signing: RS256 with tenant-specific private key
+- Claims: Standard (sub, iss, aud, exp, iat, nbf, jti) + Custom (tenant_id, scope, metadata, token_type)
+- Token ID: 256-bit cryptographically random (base64url)
+- Token Type: "access" marker for validation logic
+
+`GenerateRefreshToken(tenantID, userID, scope, metadata)`:
+- Returns: token string, RefreshToken struct, error
+- Same signing as access token
+- Token Type: "refresh" marker
+- RefreshToken struct: Stores token metadata for Redis (ID, TenantID, UserID, Scope, Metadata, CreatedAt, ExpiresAt, LastUsed)
+- Purpose: Track refresh token usage for analytics and security
+
+**Token Validation:**
+
+`ValidateToken(tokenString)`:
+- Returns: TokenClaims, error
+- **Two-phase validation**:
+  1. Parse unverified to extract tenant_id
+  2. Get tenant's public key
+  3. Parse with signature validation
+- **Algorithm verification**: Ensures RS256 (prevents algorithm confusion attacks)
+- **Issuer validation**: Verifies issuer matches expected value
+- **Error handling**: Specific errors for expired, invalid, signature failures
+- **Claims extraction**: Safely extracts all standard and custom claims
+
+**Security Features:**
+- **RS256 (asymmetric)**: Private key signs, public key validates
+- **Per-tenant keys**: Complete cryptographic isolation between tenants
+- **Unique token IDs**: 256-bit random jti prevents token collision
+- **Algorithm enforcement**: Only RS256 allowed (prevents "none" attack)
+- **Issuer validation**: Prevents token substitution from other issuers
+- **Safe claim extraction**: Type-safe getters prevent panic on malformed tokens
+
+**Multi-Tenant Support:**
+- KeyManager interface: `GetPrivateKey(tenantID)`, `GetPublicKey(tenantID)`
+- Each tenant uses isolated RSA key pair
+- Token validation automatically selects correct key based on tenant_id claim
+
+**Helper Functions:**
+- `generateTokenID()` - 256-bit cryptographically random token ID
+- `getStringClaim()` - Safe string extraction from JWT MapClaims
+- `getInt64Claim()` - Safe int64 extraction from JWT MapClaims
+
+**Design Decisions:**
+- **Interface-based**: KeyManager interface allows flexible key storage (Redis, Vault, etc.)
+- **Two-phase parsing**: Extract tenant_id without validation, then validate with tenant's key
+- **Type-safe claims**: Convert jwt.MapClaims to strongly-typed TokenClaims
+- **Comprehensive errors**: Specific error types for different validation failures
+- **Metadata support**: Extensible custom claims via map[string]string
+
+**Dependencies Added:**
+- `github.com/golang-jwt/jwt/v5` - Standard Go JWT library
+
+**Next Steps:**
+- Implement KeyManager interface (multi-tenant key storage/retrieval)
+- Implement Redis Session Store (refresh tokens, revocation blocklist)
+- Build HTTP handlers using JWT Manager
 
 ---
 
