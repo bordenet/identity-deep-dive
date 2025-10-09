@@ -2,9 +2,30 @@
 
 > **Learning identity protocols through implementation**
 
+## ⚠️ Important Context
+
+**This is an AI-assisted learning exercise.** The code in this repository was generated using [Claude Code](https://claude.ai/claude-code) (Anthropic) for ~75% of the work and [Google Gemini](https://gemini.google.com) for ~25% as pair-programming tools. The goal is to break down core identity concepts into tangible, debuggable code for hands-on exploration and understanding.
+
+This is a "vibe-coding" driven project focused on:
+- **Learning by doing**: Stepping through working implementations with a debugger
+- **Understanding trade-offs**: Exploring protocol design decisions through code
+- **Building intuition**: Moving from abstract specs to concrete examples
+
+This repository demonstrates domain exploration and AI-assisted development, not independent implementation from scratch.
+
+---
+
 Implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), and identity security patterns.
 
 **Note**: These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like federation, directory services, certificate management, biometrics, risk-based authentication, and many other concepts are not explored here.
+
+## 📑 Documentation
+
+- **README** (this document) - Project overview and introduction
+- **[Quick Start Guide](docs/QUICK_START.md)** - Setup instructions, build commands, and running projects
+- **[Architecture & Design](docs/ARCHITECTURE.md)** - System architecture, technology choices, and design patterns
+- **[Learning Journey](docs/LEARNING_JOURNEY.md)** - Three-day chronicle of building these projects
+- **[External Resources](docs/RESOURCES.md)** - Curated learning materials, cheat sheets, and references
 
 ## Learning Objectives
 
@@ -33,6 +54,12 @@ Understanding identity protocols by implementing RFC specifications.
 - [📋 Product Requirements (PRD)](./project-1-oauth2-oidc-demo/docs/PRD.md) | [📝 Progress Tracking](./project-1-oauth2-oidc-demo/CHANGELOG.md)
 - [🔐 OIDC Flow Walkthrough](./project-1-oauth2-oidc-demo/docs/OIDC_Walk_Thru.md) - Complete OIDC Authorization Code Flow with diagrams, security features, and error handling
 - [🔑 PKCE Deep Dive](./project-1-oauth2-oidc-demo/docs/PKCE_Deep_Dive.md) - Comprehensive PKCE explanation with attack scenarios, code examples, and best practices
+
+**Try It**:
+```bash
+cd project-1-oauth2-oidc-demo
+docker-compose up
+```
 
 ---
 
@@ -108,319 +135,34 @@ make run
 
 ---
 
-## Logging and Debugging
+## 🚀 Getting Started
 
-All projects use structured logging with [zerolog](https://github.com/rs/zerolog) for JSON-formatted logs with timestamps.
+👉 **[Quick Start Guide](docs/QUICK_START.md)** - Complete setup instructions, prerequisites, and running all projects
 
-**📖 Full Documentation**: See [LOGGING.md](./LOGGING.md) for:
-- Log format and configuration
-- Free tier log storage options (Grafana Loki, Elastic, Better Stack, Datadog)
-- Query examples (LogQL, SQL)
-- Best practices for structured logging
-
-### Quick Logging Setup
-
+**Quick Commands**:
 ```bash
-# Set log level (debug, info, warn, error)
-export LOG_LEVEL=debug
-
-# Run with logging
-cd project-1-oauth2-oidc-demo
-LOG_LEVEL=debug go run cmd/server/main.go
-
-# View logs with lnav (local)
-brew install lnav
-go run cmd/server/main.go 2>&1 | lnav
-```
-
-### Debug Breakpoints
-
-The code includes special log statements prefixed with `MERMAID:` that correspond to the steps in the [mermaid sequence diagrams](./project-1-oauth2-oidc-demo/docs/OIDC_Walk_Thru.md).
-
-**Setting Breakpoints**:
-1. Open the file in your IDE/debugger (e.g., VS Code, GoLand)
-2. Search for `MERMAID:` in the code
-3. Set a breakpoint on that line
-4. Start debugging (`dlv debug` or IDE debugger)
-5. Make a request to trigger the flow
-
-**Example** (Project 1 - OAuth2 Server):
-```go
-// In internal/handlers/authorize.go
-log.Debug().
-    Str("flow_step", "MERMAID: Step 2 - GET /authorize").
-    Str("client_id", authReq.ClientID).
-    Str("response_type", authReq.ResponseType).
-    Msg("Authorization request received")
-// ☝️ Set breakpoint here to inspect authorization request
-```
-
-Each log statement includes structured fields for inspection:
-- `flow_step`: Which step in the OIDC flow
-- Request parameters (client_id, scope, etc.)
-- User context
-- Error details (if any)
-
-## 🚀 Quick Start
-
-### Prerequisites
-- [Go](https://go.dev) 1.21+
-- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)
-- [Redis](https://redis.io) (via Docker)
-- [golangci-lint](https://golangci-lint.run) (for linting)
-
-### One-Time Setup (macOS)
-```bash
-# Run automated setup script (installs all dependencies)
+# One-time setup (macOS)
 ./setup-macos.sh
 
-# Or install manually:
-brew install go redis docker-compose golangci-lint ggshield
-```
-
-### Building & Testing
-
-#### Build All Projects
-```bash
-# Build all projects in monorepo
+# Build all projects
 make build-all
 
-# Or build individual projects
-cd project-1-oauth2-oidc-demo && make build
-cd project-2-identity-security-scanner && make build
-cd project-3-runtime-security-scanner && make build
-cd project-4-session-management && make build
-```
-
-#### Run Tests
-```bash
-# Run all tests across projects
+# Run tests
 make test-all
 
-# Or test individual projects
-cd project-1-oauth2-oidc-demo && go test ./...
-cd project-2-identity-security-scanner && go test ./...
-cd project-3-runtime-security-scanner && go test ./...
-cd project-4-session-management && go test ./...
-```
-
-#### Lint Code
-```bash
-# Lint all projects
+# Lint code
 make lint-all
-
-# Or lint individual projects
-cd project-1-oauth2-oidc-demo && golangci-lint run
-cd project-2-identity-security-scanner && golangci-lint run
-cd project-3-runtime-security-scanner && golangci-lint run
-cd project-4-session-management && golangci-lint run
 ```
 
-### Running Projects
+## 📚 Learning Resources
 
-#### Project 1: OAuth2/OIDC Server
-```bash
-cd project-1-oauth2-oidc-demo
+- **[Learning Journey](docs/LEARNING_JOURNEY.md)** - Day-by-day chronicle of building these projects with key insights
+- **[Architecture & Design](docs/ARCHITECTURE.md)** - System design, technology choices, and trade-offs
+- **[External Resources](docs/RESOURCES.md)** - Curated cheat sheets, security guides, and protocol comparisons
 
-# Start Redis and server with Docker Compose
-docker-compose up
-
-# Or run locally (requires Redis running)
-make run
-
-# Server will be available at:
-# - Authorization: http://localhost:8080/authorize
-# - Token: http://localhost:8080/token
-# - UserInfo: http://localhost:8080/userinfo
-# - Discovery: http://localhost:8080/.well-known/openid-configuration
-```
-
-#### Project 2: Identity Security Scanner (Static)
-```bash
-cd project-2-identity-security-scanner
-
-# Scan example vulnerable config
-make scan-vulnerable
-
-# Scan example secure config
-make scan-secure
-
-# Scan custom config
-./bin/scanner scan --config path/to/config.yaml
-
-# Output in JSON format
-./bin/scanner scan --config config.yaml --format json
-```
-
-#### Project 3: Runtime Security Scanner
-```bash
-cd project-3-runtime-security-scanner
-
-# Build the scanner
-make build
-
-# Run against a live OAuth2/OIDC server
-./bin/scanner run http://localhost:8080
-
-# Run specific test
-./bin/scanner test csrf http://localhost:8080
-
-# View all available tests
-./bin/scanner list
-```
-
-#### Project 4: Multi-Tenant Session Management
-```bash
-cd project-4-session-management
-
-# Start Redis cluster
-docker-compose up -d redis
-
-# Run session service
-make run
-
-# Run load tests (requires k6)
-make load-test
-```
-
-### Development Workflow
-
-#### Pre-commit Hooks
-All commits are automatically checked for:
-- **Secrets scanning** (ggshield) - blocks commits with hardcoded secrets
-- **Go linting** (golangci-lint) - enforces code quality standards
-- **Unit tests** (go test) - ensures tests pass before commit
-
-```bash
-# Hooks are installed automatically by setup.sh
-# To manually trigger checks:
-git commit -m "your message"  # Runs all checks automatically
-```
-
-#### Pre-push Hooks
-All pushes are automatically checked for:
-- **Secrets scanning** (ggshield) - prevents pushing secrets to remote
-
-```bash
-git push origin main  # Runs secret scan automatically
-```
-
-## 📚 Learning Journey
-
-### Day 1: OAuth2/OIDC Fundamentals
-Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization server from [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) spec:
-- **Hour 1-3**: Authorization code flow, [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token generation
-- **Hour 4-6**: [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), client credentials, token refresh
-- **Hour 7-8**: [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) layer (ID tokens, UserInfo), [Docker](https://www.docker.com) setup
-
-**Key insight**: [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) adds identity layer to [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)'s authorization framework - understanding this distinction is critical.
-
-### Day 2: Security Deep Dive
-Built security scanning tools to internalize identity vulnerabilities:
-- **Hour 1-4**: Static config scanner for [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) misconfigurations
-- **Hour 5-6**: Remediation engine, [CI/CD](https://en.wikipedia.org/wiki/CI/CD) integration
-- **Hour 7-9**: Runtime flow analyzer for attack simulation
-
-**Key insight**: Security patterns from previous roles (vulnerability scanners, compliance) apply directly to identity domain.
-
-### Day 3: Scale & Operations
-Implemented session management thinking about multi-brand, global-scale requirements:
-- **Hour 1-4**: Session service with [Redis](https://redis.io), multi-tenant isolation
-- **Hour 5-8**: Load testing (10K concurrent sessions), observability
-- **Hour 9-10**: Documentation, architecture diagrams
-
-**Key insight**: Identity at scale = distributed systems problem. [JWT](https://datatracker.ietf.org/doc/html/rfc7519) for speed, [Redis](https://redis.io) for consistency.
-
-## 🎓 What I Learned
-
-### Protocol Trade-offs
-- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: AuthN vs AuthZ - different problems, complementary solutions
-- **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vs [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: Enterprise partnerships vs modern apps - both have valid use cases
-- **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) Interop**: Identity brokers ([Auth0](https://auth0.com), [Okta](https://www.okta.com)), bridges ([Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)), and protocol translation layers for hybrid environments
-- **[JWT](https://datatracker.ietf.org/doc/html/rfc7519) Validation**: Stateless (fast) vs stateful (revocable) - need both approaches
-
-### Security Considerations
-- **[PKCE](https://datatracker.ietf.org/doc/html/rfc7636) is non-negotiable** for mobile/[SPA](https://en.wikipedia.org/wiki/Single-page_application) apps - prevents authorization code interception
-- **State parameter prevents [CSRF](https://owasp.org/www-community/attacks/csrf)** - must be cryptographically random, validated on callback
-- **Redirect [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) validation is critical** - wildcard URIs = [open redirect vulnerability](https://owasp.org/www-community/attacks/Unvalidated_Redirects_and_Forwards)
-- **Token lifetime trade-offs** - short access tokens (15min), longer refresh tokens (30d)
-
-### Scale Thinking
-- **Multi-tenant isolation** requires separate signing keys per tenant
-- **Global deployments** need [Redis](https://redis.io) replication, token validation must work offline
-- **Observability is essential** - can't optimize what you don't measure
-
-## 🏗️ Architecture Highlights
-
-### OAuth2/OIDC Server
-```
-┌─────────────┐      ┌──────────────────┐      ┌─────────────┐
-│   Client    │─────▶│  Authorization   │─────▶│    Redis    │
-│             │      │     Server       │      │   (tokens)  │
-│             │◀─────│  (Go + JWT)      │◀─────│             │
-└─────────────┘      └──────────────────┘      └─────────────┘
-   OAuth2 flows           Token mgmt          Distributed store
-```
-
-### Session Management
-```
-┌──────────────┐      ┌──────────────────┐      ┌──────────────┐
-│  API Request │─────▶│  Session Service │─────▶│ Redis Cluster│
-│  (JWT token) │      │  (Go stateless)  │      │ (revocation) │
-│              │◀─────│  Fast validation │◀─────│              │
-└──────────────┘      └──────────────────┘      └──────────────┘
-   Multi-tenant          Horizontal scale      Global consistency
-```
-
-## 🔧 Technology Choices
-
-- **[Go](https://go.dev)**: Fast, concurrent, single-binary deployment - matches enterprise scale requirements
-- **[Redis](https://redis.io)**: Distributed cache for tokens/sessions - [HA](https://en.wikipedia.org/wiki/High_availability), global replication
-- **[JWT](https://datatracker.ietf.org/doc/html/rfc7519)**: Industry standard, stateless validation, flexible claims
-- **[Docker](https://www.docker.com)**: Reproducible environments, easy deployment
-- **[k6](https://k6.io)**: Modern load testing, [API](https://en.wikipedia.org/wiki/API)-focused, cloud-native
-
-## 📊 Metrics & Results
-
-### Project Metrics
-
-| Project | Key Features |
-|---------|--------------|
-| **OAuth2/OIDC Server** | 4 flows implemented, OIDC layer |
-| **Security Scanner (Static)** | 12 detectors, <5ms scan time |
-| **Security Scanner (Runtime)** | CSRF testing, OIDC discovery |
-| **Session Management** | Multi-tenant isolation, hybrid validation |
-
-### Technical Characteristics
-
-- **Language**: Go
-- **Security**: Zero hardcoded secrets, pre-commit scanning
-- **Performance**:
-  - OAuth2 Server: All flows functional
-  - Security Scanner: <5ms scan time
-- **Documentation**:
-  - 4 comprehensive READMEs
-  - 3 PRDs (800+ lines each)
-  - 3 CHANGELOGs with detailed version history
-  - 2 educational deep-dives (OIDC, PKCE)
-- **Security Features**: Zero hardcoded secrets, secret redaction, comprehensive remediation guidance
-
-## 🎯 Real-World Applications
-
-### Multi-Brand Identity Platforms
-- **Challenge**: Unified identity across multiple brands in a portfolio
-- **Solution**: Multi-tenant session management with brand-specific signing keys
-- **Pattern**: [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) for consumer apps, [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) for [B2B](https://en.wikipedia.org/wiki/Business-to-business) partners
-
-### Enterprise Security
-- **Challenge**: Audit identity configurations across 100+ microservices
-- **Solution**: Automated security scanning in [CI/CD](https://en.wikipedia.org/wiki/CI/CD) pipelines
-- **Pattern**: [Shift-left security](https://www.devsecops.org/blog/2016/5/20/-security), fail builds on critical findings
-
-### Global Scale
-- **Challenge**: Identity for hundreds of millions of users across regions
-- **Solution**: Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation, [Redis](https://redis.io) for global revocation
-- **Pattern**: Fast path ([JWT](https://datatracker.ietf.org/doc/html/rfc7519)), slow path ([Redis](https://redis.io)), observable metrics
+### Quick Links
+- [LOGGING.md](./LOGGING.md) - Structured logging setup and debugging with breakpoints
+- [CLAUDE.md](./CLAUDE.md) - Project execution guidelines and status
 
 ## 🤝 Contributing
 
@@ -433,7 +175,8 @@ MIT License - see [LICENSE](./LICENSE) for details.
 ## 🙏 Acknowledgments
 
 Built with:
-- **Claude Code** (Anthropic) - AI pair programming for rapid learning
+- [Claude Code](https://claude.ai/claude-code) (Anthropic) - AI pair programming for rapid learning (~75% of code)
+- [Google Gemini](https://gemini.google.com) - AI pair programming assistance (~25% of code)
 - [RFC 6749 - OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
 - [RFC 7636 - PKCE Extension](https://datatracker.ietf.org/doc/html/rfc7636)
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
