@@ -169,7 +169,7 @@ func (h *AuthorizeHandler) generateAuthorizationCode(ctx context.Context, authRe
 }
 
 // getAuthenticatedUser returns the currently authenticated user ID
-// TODO: Implement real session management
+// TODO: Implement real session management -- unnecessary for this learning exercise (@bordenet)
 func (h *AuthorizeHandler) getAuthenticatedUser(r *http.Request) string {
 	// Check for session cookie or other authentication mechanism
 	// For now, return a demo user ID
