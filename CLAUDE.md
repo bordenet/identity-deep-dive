@@ -5,7 +5,7 @@ Build 4 identity projects in 3 days to brush up on key concepts ahead of senior 
 
 ## Core Principles
 1. **Production-quality patterns**: Error handling, observability, security, testing
-2. **Document learning**: Capture "aha!" moments, explain trade-offs
+2. **Document learning**: Capture notes and explain trade-offs
 3. **Multi-tenant thinking**: Design for global scale, HA requirements
 4. **Security first**: Follow OWASP identity best practices
 
@@ -84,9 +84,9 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ## Project Status (as of Oct 9, 2025)
 
-### ✅ Completed Projects
+### Completed Projects
 
-#### Project 1: OAuth2/OIDC Authorization Server (Complete)
+#### Project 1: OAuth2/OIDC Authorization Server
 **Time**: 8 hours | **Status**: Functional implementation
 
 **What Was Built**:
@@ -115,7 +115,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ---
 
-#### Project 2: Identity Security Scanner (Static Analysis) (Complete)
+#### Project 2: Identity Security Scanner (Static Analysis)
 **Time**: 8 hours | **Status**: Functional implementation
 
 **What Was Built**:
@@ -142,14 +142,14 @@ This makes documentation self-navigating with one-click access to authoritative 
 **Learning Outcomes**:
 - Deep understanding of OAuth2/OIDC security attack vectors
 - Static analysis patterns: AST parsing, rule engines, reporting
-- "Innovation through simplification" - automated expert security reviews
-- Production CLI tool design with excellent UX
+- Automated expert security reviews
+- CLI tool design
 
 ---
 
-### 🚧 In Progress / Paused
+### In Progress / Paused
 
-#### Project 4: Multi-Tenant Session Management (~70% Complete, Paused)
+#### Project 4: Multi-Tenant Session Management
 **Time**: 6 hours so far | **Remaining**: ~4 hours
 
 **What's Built**:
@@ -174,7 +174,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ---
 
-### 📋 Next Steps
+### Next Steps
 
 #### Immediate: Project 3 - Runtime Security Scanner (6-8 hours)
 **Stack**: Go, HTTP client for OAuth2 flow testing, attack simulation framework
@@ -192,7 +192,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 - Safe testing mode (no actual exploitation)
 
 #### Then: Complete Project 4 - Session Management (4 hours remaining)
-**Focus**: Finish what's 70% built
+**Focus**: Finish what's built
 - HTTP server and routing
 - Load testing to 10K+ concurrent sessions
 - Observability (Prometheus + Grafana)
@@ -202,13 +202,13 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ### Timeline Summary
 
-**Day 1 (Oct 7)**: Project 1 - OAuth2/OIDC Server ✅
-- Built complete authorization server from scratch
+**Day 1 (Oct 7)**: Project 1 - OAuth2/OIDC Server
+- Built authorization server from scratch
 - All flows working, fully documented
 
-**Day 2 (Oct 8-9)**: Project 2 - Security Scanner (Static) ✅
+**Day 2 (Oct 8-9)**: Project 2 - Security Scanner (Static)
 - Built CLI security analysis tool
-- 12 vulnerability detectors, production-ready
+- 12 vulnerability detectors
 
 **Day 3 (Oct 9-10)**: Projects 3 & 4
 - Project 3: Runtime Security Scanner (6-8 hours)
@@ -226,7 +226,7 @@ This makes documentation self-navigating with one-click access to authoritative 
 > "I built an OAuth2/OIDC authorization server from RFC specs in 8 hours. Implemented all 4 flows - Authorization Code, PKCE, Client Credentials, Token Refresh. I read RFC 6749, RFC 7636, and OIDC Core 1.0 spec, then implemented them. This helped me internalize the trade-offs - like why PKCE is non-negotiable for mobile apps."
 
 **Project 2 (Security Scanner)**:
-> "Applied my security scanner experience from Stash Financial to the identity domain. Built a CLI tool that detects 12 OAuth2/JWT vulnerability types in < 5ms. Same pattern as my previous work: team paralyzed by 10K vulnerabilities → built prioritization. Here it's: manual security reviews take hours → automated in milliseconds with clear remediation."
+> "Applied my security scanner experience to the identity domain. Built a CLI tool that detects 12 OAuth2/JWT vulnerability types in < 5ms. Same pattern as my previous work: team paralyzed by 10K vulnerabilities → built prioritization. Here it's: manual security reviews take hours → automated in milliseconds with clear remediation."
 
 ### Innovation Through Simplification
 > "The security scanner embodies this principle. Expert security reviews require deep OAuth2/OIDC knowledge and hours of analysis. My tool automates it: scan config file → get findings with RFC references and fix instructions → integrate into CI/CD. Shifts security left without requiring every developer to be an identity expert."
@@ -234,9 +234,9 @@ This makes documentation self-navigating with one-click access to authoritative 
 ### Bias for Action
 > "Didn't just read about identity protocols - built 4 projects in 3 days. Each project taught me a different layer: Project 1 = protocol implementation, Project 2 = security hardening, Project 3 = attack vectors, Project 4 = scale patterns. Learning by doing, not passive reading."
 
-### Multi-Brand/Multi-Tenant Thinking (for Expedia)
+### Multi-Brand/Multi-Tenant Thinking
 **Project 4 (Session Management)**:
-> "Designed multi-tenant session management with Expedia's challenge in mind - unified identity across multiple brands. Each tenant (brand) gets isolated signing keys, separate session pools, but shared infrastructure. Think: Expedia, Hotels.com, Vrbo - one platform, isolated contexts. Used Redis cluster for global scale, JWT for stateless validation."
+> "Designed multi-tenant session management with a multi-brand challenge in mind - unified identity across multiple brands. Each tenant (brand) gets isolated signing keys, separate session pools, but shared infrastructure. Used Redis cluster for global scale, JWT for stateless validation."
 
 ### Technical Depth Examples
 - **OAuth2 vs OIDC**: "OAuth2 is authorization - 'can user X access resource Y?' OIDC adds identity - 'who is user X?' Built both layers to understand the distinction."
@@ -248,32 +248,32 @@ This makes documentation self-navigating with one-click access to authoritative 
 ## Code Quality Patterns Applied
 
 ### Security First
-- ✅ Zero hardcoded secrets (all via environment variables or secret references)
-- ✅ Secret redaction in scanner output
-- ✅ PKCE enforcement for public clients
-- ✅ State parameter for CSRF protection
-- ✅ Short token lifetimes (15m access, 30d refresh)
+- Zero hardcoded secrets (all via environment variables or secret references)
+- Secret redaction in scanner output
+- PKCE enforcement for public clients
+- State parameter for CSRF protection
+- Short token lifetimes (15m access, 30d refresh)
 
 ### Production Patterns
-- ✅ Comprehensive error handling with context
-- ✅ Structured logging (ready for observability platforms)
-- ✅ Graceful shutdown and health checks
-- ✅ Configuration via environment (12-factor app)
-- ✅ Docker deployments with docker-compose
-- ✅ Makefile for developer productivity
+- Comprehensive error handling with context
+- Structured logging (ready for observability platforms)
+- Graceful shutdown and health checks
+- Configuration via environment (12-factor app)
+- Docker deployments with docker-compose
+- Makefile for developer productivity
 
-### Documentation Excellence
-- ✅ Every project has PRD, README, CHANGELOG
-- ✅ Architecture diagrams for complex systems
-- ✅ Educational deep-dives (OIDC walkthrough, PKCE deep dive)
-- ✅ All links to RFCs, OWASP, security standards
-- ✅ Example configurations (vulnerable + secure)
+### Documentation
+- Every project has PRD, README, CHANGELOG
+- Architecture diagrams for complex systems
+- Educational deep-dives (OIDC walkthrough, PKCE deep dive)
+- All links to RFCs, OWASP, security standards
+- Example configurations (vulnerable + secure)
 
 ### Testing & Validation
-- ✅ Scanner: Tested on 16-issue vulnerable config (100% detection)
-- ✅ Scanner: Tested on secure config (0 critical issues)
-- ✅ OAuth2 Server: All flows tested end-to-end
-- ✅ Performance: Sub-5ms scanner execution
+- Scanner: Tested on 16-issue vulnerable config (100% detection)
+- Scanner: Tested on secure config (0 critical issues)
+- OAuth2 Server: All flows tested end-to-end
+- Performance: Sub-5ms scanner execution
 
 ---
 
@@ -281,10 +281,10 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 | Project | Status | Time | Lines of Code | Key Metric |
 |---------|--------|------|---------------|------------|
-| Project 1: OAuth2/OIDC Server | ✅ | 8h | ~2500 | 4 flows working |
-| Project 2: Security Scanner | ✅ | 8h | ~3100 | 12 detectors, <5ms |
-| Project 3: Runtime Scanner | 📋 | 6-8h | TBD | 15+ attack sims |
-| Project 4: Session Mgmt | 🚧 | 6h+4h | ~1800 | 10K sessions |
+| Project 1: OAuth2/OIDC Server | Complete | 8h | ~2500 | 4 flows working |
+| Project 2: Security Scanner | Complete | 8h | ~3100 | 12 detectors, <5ms |
+| Project 3: Runtime Scanner | In Progress | 6-8h | TBD | 15+ attack sims |
+| Project 4: Session Mgmt | In Progress | 6h+4h | ~1800 | 10K sessions |
 | **Total** | **50%** | **22h/~30h** | **~7400+** | **Functional** |
 
 ### Security Guardrails

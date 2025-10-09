@@ -72,12 +72,21 @@ Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html
 
 Dynamic testing of OAuth2/OIDC implementations.
 
-[📁 View Project](./project-3b-runtime-identity-scanner/) | [📖 Detailed README](./project-3b-runtime-identity-scanner/README.md)
+**📚 Documentation**:
+- [📁 View Project](./project-3-runtime-security-scanner/) | [📖 Project README](./project-3-runtime-security-scanner/README.md)
+- [📋 Product Requirements (PRD)](./project-3-runtime-security-scanner/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-3-runtime-security-scanner/CHANGELOG.md)
+
+**Try It**:
+```bash
+cd project-3-runtime-security-scanner
+make build
+./bin/scanner run http://localhost:8080
+```
 
 ---
 
 ### 4. Multi-Tenant Session Management
-**Status**: In Progress | **Time**: 10 hours (target) | **Language**: [Go](https://go.dev)
+**Status**: Complete | **Time**: 10 hours | **Language**: [Go](https://go.dev)
 
 Distributed session management service with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and [Redis](https://redis.io):
 - Multi-tenant session isolation
@@ -89,10 +98,26 @@ Distributed session management service with [JWT](https://datatracker.ietf.org/d
 Identity at scale with multi-brand architecture and [high-availability](https://en.wikipedia.org/wiki/High_availability).
 
 **📚 Documentation**:
-- [📁 View Project](./project-4-session-management/) | [📖 Project README](./project-4-session-management/README.md) (pending)
+- [📁 View Project](./project-4-session-management/) | [📖 Project README](./project-4-session-management/README.md)
 - [📋 Product Requirements (PRD)](./project-4-session-management/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-4-session-management/CHANGELOG.md)
 
+**Try It**:
+```bash
+cd project-4-session-management
+make run
+```
+
 ---
+
+## Logging and Debugging
+
+This repository uses a structured logging approach with [zerolog](https://github.com/rs/zerolog). For detailed information on logging, see the [LOGGING.md](LOGGING.md) file.
+
+### Breakpoints
+
+To facilitate debugging, the code includes special log statements that can be used as breakpoints. These log statements are prefixed with `MERMAID:` and correspond to the steps in the mermaid diagrams in the documentation.
+
+To set a breakpoint, search for the `MERMAID:` prefix in the code and set a breakpoint on that line in your debugger.
 
 ## 🚀 Quick Start
 
