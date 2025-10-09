@@ -337,6 +337,7 @@ Implemented session management thinking about multi-brand, global-scale requirem
 ### Protocol Trade-offs
 - **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vs [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)**: AuthN vs AuthZ - different problems, complementary solutions
 - **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vs [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)**: Enterprise partnerships vs modern apps - both have valid use cases
+- **[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) Interop**: Identity brokers ([Auth0](https://auth0.com), [Okta](https://www.okta.com)), bridges ([Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)), and protocol translation layers for hybrid environments
 - **[JWT](https://datatracker.ietf.org/doc/html/rfc7519) Validation**: Stateless (fast) vs stateful (revocable) - need both approaches
 
 ### Security Considerations
