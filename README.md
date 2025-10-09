@@ -79,8 +79,8 @@ Distributed session management service with [JWT](https://datatracker.ietf.org/d
 **Why this matters**: Demonstrates thinking about identity at scale - global, multi-brand, [high-availability](https://en.wikipedia.org/wiki/High_availability) requirements.
 
 **📚 Documentation**:
-- [📁 View Project](./project-2-session-management/) | [📖 Project README](./project-2-session-management/README.md) (pending)
-- [📋 Product Requirements (PRD)](./project-2-session-management/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-2-session-management/CHANGELOG.md)
+- [📁 View Project](./project-4-session-management/) | [📖 Project README](./project-4-session-management/README.md) (pending)
+- [📋 Product Requirements (PRD)](./project-4-session-management/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-4-session-management/CHANGELOG.md)
 
 ---
 
