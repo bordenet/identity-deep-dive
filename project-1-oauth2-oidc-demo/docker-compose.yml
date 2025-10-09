@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Redis for session storage
+  redis:
+    image: redis:7-alpine
+    container_name: oauth2-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # OAuth2/OIDC Authorization Server
+  authserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oauth2-authserver
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis:6379
+      - ISSUER=http://localhost:8080
+      - PORT=:8080
+      - PRIVATE_KEY_PATH=/keys/private.pem
+      - PUBLIC_KEY_PATH=/keys/public.pem
+    volumes:
+      - ./keys:/keys:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Demo Client Application
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: oauth2-client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - authserver
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+    driver: local
