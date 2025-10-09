@@ -157,6 +157,14 @@ else
     echo_info "✓ OpenSSL already installed ($(openssl version))"
 fi
 
+# Install golangci-lint for Go linting
+echo_info "Checking for golangci-lint..."
+if ! command -v golangci-lint &> /dev/null; then
+    echo_warn "golangci-lint not found. Installing golangci-lint..."
+    brew install golangci-lint
+else
+    echo_info "✓ golangci-lint already installed ($(golangci-lint --version))"
+fi
 
 # Install pre-commit framework (optional but recommended)
 echo_info "Checking for pre-commit..."

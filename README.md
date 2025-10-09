@@ -1,30 +1,32 @@
 # Identity Deep Dive
 
-> **Learning identity protocols and patterns through implementation**
+> **Learning identity protocols through implementation**
 
-A hands-on exploration of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html), and identity security - built in 3 days to demonstrate rapid domain mastery for senior engineering leadership roles.
+Implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), and identity security patterns.
 
-## 🎯 Learning Objectives
+**Note**: These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like federation, directory services, certificate management, biometrics, risk-based authentication, and many other concepts are not explored here.
+
+## Learning Objectives
 
 This monorepo demonstrates:
-- **Rapid domain learning** - entering identity/access management from engineering leadership background
-- **Bias for action** - implementing protocols from specs, not just reading documentation
-- **Innovation through simplification** - building practical tools that solve real problems
-- **Production thinking** - scale, security, and operational excellence from day one
+- Domain learning in identity/access management
+- Implementing protocols from RFCs and specifications
+- Building practical security tools
+- Production patterns: scale, security, and operational practices
 
 ## 📦 Projects
 
 ### 1. OAuth2/OIDC Authorization Server
-**Status**: ✅ Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
+**Status**: Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
 
-A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) authorization server supporting:
-- [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1) (most secure for web apps)
-- [PKCE Extension](https://datatracker.ietf.org/doc/html/rfc7636) (mobile/[SPA](https://en.wikipedia.org/wiki/Single-page_application) security)
-- [Client Credentials Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4) (service-to-service)
-- Token Refresh (long-lived sessions)
+Implementation of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) authorization server:
+- [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1)
+- [PKCE Extension](https://datatracker.ietf.org/doc/html/rfc7636)
+- [Client Credentials Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4)
+- Token Refresh
 - [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) ID Tokens + UserInfo endpoint
 
-**Why this matters**: Deep understanding of identity protocols ([OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html)) by implementing the spec, not just using libraries.
+Understanding identity protocols by implementing RFC specifications.
 
 **📚 Documentation**:
 - [📁 View Project](./project-1-oauth2-oidc-demo/) | [📖 Project README](./project-1-oauth2-oidc-demo/README.md)
@@ -35,16 +37,16 @@ A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/
 ---
 
 ### 2. Identity Security Scanner (Static Analysis)
-**Status**: ✅ Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
+**Status**: Complete | **Time**: 8 hours | **Language**: [Go](https://go.dev)
 
-[CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool to audit [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations for security misconfigurations:
-- Weak client secrets and key management issues
+[CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool to audit [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations:
+- Weak client secrets and key management
 - Overly permissive scopes
 - Insecure redirect [URIs](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
 - [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token vulnerabilities
 - [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) signature/encryption issues
 
-**Why this matters**: Applies proven security scanner pattern to identity domain - innovation through simplification.
+Automated security scanning for identity configurations.
 
 **📚 Documentation**:
 - [📁 View Project](./project-2-identity-security-scanner/) | [📖 Project README](./project-2-identity-security-scanner/README.md)
@@ -59,7 +61,7 @@ make scan-vulnerable  # Scan example config with 16 security issues
 ---
 
 ### 3. Identity Security Scanner (Runtime Analysis)
-**Status**: ✅ Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
+**Status**: Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
 
 Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) flows:
 - [CSRF](https://owasp.org/www-community/attacks/csrf) attack detection
@@ -68,23 +70,23 @@ Runtime security testing for live [OAuth2](https://datatracker.ietf.org/doc/html
 - Redirect [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) manipulation
 - [Algorithm confusion attacks](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/)
 
-**Why this matters**: Defense in depth - static config analysis + runtime flow testing catches issues in code review AND production.
+Dynamic testing of OAuth2/OIDC implementations.
 
 [📁 View Project](./project-3b-runtime-identity-scanner/) | [📖 Detailed README](./project-3b-runtime-identity-scanner/README.md)
 
 ---
 
 ### 4. Multi-Tenant Session Management
-**Status**: 🚧 In Progress | **Time**: 10 hours (target) | **Language**: [Go](https://go.dev)
+**Status**: In Progress | **Time**: 10 hours (target) | **Language**: [Go](https://go.dev)
 
 Distributed session management service with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and [Redis](https://redis.io):
-- Multi-tenant session isolation (multi-brand architecture)
-- Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation (fast path)
-- [Redis](https://redis.io)-backed revocation (security path)
+- Multi-tenant session isolation
+- Stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation
+- [Redis](https://redis.io)-backed revocation
 - Token refresh with sliding sessions
 - Load tested to 10K+ concurrent sessions
 
-**Why this matters**: Demonstrates thinking about identity at scale - global, multi-brand, [high-availability](https://en.wikipedia.org/wiki/High_availability) requirements.
+Identity at scale with multi-brand architecture and [high-availability](https://en.wikipedia.org/wiki/High_availability).
 
 **📚 Documentation**:
 - [📁 View Project](./project-4-session-management/) | [📖 Project README](./project-4-session-management/README.md) (pending)
@@ -98,21 +100,122 @@ Distributed session management service with [JWT](https://datatracker.ietf.org/d
 - [Go](https://go.dev) 1.21+
 - [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)
 - [Redis](https://redis.io) (via Docker)
+- [golangci-lint](https://golangci-lint.run) (for linting)
 
-### Run All Projects
+### One-Time Setup (macOS)
 ```bash
-# Clone the repository
-git clone https://github.com/bordenet/identity-deep-dive.git
-cd identity-deep-dive
+# Run automated setup script (installs all dependencies)
+./setup.sh
 
-# Run all projects with Docker Compose
+# Or install manually:
+brew install go redis docker-compose golangci-lint ggshield
+```
+
+### Building & Testing
+
+#### Build All Projects
+```bash
+# Build all projects in monorepo
+make build-all
+
+# Or build individual projects
+cd project-1-oauth2-oidc-demo && make build
+cd project-2-identity-security-scanner && make build
+cd project-4-session-management && make build
+```
+
+#### Run Tests
+```bash
+# Run all tests across projects
+make test-all
+
+# Or test individual projects
+cd project-1-oauth2-oidc-demo && go test ./...
+cd project-2-identity-security-scanner && go test ./...
+cd project-4-session-management && go test ./...
+```
+
+#### Lint Code
+```bash
+# Lint all projects
+make lint-all
+
+# Or lint individual projects
+cd project-1-oauth2-oidc-demo && golangci-lint run
+cd project-2-identity-security-scanner && golangci-lint run
+cd project-4-session-management && golangci-lint run
+```
+
+### Running Projects
+
+#### Project 1: OAuth2/OIDC Server
+```bash
+cd project-1-oauth2-oidc-demo
+
+# Start Redis and server with Docker Compose
 docker-compose up
 
-# Or run individual projects
-cd project-1-oauth2-oidc-demo && make run
-cd project-2-session-management && make run
-cd project-3-identity-security-scanner && make scan
-cd project-3b-runtime-identity-scanner && make test
+# Or run locally (requires Redis running)
+make run
+
+# Server will be available at:
+# - Authorization: http://localhost:8080/authorize
+# - Token: http://localhost:8080/token
+# - UserInfo: http://localhost:8080/userinfo
+# - Discovery: http://localhost:8080/.well-known/openid-configuration
+```
+
+#### Project 2: Identity Security Scanner
+```bash
+cd project-2-identity-security-scanner
+
+# Scan example vulnerable config
+make scan-vulnerable
+
+# Scan example secure config
+make scan-secure
+
+# Scan custom config
+./bin/scanner scan --config path/to/config.yaml
+
+# Output in JSON format
+./bin/scanner scan --config config.yaml --format json
+```
+
+#### Project 4: Multi-Tenant Session Management
+```bash
+cd project-4-session-management
+
+# Start Redis cluster
+docker-compose up -d redis
+
+# Run session service
+make run
+
+# Run load tests (requires k6)
+make load-test
+```
+
+### Development Workflow
+
+#### Pre-commit Hooks
+All commits are automatically checked for:
+- **Secrets scanning** (ggshield) - blocks commits with hardcoded secrets
+- **Go linting** (golangci-lint) - enforces code quality standards
+- **Unit tests** (go test) - ensures tests pass before commit
+
+```bash
+# Hooks are installed automatically by setup.sh
+# To manually trigger checks:
+git commit -m "your message"  # Runs all checks automatically
+```
+
+#### Pre-push Hooks
+All pushes are automatically checked for:
+- **Secrets scanning** (ggshield) - prevents pushing secrets to remote
+
+```bash
+git push origin main  # Runs secret scan automatically
 ```
 
 ## 📚 Learning Journey
@@ -253,7 +356,5 @@ Built with:
 ---
 
 **Timeline**: October 7-10, 2025 (3 days)
-**Purpose**: Demonstrating rapid domain mastery for identity/access management leadership roles
+**Purpose**: Learning identity/access management through hands-on implementation
 **Author**: [Matt Bordenet](https://github.com/bordenet) | [LinkedIn](https://www.linkedin.com/in/mattbordenet/)
-
-> "I don't have 15 years in identity - I have 26 years of rapid domain mastery. Every 3-5 years I've entered a new technical domain, dove deep, and delivered transformational results. Identity is my next deep dive, and my track record shows I simplify while I learn."

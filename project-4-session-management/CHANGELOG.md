@@ -16,6 +16,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2025-10-09
+
+### Added
+- **Unit Tests**: Added comprehensive test coverage for token management
+  - `internal/tokens/jwt_test.go` - JWT access token and refresh token generation/validation tests for multi-tenant scenarios
+  - `internal/tokens/keymanager_test.go` - Multi-tenant key manager tests including key caching and tenant isolation
+- **Code Quality**: Integrated golangci-lint for automated code quality checks
+- **CI/CD**: Pre-commit hooks now run unit tests and linting automatically
+
+### Changed
+- Enhanced development workflow with automated testing and quality checks
+- Improved pre-commit hook to include Go tests and golangci-lint
+
+---
+
 ## [0.3.0] - 2025-10-08
 
 ### Added - Multi-Tenant Key Manager and Redis Session Store

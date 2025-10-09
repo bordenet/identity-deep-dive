@@ -14,6 +14,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD integration examples (GitHub Actions, GitLab CI)
 - Custom rule loading from YAML files
 
+## [1.1.0] - 2025-10-09
+
+### Added
+- **Unit Tests**: Added comprehensive test coverage for vulnerability detectors
+  - `internal/detector/oauth2_test.go` - Tests for OAuth2 vulnerability detection (weak secrets, insecure redirects, missing PKCE)
+  - `internal/detector/jwt_test.go` - Tests for JWT vulnerability detection (algorithm confusion, weak keys, token lifetime issues)
+- **Code Quality**: Integrated golangci-lint for automated code quality checks
+- **CI/CD**: Pre-commit hooks now run unit tests and linting automatically
+
+### Changed
+- Enhanced development workflow with automated testing and quality checks
+- Improved pre-commit hook to include Go tests and golangci-lint
+
+---
+
 ## [1.0.0] - 2025-10-09
 
 ### Added

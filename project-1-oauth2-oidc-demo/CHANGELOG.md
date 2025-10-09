@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-10-09
+
+### Added
+- **Unit Tests**: Added comprehensive test coverage
+  - `internal/tokens/pkce_test.go` - PKCE code verifier/challenge generation and validation tests
+  - `internal/tokens/jwt_test.go` - JWT access token and ID token generation/validation tests
+- **Code Quality**: Integrated golangci-lint for automated code quality checks
+- **CI/CD**: Pre-commit hooks now run unit tests automatically
+
+### Changed
+- Updated development workflow to enforce test-driven development
+- Enhanced pre-commit hook to include Go test execution
+
+---
+
 ## [1.0.0] - 2025-10-08 🎉
 
 ### Project Complete ✅

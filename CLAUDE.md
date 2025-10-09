@@ -1,7 +1,7 @@
 # CLAUDE.md - Identity Learning Projects
 
 ## Goal
-Build 4 identity projects in 3 days to demonstrate rapid domain mastery for senior leadership role interview (Friday).
+Build 4 identity projects in 3 days to brush up on key concepts ahead of senior leadership role interview (Friday).
 
 ## Core Principles
 1. **Production-quality patterns**: Error handling, observability, security, testing
@@ -71,29 +71,41 @@ ALWAYS link critical acroyms and industry standars within markdown files to auth
 
 This makes documentation self-navigating with one-click access to authoritative sources.
 
+**CRITICAL**: When editing markdown files (.md), ALWAYS watch our claims:
+- STRIP ALL "celebratory" text from our markdown documents. It's pointless bloat. Focus on what works so readers can test things out and also what's still left to implement.
+- Identity is a vast domain-- we are only scratching the surface
+- We aren't claiming to have "mastered" *anything*. We are merely learning and brushing up on the simplest stuff. No "high flying" language across this repo.
+
+## Code Quality
+- You will not disable linting in order to cut corners for speed
+- You will not disable tests in order to save time or cut corners. You will fix tests as we go. If we make fundamental changes in the code, you *may* alter tests, remove tests, as needed. But you will not shortcut.
+- You will not disable pre-commit hooks
+- You will not commit -n to bypass pre-commit hooks
+
 ## Project Status (as of Oct 9, 2025)
 
 ### ✅ Completed Projects
 
-#### Project 1: OAuth2/OIDC Authorization Server (100% Complete)
-**Time**: 8 hours | **Status**: Production-ready ✅
+#### Project 1: OAuth2/OIDC Authorization Server (Complete)
+**Time**: 8 hours | **Status**: Production-ready
 
 **What Was Built**:
-- Complete OAuth2/OIDC authorization server from RFC specs
+- OAuth2/OIDC authorization server from RFC specs
 - All 4 OAuth2 flows: Authorization Code, PKCE, Client Credentials, Token Refresh
 - OIDC layer: ID tokens, UserInfo endpoint, discovery endpoint
 - Redis-backed session and token storage
-- Production-quality error handling, logging, observability hooks
+- Error handling, logging, observability hooks
 - Docker Compose deployment with Redis cluster
-- Comprehensive documentation: PRD, README, OIDC walkthrough, PKCE deep dive
+- Documentation: PRD, README, OIDC walkthrough, PKCE deep dive
+- Unit tests for PKCE and JWT token generation/validation
 
-**Key Achievements**:
-- ✅ All OAuth2 flows work end-to-end
-- ✅ Security best practices: State parameter, PKCE enforcement, short token lifetimes
-- ✅ Complete CHANGELOG (1400+ lines) documenting all 16 commits
-- ✅ Educational deep-dive documents on OIDC and PKCE
-- ✅ Clean architecture: handlers → services → storage layers
-- ✅ Zero hardcoded secrets (all via environment variables)
+**Technical Features**:
+- All OAuth2 flows work end-to-end
+- Security best practices: State parameter, PKCE enforcement, short token lifetimes
+- CHANGELOG documenting all commits
+- Educational documents on OIDC and PKCE
+- Clean architecture: handlers → services → storage layers
+- Zero hardcoded secrets (all via environment variables)
 
 **Learning Outcomes**:
 - OAuth2 vs OIDC distinction (authorization vs identity)
@@ -103,24 +115,25 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ---
 
-#### Project 2: Identity Security Scanner (Static Analysis) (100% Complete)
-**Time**: 8 hours | **Status**: Production-ready ✅
+#### Project 2: Identity Security Scanner (Static Analysis) (Complete)
+**Time**: 8 hours | **Status**: Production-ready
 
 **What Was Built**:
-- CLI-based static analysis tool for OAuth2/OIDC/JWT configurations
+- CLI static analysis tool for OAuth2/OIDC/JWT configurations
 - 12 vulnerability detectors (6 OAuth2 + 6 JWT)
 - Human-readable and JSON report formats
 - YAML/JSON parser with line number tracking
 - Configurable severity thresholds and rule disabling
 - Example vulnerable and secure configurations
+- Unit tests for OAuth2 and JWT vulnerability detectors
 
-**Key Achievements**:
-- ✅ Detects 12 critical vulnerability types with zero false positives
-- ✅ < 5ms scan time for typical configurations
-- ✅ Comprehensive remediation guidance with RFC/OWASP references
-- ✅ Color-coded terminal output with severity badges
-- ✅ Secret redaction in all output
-- ✅ Tested: Found 16 issues in vulnerable config, 0 critical in secure config
+**Technical Features**:
+- Detects 12 vulnerability types with zero false positives
+- < 5ms scan time for typical configurations
+- Remediation guidance with RFC/OWASP references
+- Color-coded terminal output with severity badges
+- Secret redaction in all output
+- Test results: Found 16 issues in vulnerable config, 0 critical in secure config
 
 **Vulnerability Coverage**:
 - OAuth2: Weak secrets, insecure redirects, missing PKCE, excessive scopes, deprecated flows, missing state
@@ -208,9 +221,9 @@ This makes documentation self-navigating with one-click access to authoritative 
 
 ## Interview Talking Points
 
-### Demonstrating Rapid Domain Mastery
+### Learning Identity Protocols
 **Project 1 (OAuth2/OIDC Server)**:
-> "I built an OAuth2/OIDC authorization server from RFC specs in 8 hours. Implemented all 4 flows - Authorization Code, PKCE, Client Credentials, Token Refresh. This wasn't just copying tutorials; I read RFC 6749, RFC 7636, and OIDC Core 1.0 spec, then implemented them. Helped me internalize the trade-offs - like why PKCE is non-negotiable for mobile apps."
+> "I built an OAuth2/OIDC authorization server from RFC specs in 8 hours. Implemented all 4 flows - Authorization Code, PKCE, Client Credentials, Token Refresh. I read RFC 6749, RFC 7636, and OIDC Core 1.0 spec, then implemented them. This helped me internalize the trade-offs - like why PKCE is non-negotiable for mobile apps."
 
 **Project 2 (Security Scanner)**:
 > "Applied my security scanner experience from Stash Financial to the identity domain. Built a CLI tool that detects 12 OAuth2/JWT vulnerability types in < 5ms. Same pattern as my previous work: team paralyzed by 10K vulnerabilities → built prioritization. Here it's: manual security reviews take hours → automated in milliseconds with clear remediation."

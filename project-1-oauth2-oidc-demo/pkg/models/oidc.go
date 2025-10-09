@@ -41,6 +41,51 @@ type IDTokenClaims struct {
 	Profile       string `json:"profile,omitempty"`
 }
 
+// GetExpirationTime implements jwt.Claims interface
+func (c IDTokenClaims) GetExpirationTime() (*time.Time, error) {
+	if c.ExpiresAt == 0 {
+		return nil, nil
+	}
+	t := time.Unix(c.ExpiresAt, 0)
+	return &t, nil
+}
+
+// GetIssuedAt implements jwt.Claims interface
+func (c IDTokenClaims) GetIssuedAt() (*time.Time, error) {
+	if c.IssuedAt == 0 {
+		return nil, nil
+	}
+	t := time.Unix(c.IssuedAt, 0)
+	return &t, nil
+}
+
+// GetNotBefore implements jwt.Claims interface
+func (c IDTokenClaims) GetNotBefore() (*time.Time, error) {
+	if c.NotBefore == 0 {
+		return nil, nil
+	}
+	t := time.Unix(c.NotBefore, 0)
+	return &t, nil
+}
+
+// GetIssuer implements jwt.Claims interface
+func (c IDTokenClaims) GetIssuer() (string, error) {
+	return c.Issuer, nil
+}
+
+// GetSubject implements jwt.Claims interface
+func (c IDTokenClaims) GetSubject() (string, error) {
+	return c.Subject, nil
+}
+
+// GetAudience implements jwt.Claims interface
+func (c IDTokenClaims) GetAudience() ([]string, error) {
+	if c.Audience == "" {
+		return nil, nil
+	}
+	return []string{c.Audience}, nil
+}
+
 // UserInfoResponse represents the OIDC UserInfo endpoint response
 type UserInfoResponse struct {
 	Subject       string `json:"sub"`                      // Required
