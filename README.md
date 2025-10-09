@@ -35,7 +35,7 @@ A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/
 ---
 
 ### 2. Identity Security Scanner (Static Analysis)
-**Status**: ✅ Complete | **Time**: 6 hours | **Language**: [Go](https://go.dev)
+**Status**: 🚧 In Progress | **Time**: 10 hours (target) | **Language**: [Go](https://go.dev)
 
 [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool to audit [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations for security misconfigurations:
 - Weak client secrets and key management issues
@@ -46,7 +46,9 @@ A from-scratch implementation of [OAuth2](https://datatracker.ietf.org/doc/html/
 
 **Why this matters**: Applies proven security scanner pattern to identity domain - innovation through simplification.
 
-[📁 View Project](./project-3-identity-security-scanner/) | [📖 Detailed README](./project-3-identity-security-scanner/README.md)
+**📚 Documentation**:
+- [📁 View Project](./project-2-identity-security-scanner/) | [📖 Project README](./project-2-identity-security-scanner/README.md) (pending)
+- [📋 Product Requirements (PRD)](./project-2-identity-security-scanner/docs/PRD.md) | [📝 Progress Tracking (CHANGELOG)](./project-2-identity-security-scanner/CHANGELOG.md)
 
 ---
 
