@@ -2,7 +2,7 @@
 
 ## Overview
 
-All projects use [zerolog](https://github.com/rs/zerolog) for structured JSON logging with timestamps. Logs are written to stdout in JSON format, making them easy to parse and aggregate.
+All projects use [zerolog](https://github.com/rs/zerolog) for structured [JSON](https://www.json.org/json-en.html) logging with timestamps. Logs are written to stdout in [JSON](https://www.json.org/json-en.html) format, making them easy to parse and aggregate.
 
 ## Log Format
 
@@ -22,7 +22,7 @@ Example log output:
 ### Standard Fields
 - **level**: Log level (debug, info, warn, error, fatal)
 - **service**: Service name (identifies which project generated the log)
-- **timestamp**: ISO8601 timestamp with nanosecond precision
+- **timestamp**: [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html) timestamp with nanosecond precision
 - **message**: Human-readable log message
 - **Additional fields**: Context-specific structured data
 
@@ -65,7 +65,7 @@ LOG_LEVEL=debug go run cmd/server/main.go
 - 50 GB logs/month
 - 14-day retention
 - 3 users
-- Full Grafana dashboard integration
+- Full [Grafana](https://grafana.com/) dashboard integration
 
 **Setup**:
 ```bash
@@ -103,7 +103,7 @@ go run cmd/server/main.go 2>&1 | tee /tmp/oauth2-server.log
 promtail -config.file=promtail.yaml
 ```
 
-**Query Examples** (in Grafana):
+**Query Examples** (in [Grafana](https://grafana.com/)):
 ```logql
 {job="oauth2-server"} |= "error"
 {job="oauth2-server"} | json | level="error"
@@ -153,7 +153,7 @@ filebeat -e -c filebeat.yml
 
 **Setup**:
 ```bash
-# Stream logs directly via HTTP
+# Stream logs directly via [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
 go run cmd/server/main.go 2>&1 | \
   curl -X POST https://in.logs.betterstack.com/ \
     -H "Authorization: Bearer <YOUR-SOURCE-TOKEN>" \
@@ -195,7 +195,7 @@ sudo launchctl start com.datadoghq.agent
 
 ### 5. Local Development: [lnav](https://lnav.org/)
 
-**Why**: Best local log viewer for JSON logs
+**Why**: Best local log viewer for [JSON](https://www.json.org/json-en.html) logs
 
 **Setup**:
 ```bash
@@ -211,10 +211,10 @@ go run cmd/server/main.go 2>&1 | lnav
 ```
 
 **Features**:
-- Real-time JSON parsing
+- Real-time [JSON](https://www.json.org/json-en.html) parsing
 - Syntax highlighting
 - Filtering and searching
-- SQL queries on logs
+- [SQL](https://en.wikipedia.org/wiki/SQL) queries on logs
 - No external service required
 
 ---
@@ -224,8 +224,8 @@ go run cmd/server/main.go 2>&1 | lnav
 | Use Case | Recommended Solution | Why |
 |----------|---------------------|-----|
 | **Learning/Development** | lnav | Free, local, no setup |
-| **Demo/Portfolio** | Grafana Cloud (Loki) | Best free tier, professional UI |
-| **Long-term retention** | Grafana Cloud (Loki) | 14-day retention, 50GB/month |
+| **Demo/Portfolio** | [Grafana Cloud (Loki)](https://grafana.com/products/cloud/logs/) | Best free tier, professional UI |
+| **Long-term retention** | [Grafana Cloud (Loki)](https://grafana.com/products/cloud/logs/) | 14-day retention, 50GB/month |
 | **Team collaboration** | Better Stack | Good UI, team features |
 | **Enterprise evaluation** | Datadog | Industry standard, robust |
 

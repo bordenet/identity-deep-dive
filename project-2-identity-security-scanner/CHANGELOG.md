@@ -8,24 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- SAML vulnerability detection (6 rules)
-- SARIF output format for GitHub Security tab
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vulnerability detection (6 rules)
+- [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) output format for GitHub Security tab
 - Markdown report format
-- CI/CD integration examples (GitHub Actions, GitLab CI)
-- Custom rule loading from YAML files
+- [CI/CD](https://en.wikipedia.org/wiki/CI/CD) integration examples (GitHub Actions, GitLab CI)
+- Custom rule loading from [YAML](https://yaml.org/) files
 
 ## [1.1.0] - 2025-10-09
 
 ### Added
 - **Unit Tests**: Added comprehensive test coverage for vulnerability detectors
-  - `internal/detector/oauth2_test.go` - Tests for OAuth2 vulnerability detection (weak secrets, insecure redirects, missing PKCE)
-  - `internal/detector/jwt_test.go` - Tests for JWT vulnerability detection (algorithm confusion, weak keys, token lifetime issues)
-- **Code Quality**: Integrated golangci-lint for automated code quality checks
-- **CI/CD**: Pre-commit hooks now run unit tests and linting automatically
+  - `internal/detector/oauth2_test.go` - Tests for [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vulnerability detection (weak secrets, insecure redirects, missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636))
+  - `internal/detector/jwt_test.go` - Tests for [JWT](https://datatracker.ietf.org/doc/html/rfc7519) vulnerability detection (algorithm confusion, weak keys, token lifetime issues)
+- **Code Quality**: Integrated [golangci-lint](https://golangci-lint.run/) for automated code quality checks
+- **[CI/CD](https://en.wikipedia.org/wiki/CI/CD)**: Pre-commit hooks now run unit tests and linting automatically
 
 ### Changed
 - Enhanced development workflow with automated testing and quality checks
-- Improved pre-commit hook to include Go tests and golangci-lint
+- Improved pre-commit hook to include Go tests and [golangci-lint](https://golangci-lint.run/)
 
 ---
 
@@ -33,20 +33,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Complete working identity security scanner** 🎉
-- CLI tool with Cobra framework
+- [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool with [Cobra](https://cobra.dev/) framework
   - `scan` command for analyzing configuration files
-  - Multiple output formats (human-readable, JSON)
+  - Multiple output formats (human-readable, [JSON](https://www.json.org/))
   - Configurable failure thresholds
   - File pattern matching (include/exclude)
   - Rule disable capability
 
 - **12 Vulnerability Detectors**:
-  - OAuth2 (6 rules): Weak secrets, insecure redirects, missing PKCE, excessive scopes, deprecated flows, missing state
-  - JWT (6 rules): Algorithm confusion, weak signing, missing expiration, excessive lifetime, missing audience validation, hardcoded secrets
+  - [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) (6 rules): Weak secrets, insecure redirects, missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), excessive scopes, deprecated flows, missing state
+  - [JWT](https://datatracker.ietf.org/doc/html/rfc7519) (6 rules): Algorithm confusion, weak signing, missing expiration, excessive lifetime, missing audience validation, hardcoded secrets
 
 - **Parsers and Engine**:
-  - YAML parser with line number tracking
-  - JSON parser
+  - [YAML](https://yaml.org/) parser with line number tracking
+  - [JSON](https://www.json.org/) parser
   - Config tree navigation (JSONPath-style selectors)
   - Rule registry with enable/disable and severity override support
   - Scanner orchestrator with file discovery
@@ -55,12 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Human-readable terminal output with color coding
   - Severity badges (CRITICAL, HIGH, MEDIUM, LOW)
   - Detailed remediation steps for each finding
-  - References to RFCs, OWASP, CWE
-  - JSON output for programmatic consumption
+  - References to [RFCs](https://www.ietf.org/standards/rfcs/), [OWASP](https://owasp.org/), [CWE](https://cwe.mitre.org/)
+  - [JSON](https://www.json.org/) output for programmatic consumption
 
 - **Example Configurations**:
-  - Vulnerable OAuth2/JWT config (16 findings)
-  - Secure OAuth2/JWT config (best practices)
+  - Vulnerable [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[JWT](https://datatracker.ietf.org/doc/html/rfc7519) config (16 findings)
+  - Secure [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[JWT](https://datatracker.ietf.org/doc/html/rfc7519) config (best practices)
 
 - **Documentation**:
   - Comprehensive README with quickstart

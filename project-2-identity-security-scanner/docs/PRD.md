@@ -13,15 +13,15 @@
 
 ## Executive Summary
 
-The Identity Security Scanner is a CLI-based static analysis tool that automatically detects security misconfigurations in OAuth2, OIDC, SAML, and JWT implementations. By scanning configuration files, source code, and infrastructure-as-code definitions, it identifies vulnerabilities before they reach production.
+The Identity Security Scanner is a [CLI](https://en.wikipedia.org/wiki/Command-line_interface)-based static analysis tool that automatically detects security misconfigurations in [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html), and [JWT](https://datatracker.ietf.org/doc/html/rfc7519) implementations. By scanning configuration files, source code, and infrastructure-as-code definitions, it identifies vulnerabilities before they reach production.
 
-This tool embodies "innovation through simplification" by automating manual security reviews that currently require expert knowledge and hours of analysis. It integrates into CI/CD pipelines to shift identity security left in the development lifecycle.
+This tool embodies "innovation through simplification" by automating manual security reviews that currently require expert knowledge and hours of analysis. It integrates into [CI/CD](https://en.wikipedia.org/wiki/CI/CD) pipelines to shift identity security left in the development lifecycle.
 
 **Key Value Propositions**:
-- **Automated Security Reviews**: Replace manual OAuth2/OIDC/SAML configuration audits
+- **Automated Security Reviews**: Replace manual [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configuration audits
 - **Early Detection**: Find vulnerabilities in development, not production
 - **Developer-Friendly**: Clear remediation guidance, not just error messages
-- **CI/CD Integration**: Block deployments with critical security issues
+- **[CI/CD](https://en.wikipedia.org/wiki/CI/CD) Integration**: Block deployments with critical security issues
 - **Zero False Positives Goal**: High-confidence detections only
 
 ---
@@ -32,7 +32,7 @@ This tool embodies "innovation through simplification" by automating manual secu
 
 Organizations implementing identity and access management systems face several challenges:
 
-1. **Complex Security Requirements**: OAuth2, OIDC, and SAML have dozens of security considerations spread across RFCs, security advisories, and best practice documents
+1. **Complex Security Requirements**: [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), and [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) have dozens of security considerations spread across [RFCs](https://www.ietf.org/standards/rfcs/), security advisories, and best practice documents
 2. **Manual Reviews Are Slow**: Security teams manually reviewing identity configurations creates bottlenecks
 3. **Late-Stage Discovery**: Identity misconfigurations often discovered in production or penetration tests
 4. **Knowledge Silos**: Identity security expertise concentrated in few team members
@@ -41,19 +41,19 @@ Organizations implementing identity and access management systems face several c
 ### Impact
 
 Real-world consequences of identity misconfigurations:
-- **Authorization Code Interception**: Missing PKCE in mobile apps allows token theft
+- **Authorization Code Interception**: Missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) in mobile apps allows token theft
 - **Open Redirects**: Overly permissive redirect URIs enable phishing attacks
-- **Token Leakage**: Implicit flow in modern SPAs exposes tokens in browser history
+- **Token Leakage**: Implicit flow in modern [SPAs](https://en.wikipedia.org/wiki/Single-page_application) exposes tokens in browser history
 - **Weak Secrets**: Short or predictable client secrets enable brute force attacks
-- **Algorithm Confusion**: JWT "none" algorithm acceptance bypasses signature validation
+- **Algorithm Confusion**: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) "none" algorithm acceptance bypasses signature validation
 - **Excessive Scopes**: Over-permissioned tokens violate principle of least privilege
 
 ### Target Users
 
 **Primary Persona: Platform Engineer (Sarah)**
 - **Role**: Maintains identity infrastructure for 50+ microservices
-- **Pain Points**: Can't manually review every service's OAuth2 configuration
-- **Goals**: Automated scanning in CI/CD, clear remediation steps
+- **Pain Points**: Can't manually review every service's [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) configuration
+- **Goals**: Automated scanning in [CI/CD](https://en.wikipedia.org/wiki/CI/CD), clear remediation steps
 - **Success Metric**: Zero critical identity vulnerabilities in production
 
 **Secondary Persona: Security Engineer (James)**
@@ -63,7 +63,7 @@ Real-world consequences of identity misconfigurations:
 - **Success Metric**: 80% reduction in time spent on identity config reviews
 
 **Tertiary Persona: Application Developer (Priya)**
-- **Role**: Builds microservices that integrate with OAuth2/OIDC
+- **Role**: Builds microservices that integrate with [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)
 - **Pain Points**: Unclear security requirements, late-stage security feedback
 - **Goals**: Pre-commit scanning, actionable error messages
 - **Success Metric**: Pass security review on first submission
@@ -74,19 +74,19 @@ Real-world consequences of identity misconfigurations:
 
 ### Goals
 
-1. **Detect Common Misconfigurations**: Identify 25+ critical OAuth2/OIDC/SAML/JWT vulnerabilities
+1. **Detect Common Misconfigurations**: Identify 25+ critical [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)/[JWT](https://datatracker.ietf.org/doc/html/rfc7519) vulnerabilities
 2. **Zero False Positives**: High-confidence detections only (accept false negatives over false positives)
 3. **Clear Remediation**: Each finding includes specific fix instructions and security context
 4. **Fast Execution**: Scan typical configuration in < 5 seconds
-5. **CI/CD Integration**: GitHub Actions, GitLab CI, Jenkins plugins with configurable failure thresholds
-6. **Multiple Input Formats**: YAML, JSON, TOML, environment files, source code annotations
+5. **[CI/CD](https://en.wikipedia.org/wiki/CI/CD) Integration**: GitHub Actions, GitLab CI, Jenkins plugins with configurable failure thresholds
+6. **Multiple Input Formats**: [YAML](https://yaml.org/), [JSON](https://www.json.org/), [TOML](https://toml.io/), environment files, source code annotations
 7. **Extensible Rule Engine**: Easy to add new checks without code changes
 
 ### Non-Goals
 
 1. **Runtime Analysis**: This tool performs static analysis only (runtime testing is Project 3)
-2. **Code Execution**: Does not run or test actual OAuth2 flows
-3. **Network Scanning**: Does not probe live endpoints or APIs
+2. **Code Execution**: Does not run or test actual [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) flows
+3. **Network Scanning**: Does not probe live endpoints or [APIs](https://en.wikipedia.org/wiki/API)
 4. **Compliance Certification**: Provides guidance, not compliance attestation
 5. **Auto-Remediation**: Reports issues, does not automatically fix them (yet)
 
@@ -99,9 +99,9 @@ Real-world consequences of identity misconfigurations:
 | Metric | Target | Measurement Method |
 |--------|--------|-------------------|
 | **Detection Accuracy** | 95%+ precision on test suite | 100 known vulnerable configs, measure false positives |
-| **Scan Performance** | < 5 seconds for 1000-line config | Benchmark on typical OAuth2 provider config |
+| **Scan Performance** | < 5 seconds for 1000-line config | Benchmark on typical [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) provider config |
 | **Adoption Rate** | 20+ GitHub stars in first month | GitHub metrics |
-| **CI/CD Integration** | Working examples for 3+ platforms | GitHub Actions, GitLab CI, Jenkins tested |
+| **[CI/CD](https://en.wikipedia.org/wiki/CI/CD) Integration** | Working examples for 3+ platforms | GitHub Actions, GitLab CI, Jenkins tested |
 
 ### Secondary Metrics
 
@@ -110,7 +110,7 @@ Real-world consequences of identity misconfigurations:
 | **Developer Satisfaction** | 4.5+/5 on "clarity of remediation guidance" | Survey (hypothetical) |
 | **Time Savings** | 80% reduction vs manual review | Time manual review vs automated scan |
 | **Coverage** | 25+ distinct vulnerability types | Rule count |
-| **False Negative Rate** | < 10% on OWASP ASVS checks | Test against ASVS identity requirements |
+| **False Negative Rate** | < 10% on [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) checks | Test against ASVS identity requirements |
 
 ---
 
@@ -120,13 +120,13 @@ Real-world consequences of identity misconfigurations:
 
 **Priority**: P0 (Must Have)
 
-The scanner must analyze configuration files containing OAuth2, OIDC, SAML, and JWT settings.
+The scanner must analyze configuration files containing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html), and [JWT](https://datatracker.ietf.org/doc/html/rfc7519) settings.
 
 **Acceptance Criteria**:
-- Parse YAML, JSON, TOML, and .env file formats
+- Parse [YAML](https://yaml.org/), [JSON](https://www.json.org/), [TOML](https://toml.io/), and .env file formats
 - Extract identity-related configuration keys (client_id, client_secret, redirect_uris, token_endpoint, etc.)
 - Handle nested configuration structures (e.g., provider configs within larger app configs)
-- Support multi-document YAML files
+- Support multi-document [YAML](https://yaml.org/) files
 - Gracefully handle malformed files with clear parse errors
 
 **Input Examples**:
@@ -181,7 +181,7 @@ CRITICAL: Weak Client Secret (oauth2-config.yaml:6)
 
 **Priority**: P0 (Must Have)
 
-Detect security misconfigurations specific to OAuth2 and OpenID Connect implementations.
+Detect security misconfigurations specific to [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) implementations.
 
 **Vulnerability Categories**:
 
@@ -198,7 +198,7 @@ Detect security misconfigurations specific to OAuth2 and OpenID Connect implemen
    - **Example**: `redirect_uri: "http://example.com/callback"` or `redirect_uri: "*"`
 
 3. **Missing PKCE Enforcement**
-   - **Check**: Public clients (mobile, SPA) without `pkce_required: true`
+   - **Check**: Public clients (mobile, [SPA](https://en.wikipedia.org/wiki/Single-page_application)) without `pkce_required: true`
    - **Severity**: High
    - **Example**: `client_type: "public"` with `pkce_required: false`
 
@@ -250,10 +250,10 @@ Detect security misconfigurations specific to OAuth2 and OpenID Connect implemen
     - **Example**: `userinfo_endpoint: "http://api.example.com/userinfo"`
 
 **Acceptance Criteria**:
-- Detect all 12+ OAuth2/OIDC vulnerabilities listed above
+- Detect all 12+ [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) vulnerabilities listed above
 - Provide severity classification (Critical/High/Medium/Low)
 - Include remediation steps for each vulnerability
-- Reference relevant RFC sections and OWASP guidelines
+- Reference relevant [RFC](https://www.ietf.org/standards/rfcs/) sections and [OWASP](https://owasp.org/) guidelines
 - Support custom severity overrides via configuration
 
 ---
@@ -262,7 +262,7 @@ Detect security misconfigurations specific to OAuth2 and OpenID Connect implemen
 
 **Priority**: P0 (Must Have)
 
-Analyze JWT configuration and sample tokens for security issues.
+Analyze [JWT](https://datatracker.ietf.org/doc/html/rfc7519) configuration and sample tokens for security issues.
 
 **Vulnerability Categories**:
 
@@ -284,7 +284,7 @@ Analyze JWT configuration and sample tokens for security issues.
 4. **Excessive Token Lifetime**
    - **Check**: `exp` - `iat` > 1 hour for access tokens
    - **Severity**: Medium
-   - **Example**: JWT with `exp` 24 hours in future
+   - **Example**: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) with `exp` 24 hours in future
 
 5. **Missing Audience Validation**
    - **Check**: No `aud` claim validation configured
@@ -302,15 +302,15 @@ Analyze JWT configuration and sample tokens for security issues.
    - **Example**: Missing `key_rotation_days` configuration
 
 **Input Formats**:
-- Configuration files with JWT settings
-- Sample JWT tokens (Base64-encoded, will decode and analyze claims)
-- JWKS (JSON Web Key Set) documents
+- Configuration files with [JWT](https://datatracker.ietf.org/doc/html/rfc7519) settings
+- Sample [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens (Base64-encoded, will decode and analyze claims)
+- [JWKS](https://datatracker.ietf.org/doc/html/rfc7517) (JSON Web Key Set) documents
 
 **Acceptance Criteria**:
-- Decode and parse JWT tokens without validation (analysis only, not usage)
+- Decode and parse [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens without validation (analysis only, not usage)
 - Extract header and payload claims
-- Check for all 7+ JWT vulnerabilities
-- Validate JWKS document structure
+- Check for all 7+ [JWT](https://datatracker.ietf.org/doc/html/rfc7519) vulnerabilities
+- Validate [JWKS](https://datatracker.ietf.org/doc/html/rfc7517) document structure
 - Support RS256, HS256, ES256 algorithm detection
 
 ---
@@ -319,7 +319,7 @@ Analyze JWT configuration and sample tokens for security issues.
 
 **Priority**: P1 (Should Have)
 
-Detect security issues in SAML 2.0 configurations (Service Provider and Identity Provider).
+Detect security issues in [SAML 2.0](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations (Service Provider and Identity Provider).
 
 **Vulnerability Categories**:
 
@@ -354,18 +354,18 @@ Detect security issues in SAML 2.0 configurations (Service Provider and Identity
    - **Example**: Assertion valid for 24 hours
 
 **Input Formats**:
-- SAML metadata XML files
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata [XML](https://www.w3.org/XML/) files
 - Service Provider configuration files
 - Identity Provider configuration files
 
 **Acceptance Criteria**:
-- Parse SAML metadata XML (SP and IdP)
+- Parse [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata [XML](https://www.w3.org/XML/) (SP and IdP)
 - Extract security-relevant attributes
-- Detect all 6+ SAML vulnerabilities
-- Handle XML namespaces correctly
-- Provide SAML-specific remediation guidance
+- Detect all 6+ [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) vulnerabilities
+- Handle [XML](https://www.w3.org/XML/) namespaces correctly
+- Provide [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)-specific remediation guidance
 
-**Note**: SAML support is P1 (should have) due to complexity and lower usage compared to OAuth2/OIDC in modern applications.
+**Note**: [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) support is P1 (should have) due to complexity and lower usage compared to [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) in modern applications.
 
 ---
 
@@ -471,7 +471,7 @@ Exit code: 1 (critical issues found)
 
 #### 3. SARIF Format (GitHub Security Tab)
 
-SARIF (Static Analysis Results Interchange Format) enables integration with GitHub Security tab.
+[SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) (Static Analysis Results Interchange Format) enables integration with GitHub Security tab.
 
 ```json
 {
@@ -553,8 +553,8 @@ The client secret "short" is only 5 characters long.
 ```
 
 **Acceptance Criteria**:
-- Support all 4 output formats (human-readable, JSON, SARIF, Markdown)
-- Configurable via CLI flag: `--format=json`
+- Support all 4 output formats (human-readable, [JSON](https://www.json.org/), [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif), Markdown)
+- Configurable via [CLI](https://en.wikipedia.org/wiki/Command-line_interface) flag: `--format=json`
 - Exit code based on severity: 0 (no issues), 1 (critical/high), 2 (medium/low only)
 - Summary statistics in all formats
 - Unique rule IDs for each vulnerability type
@@ -638,7 +638,7 @@ scanner:
 - Glob pattern support for file selection
 - Configurable failure thresholds
 - Exit codes match severity levels
-- SARIF output works with GitHub Security tab
+- [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) output works with GitHub Security tab
 
 ---
 
@@ -702,12 +702,12 @@ rules:
 
 **Acceptance Criteria**:
 - Load custom rules from directory: `~/.identity-scanner/rules/` and `./.identity-scanner/rules/`
-- Support YAML rule definitions with validation
-- JSONPath-style selectors for configuration navigation
+- Support [YAML](https://yaml.org/) rule definitions with validation
+- [JSONPath](https://goessner.net/articles/JsonPath/)-style selectors for configuration navigation
 - Multiple condition types: regex, contains, range, custom functions
 - Merge custom rules with built-in rules
 - Rule validation on startup (fail fast for malformed rules)
-- `--list-rules` CLI command to show all active rules
+- `--list-rules` [CLI](https://en.wikipedia.org/wiki/Command-line_interface) command to show all active rules
 
 ---
 
@@ -724,7 +724,7 @@ rules:
 
 **Acceptance Criteria**:
 - Benchmark suite included in repository
-- Performance regression tests in CI/CD
+- Performance regression tests in [CI/CD](https://en.wikipedia.org/wiki/CI/CD)
 - Profiling data available for optimization
 
 ---
@@ -844,11 +844,11 @@ type FileMetadata struct {
 ```
 
 **Implementations**:
-- `YAMLParser`: Uses `gopkg.in/yaml.v3` for YAML parsing with line number tracking
+- `YAMLParser`: Uses `gopkg.in/yaml.v3` for [YAML](https://yaml.org/) parsing with line number tracking
 - `JSONParser`: Uses `encoding/json` with custom decoder for line numbers
-- `TOMLParser`: Uses `github.com/BurntSushi/toml` for TOML files
+- `TOMLParser`: Uses `github.com/BurntSushi/toml` for [TOML](https://toml.io/) files
 - `ENVParser`: Custom parser for .env files (KEY=VALUE format)
-- `XMLParser`: Uses `encoding/xml` for SAML metadata (P1)
+- `XMLParser`: Uses `encoding/xml` for [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata (P1)
 
 ---
 
@@ -896,10 +896,10 @@ const (
 ```
 
 **Rule Categories**:
-- `CategoryOAuth2`: OAuth 2.0 configuration issues
-- `CategoryOIDC`: OpenID Connect issues
-- `CategoryJWT`: JWT token configuration issues
-- `CategorySAML`: SAML 2.0 configuration issues (P1)
+- `CategoryOAuth2`: [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) configuration issues
+- `CategoryOIDC`: [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) issues
+- `CategoryJWT`: [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token configuration issues
+- `CategorySAML`: [SAML 2.0](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configuration issues (P1)
 
 ---
 
@@ -953,10 +953,10 @@ func (d *WeakClientSecretDetector) Detect(tree *ConfigTree) []Finding {
 ```
 
 **Detector Implementations** (25+ total):
-- OAuth2: 8 detectors (weak secrets, insecure redirects, PKCE, scopes, deprecated flows, state, token lifetimes, storage)
-- OIDC: 4 detectors (signature validation, algorithms, nonce, UserInfo endpoint)
-- JWT: 7 detectors (algorithm confusion, weak algorithms, expiration, lifetime, audience, hardcoded secrets, key rotation)
-- SAML: 6 detectors (unsigned assertions, signature wrapping, weak algorithms, encryption, recipient URLs, validity) - P1
+- [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749): 8 detectors (weak secrets, insecure redirects, [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), scopes, deprecated flows, state, token lifetimes, storage)
+- [OIDC](https://openid.net/specs/openid-connect-core-1_0.html): 4 detectors (signature validation, algorithms, nonce, UserInfo endpoint)
+- [JWT](https://datatracker.ietf.org/doc/html/rfc7519): 7 detectors (algorithm confusion, weak algorithms, expiration, lifetime, audience, hardcoded secrets, key rotation)
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html): 6 detectors (unsigned assertions, signature wrapping, weak algorithms, encryption, recipient URLs, validity) - P1
 
 ---
 
@@ -988,8 +988,8 @@ type SeveritySummary struct {
 
 **Implementations**:
 - `HumanReportGenerator`: Color-coded terminal output with box drawing
-- `JSONReportGenerator`: Structured JSON for programmatic consumption
-- `SARIFReportGenerator`: SARIF 2.1.0 format for GitHub Security integration
+- `JSONReportGenerator`: Structured [JSON](https://www.json.org/) for programmatic consumption
+- `SARIFReportGenerator`: [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html) format for GitHub Security integration
 - `MarkdownReportGenerator`: GitHub-flavored markdown for documentation
 
 ---
@@ -1040,14 +1040,14 @@ type SeveritySummary struct {
 | Component | Technology | Rationale |
 |-----------|-----------|-----------|
 | **Language** | Go 1.21+ | Fast, single binary, great stdlib, concurrency |
-| **CLI Framework** | Cobra | Industry standard, excellent UX |
-| **Config** | Viper | Flexible config loading, env var support |
-| **YAML Parser** | gopkg.in/yaml.v3 | Line number tracking, stable |
-| **JSON Parser** | encoding/json (stdlib) | No dependencies, fast |
-| **TOML Parser** | github.com/BurntSushi/toml | Canonical Go TOML library |
-| **XML Parser** | encoding/xml (stdlib) | For SAML metadata |
-| **Testing** | testify | Assertions and mocking |
-| **Linting** | golangci-lint | Comprehensive linter aggregator |
+| **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Framework** | [Cobra](https://cobra.dev/) | Industry standard, excellent UX |
+| **Config** | [Viper](https://github.com/spf13/viper) | Flexible config loading, env var support |
+| **[YAML](https://yaml.org/) Parser** | gopkg.in/yaml.v3 | Line number tracking, stable |
+| **[JSON](https://www.json.org/) Parser** | encoding/json (stdlib) | No dependencies, fast |
+| **[TOML](https://toml.io/) Parser** | github.com/BurntSushi/toml | Canonical Go TOML library |
+| **[XML](https://www.w3.org/XML/) Parser** | encoding/xml (stdlib) | For [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata |
+| **Testing** | [testify](https://github.com/stretchr/testify) | Assertions and mocking |
+| **Linting** | [golangci-lint](https://golangci-lint.run/) | Comprehensive linter aggregator |
 
 ---
 
@@ -1055,36 +1055,36 @@ type SeveritySummary struct {
 
 ### Phase 1: Foundation (2 hours)
 
-**Goal**: Working CLI skeleton with file parsing.
+**Goal**: Working [CLI](https://en.wikipedia.org/wiki/Command-line_interface) skeleton with file parsing.
 
 **Deliverables**:
 - [ ] Project structure (`cmd/`, `internal/`, `pkg/`)
-- [ ] Cobra CLI with `scan` command
-- [ ] YAML and JSON parsers with line number tracking
+- [ ] [Cobra](https://cobra.dev/) [CLI](https://en.wikipedia.org/wiki/Command-line_interface) with `scan` command
+- [ ] [YAML](https://yaml.org/) and [JSON](https://www.json.org/) parsers with line number tracking
 - [ ] ConfigTree internal representation
 - [ ] Unit tests for parsers
 - [ ] Basic human-readable output
 
 **Acceptance Criteria**:
 - `identity-scanner scan config.yaml` runs without errors
-- Parses YAML/JSON into ConfigTree
+- Parses [YAML](https://yaml.org/)/[JSON](https://www.json.org/) into ConfigTree
 - Prints parsed tree structure
 
 ---
 
 ### Phase 2: OAuth2/OIDC Detection (2.5 hours)
 
-**Goal**: Detect top 12 OAuth2/OIDC vulnerabilities.
+**Goal**: Detect top 12 [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) vulnerabilities.
 
 **Deliverables**:
 - [ ] Rule engine with Detector interface
-- [ ] 8 OAuth2 detectors (weak secrets, redirects, PKCE, scopes, flows, state, lifetimes, storage)
-- [ ] 4 OIDC detectors (signature, algorithms, nonce, UserInfo)
+- [ ] 8 [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) detectors (weak secrets, redirects, [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), scopes, flows, state, lifetimes, storage)
+- [ ] 4 [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) detectors (signature, algorithms, nonce, UserInfo)
 - [ ] Finding struct with all metadata
 - [ ] Unit tests with vulnerable example configs
 
 **Acceptance Criteria**:
-- All 12 OAuth2/OIDC rules detect known vulnerabilities
+- All 12 [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) rules detect known vulnerabilities
 - Zero false positives on secure configs
 - Line numbers correctly mapped to findings
 
@@ -1092,17 +1092,17 @@ type SeveritySummary struct {
 
 ### Phase 3: JWT Detection (1.5 hours)
 
-**Goal**: Detect JWT configuration issues.
+**Goal**: Detect [JWT](https://datatracker.ietf.org/doc/html/rfc7519) configuration issues.
 
 **Deliverables**:
-- [ ] 7 JWT detectors (algorithm confusion, weak algorithms, expiration, lifetime, audience, secrets, rotation)
-- [ ] JWT token decoder (Base64, JSON parsing)
-- [ ] JWT claim analysis
+- [ ] 7 [JWT](https://datatracker.ietf.org/doc/html/rfc7519) detectors (algorithm confusion, weak algorithms, expiration, lifetime, audience, secrets, rotation)
+- [ ] [JWT](https://datatracker.ietf.org/doc/html/rfc7519) token decoder (Base64, [JSON](https://www.json.org/) parsing)
+- [ ] [JWT](https://datatracker.ietf.org/doc/html/rfc7519) claim analysis
 - [ ] Unit tests with vulnerable JWTs
 
 **Acceptance Criteria**:
-- Detect all 7 JWT vulnerabilities
-- Decode sample JWT tokens and analyze claims
+- Detect all 7 [JWT](https://datatracker.ietf.org/doc/html/rfc7519) vulnerabilities
+- Decode sample [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens and analyze claims
 - Handle malformed tokens gracefully
 
 ---
@@ -1113,15 +1113,15 @@ type SeveritySummary struct {
 
 **Deliverables**:
 - [ ] Human-readable report generator (color, formatting)
-- [ ] JSON report generator
-- [ ] SARIF report generator
+- [ ] [JSON](https://www.json.org/) report generator
+- [ ] [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) report generator
 - [ ] Markdown report generator
 - [ ] Exit code logic based on severity
 - [ ] Summary statistics
 
 **Acceptance Criteria**:
 - All 4 formats generate valid output
-- SARIF validates against schema
+- [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) validates against schema
 - Human output is readable and helpful
 - Exit codes match severity levels
 
@@ -1141,7 +1141,7 @@ type SeveritySummary struct {
 
 **Acceptance Criteria**:
 - GitHub Actions example works in demo repo
-- SARIF upload to GitHub Security tab succeeds
+- [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) upload to GitHub Security tab succeeds
 - Configuration file overrides defaults
 - Glob patterns select correct files
 
@@ -1287,7 +1287,7 @@ func redactSecret(secret string) string {
 
 - **Read-only access**: Never write to scanned files
 - **Respect .gitignore**: Don't scan files Git ignores
-- **No network access**: Static analysis only, no HTTP requests
+- **No network access**: Static analysis only, no [HTTP](https://en.wikipedia.org/wiki/HTTP) requests
 - **Sandboxing**: Consider running in restricted environment for untrusted configs
 
 ### Supply Chain Security
@@ -1295,16 +1295,16 @@ func redactSecret(secret string) string {
 - **Dependency pinning**: Use `go.sum` to lock dependency versions
 - **Minimal dependencies**: Only essential libraries
 - **Automated updates**: Dependabot for security patches
-- **SBOM generation**: Publish Software Bill of Materials with releases
+- **[SBOM](https://www.cisa.gov/sbom) generation**: Publish Software Bill of Materials with releases
 
 ---
 
 ## Future Enhancements (Out of Scope for v1.0)
 
 ### v1.1: SAML Support
-- Implement 6 SAML detectors
-- XML parsing and analysis
-- SAML metadata validation
+- Implement 6 [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) detectors
+- [XML](https://www.w3.org/XML/) parsing and analysis
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata validation
 
 ### v1.2: Auto-Remediation
 - `--fix` flag to automatically remediate certain issues
@@ -1314,7 +1314,7 @@ func redactSecret(secret string) string {
 ### v1.3: IDE Integration
 - VS Code extension for inline warnings
 - IntelliJ plugin
-- Language Server Protocol (LSP) implementation
+- [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/) implementation
 
 ### v1.4: Continuous Monitoring
 - Watch mode for local development
@@ -1323,8 +1323,8 @@ func redactSecret(secret string) string {
 
 ### v2.0: Runtime Analysis
 - Complement static analysis with dynamic testing (Project 3)
-- Probe live OAuth2/OIDC endpoints
-- Simulate attacks (CSRF, token replay, etc.)
+- Probe live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) endpoints
+- Simulate attacks ([CSRF](https://owasp.org/www-community/attacks/csrf), token replay, etc.)
 
 ---
 
@@ -1335,7 +1335,7 @@ func redactSecret(secret string) string {
 #### OAuth2 (8 checks)
 - [ ] OAUTH2-001: Weak client secrets (< 32 chars)
 - [ ] OAUTH2-002: Insecure redirect URIs (HTTP, wildcards)
-- [ ] OAUTH2-003: Missing PKCE for public clients
+- [ ] OAUTH2-003: Missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) for public clients
 - [ ] OAUTH2-004: Overly permissive scopes (admin, wildcards)
 - [ ] OAUTH2-005: Deprecated flows enabled (implicit, ROPC)
 - [ ] OAUTH2-006: Missing state parameter requirement
@@ -1359,7 +1359,7 @@ func redactSecret(secret string) string {
 
 #### SAML (6 checks - P1)
 - [ ] SAML-001: Unsigned assertions accepted
-- [ ] SAML-002: XML signature wrapping vulnerability
+- [ ] SAML-002: [XML signature wrapping](https://www.w3.org/TR/xmldsig-core/) vulnerability
 - [ ] SAML-003: Weak signature algorithms (SHA1)
 - [ ] SAML-004: Missing assertion encryption
 - [ ] SAML-005: Overly permissive recipient URLs

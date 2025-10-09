@@ -1,6 +1,6 @@
 # Identity Security Scanner (Static Analysis)
 
-> **Automated security analysis for OAuth2, OIDC, JWT, and SAML configurations**
+> **Automated security analysis for [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [JWT](https://datatracker.ietf.org/doc/html/rfc7519), and [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) configurations**
 
 A command-line static analysis tool that detects security misconfigurations in identity and access management systems before they reach production. Built to demonstrate "innovation through simplification" by automating expert security reviews.
 
@@ -8,10 +8,10 @@ A command-line static analysis tool that detects security misconfigurations in i
 
 The Identity Security Scanner analyzes configuration files to find:
 
-- **OAuth2 vulnerabilities** (6 checks): Weak secrets, insecure redirects, missing PKCE, excessive scopes
-- **JWT vulnerabilities** (6 checks): Algorithm confusion, weak signing, hardcoded secrets, missing validation
-- **OIDC issues**: Signature validation, nonce requirements, insecure endpoints
-- **Security best practices**: CSRF protection, token lifetimes, encryption requirements
+- **[OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) vulnerabilities** (6 checks): Weak secrets, insecure redirects, missing [PKCE](https://datatracker.ietf.org/doc/html/rfc7636), excessive scopes
+- **[JWT](https://datatracker.ietf.org/doc/html/rfc7519) vulnerabilities** (6 checks): Algorithm confusion, weak signing, hardcoded secrets, missing validation
+- **[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) issues**: Signature validation, nonce requirements, insecure endpoints
+- **Security best practices**: [CSRF](https://owasp.org/www-community/attacks/csrf) protection, token lifetimes, encryption requirements
 
 ## 🚀 Quick Start
 
@@ -251,7 +251,7 @@ project-2-identity-security-scanner/
 ### Key Design Principles
 
 1. **Extensible Rule Engine**: Add new checks without modifying core code
-2. **Multiple Parsers**: YAML, JSON, TOML support with line number tracking
+2. **Multiple Parsers**: [YAML](https://yaml.org/), [JSON](https://www.json.org/), [TOML](https://toml.io/) support with line number tracking
 3. **Zero False Positives Goal**: High-confidence detections only
 4. **Clear Remediation**: Every finding includes specific fix instructions
 5. **Fast Execution**: < 5 seconds for typical configurations
@@ -290,39 +290,39 @@ See [examples/secure/oauth2-config.yaml](examples/secure/oauth2-config.yaml) for
 
 This project demonstrates several security engineering patterns:
 
-1. **Shift-Left Security**: Catch issues in development, not production
-2. **Defense in Depth**: Multiple layers of checks (OAuth2, JWT, OIDC)
-3. **Principle of Least Privilege**: Detect overly permissive scopes
-4. **Secure by Default**: Identify insecure default configurations
+1. **[Shift-Left Security](https://www.devsecops.org/blog/2016/5/20/-security)**: Catch issues in development, not production
+2. **[Defense in Depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))**: Multiple layers of checks ([OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [JWT](https://datatracker.ietf.org/doc/html/rfc7519), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html))
+3. **[Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)**: Detect overly permissive scopes
+4. **[Secure by Default](https://en.wikipedia.org/wiki/Secure_by_default)**: Identify insecure default configurations
 
 ### Technical Skills Demonstrated
 
-- **Protocol Expertise**: Deep understanding of OAuth2, OIDC, JWT specifications
-- **Static Analysis**: AST parsing, pattern matching, vulnerability detection
-- **CLI Design**: User-friendly command-line tools with Cobra framework
+- **Protocol Expertise**: Deep understanding of [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), [JWT](https://datatracker.ietf.org/doc/html/rfc7519) specifications
+- **Static Analysis**: [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) parsing, pattern matching, vulnerability detection
+- **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: User-friendly command-line tools with [Cobra](https://cobra.dev/) framework
 - **Security Mindset**: Identifying attack vectors and remediation strategies
 
 ## 🔮 Future Enhancements
 
 ### v1.1 - SAML Support
-- Add 6 SAML-specific checks
-- XML parsing and signature validation
-- SAML metadata analysis
+- Add 6 [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)-specific checks
+- [XML](https://www.w3.org/XML/) parsing and signature validation
+- [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) metadata analysis
 
 ### v1.2 - CI/CD Integration
 - GitHub Actions workflow
 - GitLab CI integration
-- SARIF output for GitHub Security tab
+- [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) output for GitHub Security tab
 
 ### v1.3 - Custom Rules
-- YAML-based rule definitions
+- [YAML](https://yaml.org/)-based rule definitions
 - Load custom rules from directory
 - Rule marketplace/sharing
 
 ### v2.0 - Runtime Analysis
 - Complement static analysis with dynamic testing
-- Probe live OAuth2/OIDC endpoints
-- Attack simulation (CSRF, token replay, etc.)
+- Probe live [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) endpoints
+- Attack simulation ([CSRF](https://owasp.org/www-community/attacks/csrf), token replay, etc.)
 
 ## 🤝 Contributing
 
@@ -370,7 +370,7 @@ MIT License - see [LICENSE](../LICENSE) for details.
 ## 🙏 Acknowledgments
 
 Built as part of identity protocol learning for senior engineering leadership roles. Demonstrates:
-- **Rapid domain mastery**: Learning OAuth2/OIDC/JWT specifications
+- **Rapid domain mastery**: Learning [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html)/[JWT](https://datatracker.ietf.org/doc/html/rfc7519) specifications
 - **Bias for action**: Building while learning, not just reading
 - **Innovation through simplification**: Automating manual security reviews
 - **Production thinking**: Clear error messages, remediation guidance, exit codes

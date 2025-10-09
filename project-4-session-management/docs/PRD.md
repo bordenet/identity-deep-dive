@@ -13,7 +13,7 @@
 
 A distributed, horizontally-scalable session management service designed for multi-tenant identity platforms. Demonstrates understanding of session management at global scale with requirements similar to large multi-brand platforms (e.g., Expedia's portfolio of travel brands).
 
-**Key Innovation**: Hybrid approach combining stateless JWT validation (fast path) with distributed Redis storage (security/revocation path) to achieve both performance and security requirements.
+**Key Innovation**: Hybrid approach combining stateless [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation (fast path) with distributed [Redis](https://redis.io) storage (security/revocation path) to achieve both performance and security requirements.
 
 ---
 
@@ -30,7 +30,7 @@ Modern identity platforms serving multiple brands face critical session manageme
 
 ### Technical Challenges
 - **Stateful Sessions Don't Scale**: Traditional server-side sessions hit memory/network bottlenecks
-- **Stateless Tokens Aren't Revocable**: Pure JWT approach can't handle logout/security events
+- **Stateless Tokens Aren't Revocable**: Pure [JWT](https://datatracker.ietf.org/doc/html/rfc7519) approach can't handle logout/security events
 - **Multi-Region Consistency**: Global deployments need eventual consistency across regions
 - **Tenant Isolation**: Signing keys, session data, metrics must be isolated per tenant
 
@@ -47,10 +47,10 @@ Modern identity platforms serving multiple brands face critical session manageme
 
 ### Non-Goals ❌
 1. **Not building full production system** - demonstrating patterns at smaller scale
-2. **Not implementing every OAuth2/OIDC feature** - focus on session management
+2. **Not implementing every [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749)/[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) feature** - focus on session management
 3. **Not building distributed tracing** - observability hooks only
 4. **Not implementing multi-region replication** - single-region with replication design
-5. **Not building admin UI** - CLI/API only
+5. **Not building admin UI** - [CLI](https://en.wikipedia.org/wiki/Command-line_interface)/[API](https://en.wikipedia.org/wiki/API) only
 
 ---
 
@@ -67,15 +67,15 @@ Modern identity platforms serving multiple brands face critical session manageme
 
 **Pain Points**:
 - Current monolithic session store is performance bottleneck
-- Can't revoke JWT tokens issued before security incident
+- Can't revoke [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens issued before security incident
 - No visibility into session metrics per brand
 - Difficult to test session failover scenarios
 
 **Success Metrics**:
 - Service handles 100K req/sec session validations
 - Token revocation propagates globally in < 1 second
-- Zero downtime during Redis cluster maintenance
-- Per-tenant session metrics in Prometheus
+- Zero downtime during [Redis](https://redis.io) cluster maintenance
+- Per-tenant session metrics in [Prometheus](https://prometheus.io)
 
 ---
 
@@ -89,7 +89,7 @@ Modern identity platforms serving multiple brands face critical session manageme
 - Automated rotation of signing keys
 
 **Pain Points**:
-- Pure JWT approach can't revoke tokens before expiration
+- Pure [JWT](https://datatracker.ietf.org/doc/html/rfc7519) approach can't revoke tokens before expiration
 - Shared signing keys mean compromise affects all tenants
 - No audit trail for session creation/deletion
 - Key rotation requires service restart
@@ -119,7 +119,7 @@ Modern identity platforms serving multiple brands face critical session manageme
 
 **Success Metrics**:
 - One-line session validation in app code
-- Docker Compose for local testing
+- [Docker Compose](https://docs.docker.com/compose/) for local testing
 - < 5 minutes to integrate SDK
 - Actionable error messages with remediation steps
 
@@ -130,13 +130,13 @@ Modern identity platforms serving multiple brands face critical session manageme
 ### FR-1: Session Creation
 **Priority**: P0 (Must Have)
 
-**Description**: Generate JWT tokens with tenant-specific signing keys
+**Description**: Generate [JWT](https://datatracker.ietf.org/doc/html/rfc7519) tokens with tenant-specific signing keys
 
 **Acceptance Criteria**:
 - ✅ Create session with user ID, tenant ID, scope
-- ✅ Generate access token (JWT, RS256, 15-minute expiry)
-- ✅ Generate refresh token (JWT, RS256, 30-day expiry)
-- ✅ Store refresh token in Redis with tenant namespace
+- ✅ Generate access token ([JWT](https://datatracker.ietf.org/doc/html/rfc7519), [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3), 15-minute expiry)
+- ✅ Generate refresh token ([JWT](https://datatracker.ietf.org/doc/html/rfc7519), [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3), 30-day expiry)
+- ✅ Store refresh token in [Redis](https://redis.io) with tenant namespace
 - ✅ Return token pair to client
 - ✅ Support custom claims (email, roles, etc.)
 
@@ -169,12 +169,12 @@ Response 201:
 ### FR-2: Session Validation
 **Priority**: P0 (Must Have)
 
-**Description**: Validate access tokens with fast-path JWT verification and slow-path revocation check
+**Description**: Validate access tokens with fast-path [JWT](https://datatracker.ietf.org/doc/html/rfc7519) verification and slow-path revocation check
 
 **Acceptance Criteria**:
-- ✅ Validate JWT signature with tenant's public key
+- ✅ Validate [JWT](https://datatracker.ietf.org/doc/html/rfc7519) signature with tenant's public key
 - ✅ Verify expiration, issuer, audience claims
-- ✅ Check revocation blocklist in Redis (if present)
+- ✅ Check revocation blocklist in [Redis](https://redis.io) (if present)
 - ✅ Return parsed claims on success
 - ✅ Return specific error codes (expired, revoked, invalid signature)
 - ✅ Cache public keys for performance
@@ -217,11 +217,11 @@ Response 401:
 **Description**: Exchange refresh token for new access token
 
 **Acceptance Criteria**:
-- ✅ Validate refresh token from Redis
+- ✅ Validate refresh token from [Redis](https://redis.io)
 - ✅ Check not expired or revoked
 - ✅ Generate new access token (same claims)
 - ✅ Optionally rotate refresh token (security best practice)
-- ✅ Update last_used timestamp in Redis
+- ✅ Update last_used timestamp in [Redis](https://redis.io)
 - ✅ Support sliding window expiration
 
 **API**:
@@ -254,7 +254,7 @@ Response 200:
 - ✅ Revoke specific refresh token
 - ✅ Revoke all sessions for user ID
 - ✅ Revoke all sessions for tenant (security incident)
-- ✅ Add to Redis blocklist with TTL matching token expiration
+- ✅ Add to [Redis](https://redis.io) blocklist with TTL matching token expiration
 - ✅ Support batch revocation (performance)
 
 **API**:
@@ -295,10 +295,10 @@ Response 200:
 
 **Acceptance Criteria**:
 - ✅ Generate RSA-2048 key pair per tenant on first session
-- ✅ Store private key encrypted in Redis
+- ✅ Store private key encrypted in [Redis](https://redis.io)
 - ✅ Cache public keys in memory for validation performance
 - ✅ Support key rotation with grace period (old + new keys valid)
-- ✅ JWKS endpoint per tenant (public key distribution)
+- ✅ [JWKS](https://datatracker.ietf.org/doc/html/rfc7517) endpoint per tenant (public key distribution)
 - ✅ Automatic key rotation every 90 days
 
 **API**:
@@ -327,11 +327,11 @@ Response 200:
 **Description**: Health checks, metrics, and distributed tracing hooks
 
 **Acceptance Criteria**:
-- ✅ Health endpoint (Redis connectivity, key availability)
-- ✅ Prometheus metrics (request rate, latency, error rate)
+- ✅ Health endpoint ([Redis](https://redis.io) connectivity, key availability)
+- ✅ [Prometheus](https://prometheus.io/) metrics (request rate, latency, error rate)
 - ✅ Per-tenant metrics (session count, revocation rate)
 - ✅ Structured logging with tenant context
-- ✅ Distributed tracing hooks (OpenTelemetry compatible)
+- ✅ Distributed tracing hooks ([OpenTelemetry](https://opentelemetry.io/) compatible)
 
 **Metrics**:
 - `sessions_created_total{tenant_id}`
@@ -370,32 +370,32 @@ session_validation_duration_seconds_bucket{tenant_id="brand-a",le="0.005"} 9500
 
 ### NFR-2: Availability
 - **Uptime**: 99.9% (design target, not enforced in demo)
-- **Graceful Degradation**: Continue JWT validation if Redis temporarily unavailable
+- **Graceful Degradation**: Continue [JWT](https://datatracker.ietf.org/doc/html/rfc7519) validation if [Redis](https://redis.io) temporarily unavailable
 - **Graceful Shutdown**: Finish in-flight requests before shutdown (15-second timeout)
 - **Health Checks**: Kubernetes-compatible liveness/readiness probes
 
 ### NFR-3: Scalability
 - **Horizontal Scaling**: Stateless service, add replicas for more throughput
-- **Redis Cluster**: Support 3+ node Redis cluster for HA
+- **[Redis](https://redis.io) Cluster**: Support 3+ node [Redis](https://redis.io) cluster for HA
 - **Multi-Region Ready**: Design supports read replicas in other regions
 - **Tenant Isolation**: Performance of one tenant doesn't impact others
 
 ### NFR-4: Security
-- **Signing Algorithm**: RS256 (RSA-2048 minimum)
+- **Signing Algorithm**: [RS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.3) (RSA-2048 minimum)
 - **Key Isolation**: Separate RSA key pair per tenant
 - **Token Expiration**: Short-lived access tokens (15 minutes)
-- **Revocation**: Immediate invalidation via Redis blocklist
+- **Revocation**: Immediate invalidation via [Redis](https://redis.io) blocklist
 - **Audit Logging**: All session operations logged with tenant/user context
 
 ### NFR-5: Observability
-- **Metrics**: Prometheus-compatible, per-tenant labels
-- **Logging**: Structured JSON logs (compatible with ELK, Splunk)
-- **Tracing**: OpenTelemetry hooks for distributed tracing
-- **Dashboards**: Grafana dashboard included with key metrics
+- **Metrics**: [Prometheus](https://prometheus.io/)-compatible, per-tenant labels
+- **Logging**: Structured [JSON](https://www.json.org/) logs (compatible with ELK, Splunk)
+- **Tracing**: [OpenTelemetry](https://opentelemetry.io/) hooks for distributed tracing
+- **Dashboards**: [Grafana](https://grafana.com/) dashboard included with key metrics
 
 ### NFR-6: Developer Experience
-- **Documentation**: Complete API reference, architecture diagrams
-- **Local Development**: Docker Compose one-liner
+- **Documentation**: Complete [API](https://en.wikipedia.org/wiki/API) reference, architecture diagrams
+- **Local Development**: [Docker Compose](https://docs.docker.com/compose/) one-liner
 - **SDK**: Go client library for easy integration
 - **Examples**: Sample applications demonstrating all flows
 
