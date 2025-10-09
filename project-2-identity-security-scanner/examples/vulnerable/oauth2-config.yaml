@@ -1,0 +1,57 @@
+# VULNERABLE OAuth2 Configuration
+# DO NOT USE IN PRODUCTION
+# This file demonstrates security misconfigurations for testing
+
+oauth2:
+  providers:
+    - name: google
+      client_id: "1234567890-abc.apps.googleusercontent.com"
+      client_secret: "short"  # OAUTH2-001: Too short (5 chars)
+      client_type: "public"
+      pkce_required: false  # OAUTH2-003: PKCE not enforced for public client
+
+      redirect_uris:
+        - "http://example.com/callback"  # OAUTH2-002: HTTP (not localhost)
+        - "*"  # OAUTH2-002: Wildcard redirect URI
+        - "https://app.example.com/callback"
+
+      scopes:
+        - "openid"
+        - "profile"
+        - "email"
+        - "admin"  # OAUTH2-004: Overly permissive scope
+        - "*"  # OAUTH2-004: Wildcard scope
+
+      grant_types:
+        - "authorization_code"
+        - "implicit"  # OAUTH2-005: Deprecated flow
+        - "password"  # OAUTH2-005: Deprecated flow
+
+      require_state: false  # OAUTH2-006: State parameter not required
+
+    - name: internal
+      client_id: "internal-service"
+      client_secret: "weak123"  # OAUTH2-001: Weak secret (7 chars)
+      client_type: "confidential"
+
+      redirect_uris:
+        - "http://localhost:8080/callback"  # OK for localhost
+
+      scopes:
+        - "read:users"
+        - "write:users"
+
+      grant_types:
+        - "client_credentials"
+
+jwt:
+  algorithm: "none"  # JWT-001: Algorithm confusion - "none" allowed
+  secret: "secret123"  # JWT-006: Hardcoded secret
+  expiration: 86400  # JWT-004: 24 hours (excessive)
+  require_exp: false  # JWT-003: Expiration not required
+  validate_audience: false  # JWT-005: Audience validation disabled
+
+token:
+  algorithm: "HS256"
+  secret: "short"  # JWT-002: Short secret for HS256
+  ttl: "7d"  # JWT-004: 7 days (excessive)

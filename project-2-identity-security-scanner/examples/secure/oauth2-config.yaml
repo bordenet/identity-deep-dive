@@ -1,0 +1,58 @@
+# SECURE OAuth2 Configuration
+# Best practices for production use
+
+oauth2:
+  providers:
+    - name: google
+      client_id: "1234567890-abc.apps.googleusercontent.com"
+      client_secret: "${OAUTH2_GOOGLE_CLIENT_SECRET}"  # Stored in secret manager
+      client_type: "public"
+      pkce_required: true  # ✓ PKCE enforced for public clients
+
+      redirect_uris:
+        - "https://app.example.com/callback"  # ✓ HTTPS only
+        - "https://app.example.com/oauth/callback"
+
+      scopes:
+        - "openid"
+        - "profile"
+        - "email"
+        # ✓ No admin or wildcard scopes
+
+      grant_types:
+        - "authorization_code"  # ✓ Only secure flow
+
+      require_state: true  # ✓ CSRF protection enabled
+
+    - name: internal
+      client_id: "internal-service"
+      client_secret: "${OAUTH2_INTERNAL_CLIENT_SECRET}"  # ✓ Stored securely
+      client_type: "confidential"
+
+      redirect_uris:
+        - "https://internal.example.com/callback"
+
+      scopes:
+        - "read:users"
+        - "write:users"
+
+      grant_types:
+        - "client_credentials"
+
+jwt:
+  algorithm: "RS256"  # ✓ Asymmetric algorithm
+  private_key_ref: "${JWT_PRIVATE_KEY}"  # ✓ Not hardcoded
+  expiration: 900  # ✓ 15 minutes
+  require_exp: true  # ✓ Expiration required
+  validate_audience: true  # ✓ Audience validation enabled
+  validate_issuer: true
+  expected_audience: "api.example.com"
+  expected_issuer: "https://auth.example.com"
+  key_rotation_days: 90  # ✓ Key rotation policy
+
+token:
+  algorithm: "RS256"
+  private_key_ref: "${TOKEN_PRIVATE_KEY}"
+  ttl: "15m"  # ✓ Short-lived
+  require_exp: true
+  validate_audience: true
