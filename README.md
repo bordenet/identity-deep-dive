@@ -111,13 +111,56 @@ make run
 
 ## Logging and Debugging
 
-This repository uses a structured logging approach with [zerolog](https://github.com/rs/zerolog). For detailed information on logging, see the [LOGGING.md](LOGGING.md) file.
+All projects use structured logging with [zerolog](https://github.com/rs/zerolog) for JSON-formatted logs with timestamps.
 
-### Breakpoints
+**📖 Full Documentation**: See [LOGGING.md](./LOGGING.md) for:
+- Log format and configuration
+- Free tier log storage options (Grafana Loki, Elastic, Better Stack, Datadog)
+- Query examples (LogQL, SQL)
+- Best practices for structured logging
 
-To facilitate debugging, the code includes special log statements that can be used as breakpoints. These log statements are prefixed with `MERMAID:` and correspond to the steps in the mermaid diagrams in the documentation.
+### Quick Logging Setup
 
-To set a breakpoint, search for the `MERMAID:` prefix in the code and set a breakpoint on that line in your debugger.
+```bash
+# Set log level (debug, info, warn, error)
+export LOG_LEVEL=debug
+
+# Run with logging
+cd project-1-oauth2-oidc-demo
+LOG_LEVEL=debug go run cmd/server/main.go
+
+# View logs with lnav (local)
+brew install lnav
+go run cmd/server/main.go 2>&1 | lnav
+```
+
+### Debug Breakpoints
+
+The code includes special log statements prefixed with `MERMAID:` that correspond to the steps in the [mermaid sequence diagrams](./project-1-oauth2-oidc-demo/docs/OIDC_Walk_Thru.md).
+
+**Setting Breakpoints**:
+1. Open the file in your IDE/debugger (e.g., VS Code, GoLand)
+2. Search for `MERMAID:` in the code
+3. Set a breakpoint on that line
+4. Start debugging (`dlv debug` or IDE debugger)
+5. Make a request to trigger the flow
+
+**Example** (Project 1 - OAuth2 Server):
+```go
+// In internal/handlers/authorize.go
+log.Debug().
+    Str("flow_step", "MERMAID: Step 2 - GET /authorize").
+    Str("client_id", authReq.ClientID).
+    Str("response_type", authReq.ResponseType).
+    Msg("Authorization request received")
+// ☝️ Set breakpoint here to inspect authorization request
+```
+
+Each log statement includes structured fields for inspection:
+- `flow_step`: Which step in the OIDC flow
+- Request parameters (client_id, scope, etc.)
+- User context
+- Error details (if any)
 
 ## 🚀 Quick Start
 
@@ -146,6 +189,7 @@ make build-all
 # Or build individual projects
 cd project-1-oauth2-oidc-demo && make build
 cd project-2-identity-security-scanner && make build
+cd project-3-runtime-security-scanner && make build
 cd project-4-session-management && make build
 ```
 
@@ -157,6 +201,7 @@ make test-all
 # Or test individual projects
 cd project-1-oauth2-oidc-demo && go test ./...
 cd project-2-identity-security-scanner && go test ./...
+cd project-3-runtime-security-scanner && go test ./...
 cd project-4-session-management && go test ./...
 ```
 
@@ -168,6 +213,7 @@ make lint-all
 # Or lint individual projects
 cd project-1-oauth2-oidc-demo && golangci-lint run
 cd project-2-identity-security-scanner && golangci-lint run
+cd project-3-runtime-security-scanner && golangci-lint run
 cd project-4-session-management && golangci-lint run
 ```
 
@@ -190,7 +236,7 @@ make run
 # - Discovery: http://localhost:8080/.well-known/openid-configuration
 ```
 
-#### Project 2: Identity Security Scanner
+#### Project 2: Identity Security Scanner (Static)
 ```bash
 cd project-2-identity-security-scanner
 
@@ -205,6 +251,23 @@ make scan-secure
 
 # Output in JSON format
 ./bin/scanner scan --config config.yaml --format json
+```
+
+#### Project 3: Runtime Security Scanner
+```bash
+cd project-3-runtime-security-scanner
+
+# Build the scanner
+make build
+
+# Run against a live OAuth2/OIDC server
+./bin/scanner run http://localhost:8080
+
+# Run specific test
+./bin/scanner test csrf http://localhost:8080
+
+# View all available tests
+./bin/scanner list
 ```
 
 #### Project 4: Multi-Tenant Session Management

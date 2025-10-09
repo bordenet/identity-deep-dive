@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 // User represents an authenticated user
 type User struct {
@@ -42,30 +46,27 @@ type IDTokenClaims struct {
 }
 
 // GetExpirationTime implements jwt.Claims interface
-func (c IDTokenClaims) GetExpirationTime() (*time.Time, error) {
+func (c IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
 	if c.ExpiresAt == 0 {
 		return nil, nil
 	}
-	t := time.Unix(c.ExpiresAt, 0)
-	return &t, nil
+	return jwt.NewNumericDate(time.Unix(c.ExpiresAt, 0)), nil
 }
 
 // GetIssuedAt implements jwt.Claims interface
-func (c IDTokenClaims) GetIssuedAt() (*time.Time, error) {
+func (c IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
 	if c.IssuedAt == 0 {
 		return nil, nil
 	}
-	t := time.Unix(c.IssuedAt, 0)
-	return &t, nil
+	return jwt.NewNumericDate(time.Unix(c.IssuedAt, 0)), nil
 }
 
 // GetNotBefore implements jwt.Claims interface
-func (c IDTokenClaims) GetNotBefore() (*time.Time, error) {
+func (c IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
 	if c.NotBefore == 0 {
 		return nil, nil
 	}
-	t := time.Unix(c.NotBefore, 0)
-	return &t, nil
+	return jwt.NewNumericDate(time.Unix(c.NotBefore, 0)), nil
 }
 
 // GetIssuer implements jwt.Claims interface
@@ -79,11 +80,11 @@ func (c IDTokenClaims) GetSubject() (string, error) {
 }
 
 // GetAudience implements jwt.Claims interface
-func (c IDTokenClaims) GetAudience() ([]string, error) {
+func (c IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
 	if c.Audience == "" {
 		return nil, nil
 	}
-	return []string{c.Audience}, nil
+	return jwt.ClaimStrings{c.Audience}, nil
 }
 
 // UserInfoResponse represents the OIDC UserInfo endpoint response
