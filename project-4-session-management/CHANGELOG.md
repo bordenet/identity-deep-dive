@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-10-09
 
 ### Added
-- **Complete working multi-tenant session management service** 🎉
-- **HTTP Server**: `cmd/server/main.go` with graceful shutdown.
+- Complete working multi-tenant session management service.
+- **[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) Server**: `cmd/server/main.go` with graceful shutdown.
 - **Handlers**: `CreateSession`, `ValidateSession`, `RefreshSession`, `RevokeSession`, `RevokeAllSessions`, and `GetJWKS`.
 - **Logging**: Structured logging with `zerolog` and debug breakpoints.
 - **Documentation**: Mermaid diagram in `PRD.md` for session validation flow.
