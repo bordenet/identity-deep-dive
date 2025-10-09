@@ -11,12 +11,12 @@
 ## 1. Executive Summary
 
 ### 1.1 Purpose
-Build a standards-compliant [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect (OIDC)](https://openid.net/specs/openid-connect-core-1_0.html) authorization server from scratch to demonstrate deep understanding of identity protocols. This is a learning project to refresh domain knowledge re: identity/access management.
+Build a standards-compliant [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect (OIDC)](https://openid.net/specs/openid-connect-core-1_0.html) authorization server from scratch to develop a deeper understanding of identity protocols. This is a learning project to refresh domain knowledge re: identity/access management.
 
 ### 1.2 Goals
 - **Primary**: Implement [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization flows per [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
 - **Secondary**: Add [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) identity layer per [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) spec
-- **Tertiary**: Demonstrate production-quality patterns (error handling, security, observability)
+- **Tertiary**: Follow production-quality patterns (error handling, security, observability)
 
 ### 1.3 Non-Goals
 - Full production deployment (this is a learning/demonstration project)
