@@ -40,12 +40,12 @@ Beyond the RFC specifications, these curated resources provide practical, distil
 - [Auth0: SAML to OIDC Protocol Translation](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-idp-initiated-saml-sign-on-to-oidc-apps) - Bridging SAML and OIDC
 - [Microsoft Entra ID SAML/OIDC Support](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols) - Enterprise identity provider bridging
 - [Okta Developer: Protocol Bridging](https://developer.okta.com/docs/concepts/oauth-openid/) - Identity provider protocol support
-- [OpenID Connect Federation](https://openid.net/specs/openid-connect-federation-1_0.html) - Official federation specification
+- [OpenID Federation 1.0](https://openid.net/specs/openid-federation-1_0.html) - Official federation specification
 
 ## 🐛 Vulnerability Research
 
 - [OWASP: Testing JSON Web Tokens](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens) - Security testing methodology
-- [OWASP: Testing OAuth](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_OAuth) - OAuth security testing guide
+- [OWASP: Testing for OAuth Weaknesses](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses) - OAuth security testing guide
 - [Auth0 Blog: Algorithm Confusion Attacks](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/) - JWT cryptographic vulnerabilities
 - [PortSwigger: OAuth Authentication Vulnerabilities](https://portswigger.net/web-security/oauth) - Common OAuth attack vectors
 
