@@ -14,11 +14,11 @@
 
 This document chronicles the three-day learning journey through identity protocols, security patterns, and distributed systems that support identity implementations.
 
-## Day 1: OAuth2/OIDC Fundamentals
+## OAuth2/OIDC Fundamentals
 
 Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization server from [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) spec:
 
-### Hour 1-3: Authorization Code Flow & JWT Tokens
+### Authorization Code Flow & JWT Tokens
 
 **What I Built**:
 - Authorization endpoint (`/authorize`)
@@ -32,7 +32,7 @@ Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) 
 - Access tokens should be short-lived (15 minutes)
 - Refresh tokens enable long-lived sessions (30 days)
 
-### Hour 4-6: PKCE, Client Credentials, Token Refresh
+### PKCE, Client Credentials, Token Refresh
 
 **What I Built**:
 - [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) code challenge/verifier validation
@@ -45,7 +45,7 @@ Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) 
 - Refresh token rotation prevents token replay attacks
 - Client Credentials = machine-to-machine (no user context)
 
-### Hour 7-8: OIDC Layer & Podman Setup
+### OIDC Layer & Podman Setup
 
 **What I Built**:
 - [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) ID tokens with user claims
@@ -63,11 +63,11 @@ Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) 
 
 ---
 
-## Day 2: Security Deep Dive
+## Security Deep Dive
 
 Built security scanning tools to internalize identity vulnerabilities.
 
-### Hour 1-4: Static Config Scanner
+### Static Config Scanner
 
 **What I Built**:
 - [CLI](https://en.wikipedia.org/wiki/Command-line_interface) static analysis tool with [Cobra](https://github.com/spf13/cobra)
@@ -99,7 +99,7 @@ Built security scanning tools to internalize identity vulnerabilities.
 - **Algorithm confusion** attacks exploit lax JWT validation
 - **Missing expiration** means tokens live forever
 
-### Hour 5-6: Remediation Engine & CI/CD Integration
+### Remediation Engine & CI/CD Integration
 
 **What I Built**:
 - Remediation guidance with [RFC](https://datatracker.ietf.org/) and [OWASP](https://owasp.org/) references
@@ -113,7 +113,7 @@ Built security scanning tools to internalize identity vulnerabilities.
 - JSON output enables integration with security dashboards
 - False positives hurt adoption - precision > recall
 
-### Hour 7-9: Runtime Flow Analyzer
+### Runtime Flow Analyzer
 
 **What I Built**:
 - [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) discovery client
@@ -130,11 +130,11 @@ Built security scanning tools to internalize identity vulnerabilities.
 
 ---
 
-## Day 3: Scale & Operations
+## Scale & Operations
 
 Implemented session management thinking about multi-brand, global-scale requirements.
 
-### Hour 1-4: Session Service with Multi-Tenant Isolation
+### Session Service with Multi-Tenant Isolation
 
 **What I Built**:
 - Session data models (Session, Token, Tenant, RefreshToken)
@@ -148,7 +148,7 @@ Implemented session management thinking about multi-brand, global-scale requirem
 - Refresh tokens stored separately from access tokens
 - Session revocation requires blocklist (can't revoke JWTs directly)
 
-### Hour 5-8: Load Testing & Observability
+### Load Testing & Observability
 
 **What I Built**:
 - HTTP handlers: CreateSession, ValidateSession, RefreshSession, RevokeSession
@@ -162,7 +162,7 @@ Implemented session management thinking about multi-brand, global-scale requirem
 - [Redis](https://redis.io) blocklist lookup adds ~1-2ms latency
 - Proper error handling prevents cascading failures
 
-### Hour 9-10: Documentation & Architecture Diagrams
+### Documentation & Architecture Diagrams
 
 **What I Built**:
 - Comprehensive README with setup instructions
