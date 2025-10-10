@@ -14,14 +14,30 @@ The Identity Security Scanner analyzes live OAuth2/OIDC endpoints to find:
 
 ## Quick Start
 
+**IMPORTANT:** This is a runtime scanner that tests **live OAuth2/OIDC servers**. You need a running OAuth2/OIDC server to scan.
+
+### Prerequisites
+
+Start an OAuth2/OIDC server first (e.g., Project 1 from this repository):
+
+```bash
+# From repository root:
+cd project-1-oauth2-oidc-demo
+podman-compose up -d
+
+# Wait a few seconds for the server to start
+```
+
 ### Build and Run
 
 ```bash
 # Build the scanner
 make build
 
-# Run the scanner against a target issuer
+# Run the scanner against the target server
 ./bin/scanner run http://localhost:8080
+
+# If you see "connection refused", the OAuth2 server isn't running
 ```
 
 ## Detected Vulnerabilities

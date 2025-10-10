@@ -36,7 +36,7 @@ A CLI tool for auditing OAuth2/OIDC/SAML configurations for common vulnerabiliti
 A runtime security scanner for testing live OAuth2/OIDC implementations.
 - **Features**: Detects CSRF, token replay, authorization code interception, and redirect URI manipulation.
 - **Docs**: [Project README](./project-3-runtime-security-scanner/README.md).
-- **Try It**: `cd project-3-runtime-security-scanner && make build && ./bin/scanner run http://localhost:8080`
+- **Try It**: Requires Project 1 server running first. See [Project 3 README](./project-3-runtime-security-scanner/README.md) for setup.
 
 ### 4. Multi-Tenant Session Management
 
