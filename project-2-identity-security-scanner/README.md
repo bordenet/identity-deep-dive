@@ -4,7 +4,7 @@
 
 A command-line static analysis tool that detects security misconfigurations in identity and access management systems before they reach production.
 
-## 🎯 What It Does
+## What It Does
 
 The Identity Security Scanner analyzes configuration files to find:
 
@@ -13,7 +13,7 @@ The Identity Security Scanner analyzes configuration files to find:
 - **[OIDC](https://openid.net/specs/openid-connect-core-1_0.html) issues**: Signature validation, nonce requirements, insecure endpoints
 - **Security best practices**: [CSRF](https://owasp.org/www-community/attacks/csrf) protection, token lifetimes, encryption requirements
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Build and Run
 
@@ -47,7 +47,7 @@ make scan-secure
 ./bin/identity-scanner scan config/ --fail-on critical
 ```
 
-## 📋 Detected Vulnerabilities
+## Detected Vulnerabilities
 
 ### OAuth2 Checks (6 rules)
 
@@ -73,7 +73,7 @@ make scan-secure
 
 **Total: 12 vulnerability checks** in v1.0.0
 
-## 📊 Example Output
+## Example Output
 
 ```
 ═══════════════════════════════════════════════════════════════
@@ -146,7 +146,7 @@ Scan complete. Found 11 issue(s) - Exit code: 1
 ═══════════════════════════════════════════════════════════════
 ```
 
-## 🔧 CLI Options
+## CLI Options
 
 ```
 Usage:
@@ -174,7 +174,7 @@ Examples:
   identity-scanner scan config/ --disable-rule OAUTH2-003,JWT-004
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-2-identity-security-scanner/
@@ -212,7 +212,7 @@ project-2-identity-security-scanner/
 └── go.mod
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ### Component Design
 
@@ -256,7 +256,7 @@ project-2-identity-security-scanner/
 4. **Clear Remediation**: Every finding includes specific fix instructions
 5. **Fast Execution**: < 5 seconds for typical configurations
 
-## 🧪 Testing
+## Testing
 
 ### Run Example Scans
 
@@ -279,10 +279,10 @@ See [examples/vulnerable/oauth2-config.yaml](examples/vulnerable/oauth2-config.y
 
 See [examples/secure/oauth2-config.yaml](examples/secure/oauth2-config.yaml) for security best practices.
 
-## 📚 Documentation & References
+## Documentation & References
 
 ### Project-Specific Documentation
-- **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
+- **[Product Requirements Document (PRD)](docs/PRD.md)** - Design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
 
 ### Specifications
@@ -302,25 +302,23 @@ See [examples/secure/oauth2-config.yaml](examples/secure/oauth2-config.yaml) for
 - [Semgrep](https://semgrep.dev/) - Static analysis tool
 - [Trivy](https://github.com/aquasecurity/trivy) - Security scanner
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 ### Security Patterns Applied
-
-This project demonstrates several security engineering patterns:
 
 1. **[Shift-Left Security](https://www.devsecops.org/blog/2016/5/20/-security)**: Catch issues in development, not production
 2. **[Defense in Depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))**: Multiple layers of checks
 3. **[Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)**: Detect overly permissive scopes
 4. **[Secure by Default](https://en.wikipedia.org/wiki/Secure_by_default)**: Identify insecure default configurations
 
-### Technical Skills Demonstrated
+### Technical Skills Practiced
 
-- **Protocol Expertise**: Deep understanding of OAuth2, OIDC, JWT specifications
+- **Protocol Knowledge**: OAuth2, OIDC, JWT specifications
 - **Static Analysis**: [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) parsing, pattern matching, vulnerability detection
-- **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: User-friendly command-line tools with [Cobra](https://cobra.dev/) framework
+- **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: Command-line tools with [Cobra](https://cobra.dev/) framework
 - **Security Mindset**: Identifying attack vectors and remediation strategies
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 ### v1.1 - SAML Support
 - Add 6 [SAML](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)-specific checks
@@ -342,7 +340,7 @@ This project demonstrates several security engineering patterns:
 - Probe live OAuth2/OIDC endpoints
 - Attack simulation ([CSRF](https://owasp.org/www-community/attacks/csrf), token replay, etc.)
 
-## 🤝 Contributing
+## Contributing
 
 This is a learning/demonstration project, but feedback is welcome!
 
@@ -362,6 +360,6 @@ The detector pattern makes it easy:
 3. Register in `internal/rules/registry.go`
 4. Add tests and documentation
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](../LICENSE) for details.

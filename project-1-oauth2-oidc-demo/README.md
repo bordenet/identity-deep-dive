@@ -1,6 +1,6 @@
 # OAuth2/OIDC Authorization Server
 
-A complete OAuth2 and OpenID Connect (OIDC) authorization server implementation in Go.
+An OAuth2 and OpenID Connect (OIDC) authorization server implementation in Go.
 
 ## Features
 
@@ -31,9 +31,9 @@ A complete OAuth2 and OpenID Connect (OIDC) authorization server implementation 
 - **Multi-tenant Ready** - Separate keys and scopes per client
 - **Graceful Shutdown** - Proper cleanup on SIGINT/SIGTERM
 
-## 🚀 Getting Started
+## Getting Started
 
-The easiest way to run the entire stack (Authorization Server, Redis, and Demo Client) is using Podman Compose:
+Run the entire stack (Authorization Server, Redis, and Demo Client) using Podman Compose:
 
 ```bash
 podman-compose up
@@ -78,7 +78,7 @@ In a separate terminal:
 make run-client
 ```
 
-Client starts on `http://localhost:3000`. Visit in your browser to see the complete OAuth2/OIDC flow.
+Client starts on `http://localhost:3000`. Visit in your browser to see the OAuth2/OIDC flow.
 
 ## Usage
 

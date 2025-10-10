@@ -2,7 +2,7 @@
 
 [← Back to README](../README.md)
 
-## 📑 Documentation
+## Documentation
 
 - [README](../README.md) - Project overview and introduction
 - **Quick Start** (this document) - Setup and running instructions

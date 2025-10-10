@@ -2,7 +2,7 @@
 
 [← Back to README](../README.md)
 
-## 📑 Documentation
+## Documentation
 
 - [README](../README.md) - Project overview and introduction
 - [Quick Start](./QUICK_START.md) - Setup and running instructions
@@ -14,7 +14,7 @@
 
 This document covers the architecture, technology choices, and design patterns used across all four identity projects.
 
-## 🏗️ Architecture Highlights
+## Architecture Highlights
 
 ### OAuth2/OIDC Server
 
@@ -50,13 +50,13 @@ This document covers the architecture, technology choices, and design patterns u
 - Stateless validation enables horizontal scaling
 - Revocation support through distributed blocklist
 
-## 🔧 Technology Choices
+## Technology Choices
 
 ### Core Technologies
 
-- **[Go](https://go.dev)**: Fast, concurrent, single-binary deployment - matches enterprise scale requirements
-  - Strong standard library for cryptography and HTTP
-  - Excellent performance for I/O-bound workloads
+- **[Go](https://go.dev)**: Fast, concurrent, single-binary deployment
+  - Standard library for cryptography and HTTP
+  - Good performance for I/O-bound workloads
   - Simple deployment model (single binary)
   - Built-in concurrency primitives
 
@@ -93,7 +93,7 @@ This document covers the architecture, technology choices, and design patterns u
 | [spf13/viper](https://github.com/spf13/viper) | Configuration management | Environment variables, config files, defaults |
 | [rs/zerolog](https://github.com/rs/zerolog) | Structured logging | Zero-allocation JSON logger, high performance |
 
-## 🎯 Real-World Applications
+## Real-World Applications
 
 ### Multi-Brand Identity Platforms
 
@@ -137,7 +137,7 @@ This document covers the architecture, technology choices, and design patterns u
 - Multi-region Redis replication for global consistency
 - Observability hooks for latency monitoring
 
-## 📊 Metrics & Results
+## Metrics & Results
 
 ### Project Metrics
 
@@ -156,11 +156,11 @@ This document covers the architecture, technology choices, and design patterns u
   - OAuth2 Server: All flows functional
   - Security Scanner: <5ms scan time
 - **Documentation**:
-  - 4 comprehensive READMEs
+  - 4 READMEs
   - 3 PRDs (800+ lines each)
-  - 3 CHANGELOGs with detailed version history
-  - 2 educational deep-dives (OIDC, PKCE)
-- **Security Features**: Zero hardcoded secrets, secret redaction, comprehensive remediation guidance
+  - 3 CHANGELOGs with version history
+  - 2 deep-dives (OIDC, PKCE)
+- **Security Features**: Zero hardcoded secrets, secret redaction, remediation guidance
 
 ## Design Trade-offs
 

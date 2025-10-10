@@ -2,7 +2,7 @@
 
 [← Back to README](../README.md)
 
-## 📑 Documentation
+## Documentation
 
 - [README](../README.md) - Project overview and introduction
 - [Quick Start](./QUICK_START.md) - Setup and running instructions
@@ -14,7 +14,7 @@
 
 This document chronicles the three-day learning journey through identity protocols, security patterns, and distributed systems that support identity implementations.
 
-## 📚 Day 1: OAuth2/OIDC Fundamentals
+## Day 1: OAuth2/OIDC Fundamentals
 
 Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization server from [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) spec:
 
@@ -63,7 +63,7 @@ Started by implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) 
 
 ---
 
-## 🔒 Day 2: Security Deep Dive
+## Day 2: Security Deep Dive
 
 Built security scanning tools to internalize identity vulnerabilities.
 
@@ -130,7 +130,7 @@ Built security scanning tools to internalize identity vulnerabilities.
 
 ---
 
-## 🌐 Day 3: Scale & Operations
+## Day 3: Scale & Operations
 
 Implemented session management thinking about multi-brand, global-scale requirements.
 
@@ -180,7 +180,7 @@ Implemented session management thinking about multi-brand, global-scale requirem
 
 ---
 
-## 🎓 What I Learned
+## What I Learned
 
 ### Protocol Trade-offs
 

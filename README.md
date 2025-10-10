@@ -6,9 +6,9 @@ This repository contains a collection of projects built to explore and learn cor
 
 **This is an AI-assisted learning exercise.** The code was primarily generated with AI pair-programming tools ([Claude Code](https://claude.ai/claude-code) and [Google Gemini](https://gemini.google.com)) to accelerate learning and explore the domain, not to demonstrate implementation from scratch.
 
-## 🚀 Getting Started
+## Getting Started
 
-A complete setup guide, build commands, and instructions for running all projects are available in the **[Quick Start Guide](docs/QUICK_START.md)**.
+Setup guide, build commands, and instructions for running all projects are available in the **[Quick Start Guide](docs/QUICK_START.md)**.
 
 **Key Documentation:**
 - **[Architecture & Design](docs/ARCHITECTURE.md)**: System architecture and design patterns.
@@ -47,13 +47,13 @@ A distributed session management service using JWTs and Redis.
 
 ---
 
-## 🧐 Out of Scope
+## Out of Scope
 
 These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like [federation](https://www.cloudflare.com/learning/access-management/what-is-federated-identity/), [directory services](https://www.techtarget.com/searchwindowsserver/definition/directory-service), [certificate management](https://www.techtarget.com/searchsecurity/definition/certificate-management), [SAML/OIDC brokers/bridges](https://medium.com/@curity.io/saml-and-oidc-bridging-and-brokering-d04946702937), popular [IdP vendor solutions](https://www.g2.com/categories/identity-provider-idp), [MFA/OTP/biometrics](https://www.cisa.gov/MFA), [risk-based authentication](https://www.pingidentity.com/en/resources/blog/post/what-is-risk-based-authentication.html), [step-up AuthZ](https://www.authress.io/knowledge-base/step-up-authentication-and-authorization), and numerous other concepts are not explored here.
 
 ---
 
-## 🤝 Contributing & License
+## Contributing & License
 
 This is a personal learning repository, but feedback and suggestions are welcome. Please feel free to open an issue.
 

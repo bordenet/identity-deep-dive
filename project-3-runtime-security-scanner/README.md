@@ -4,7 +4,7 @@
 
 A command-line runtime analysis tool that detects security misconfigurations in identity and access management systems by simulating common attack scenarios.
 
-## 🎯 What It Does
+## What It Does
 
 The Identity Security Scanner analyzes live OAuth2/OIDC endpoints to find:
 
@@ -12,7 +12,7 @@ The Identity Security Scanner analyzes live OAuth2/OIDC endpoints to find:
 - **Authorization Code Interception**: Simulates an attacker intercepting an authorization code and exchanging it for tokens.
 - **Token Replay**: Attempts to use the same token multiple times.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Build and Run
 
@@ -24,7 +24,7 @@ make build
 ./bin/scanner run http://localhost:8080
 ```
 
-## 📋 Detected Vulnerabilities
+## Detected Vulnerabilities
 
 | Rule ID | Severity | Check |
 |---------|----------|-------|
@@ -32,7 +32,7 @@ make build
 | RUNTIME-002 | Critical | Authorization code interception possible (no PKCE) |
 | RUNTIME-003 | High | Token replay possible |
 
-## 🔧 CLI Options
+## CLI Options
 
 ```
 Usage:
@@ -42,7 +42,7 @@ Flags:
   -h, --help   Help for run
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-3-runtime-security-scanner/
@@ -66,7 +66,7 @@ project-3-runtime-security-scanner/
 └── go.mod
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ### Component Design
 
@@ -78,7 +78,7 @@ project-3-runtime-security-scanner/
 └──────────────────┘      └──────────────────────┘
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 
@@ -86,10 +86,10 @@ project-3-runtime-security-scanner/
 make test
 ```
 
-## 📚 Documentation & References
+## Documentation & References
 
 ### Project-Specific Documentation
-- **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
+- **[Product Requirements Document (PRD)](docs/PRD.md)** - Design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
 
 ### Specifications
@@ -99,30 +99,28 @@ make test
 ### Security Best Practices
 - [OWASP Cheat Sheet - OAuth2](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 ### Security Patterns Applied
-
-This project demonstrates several security engineering patterns:
 
 1.  **Active Scanning**: Simulating real-world attacks to validate security controls.
 2.  **Black-Box Testing**: Testing the system from the outside without knowledge of the internal implementation.
 
-### Technical Skills Demonstrated
+### Technical Skills Practiced
 
-- **Protocol Expertise**: Deep understanding of OAuth2 and OIDC specifications.
-- **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: User-friendly command-line tools with [Cobra](https://cobra.dev/) framework.
+- **Protocol Knowledge**: OAuth2 and OIDC specifications.
+- **[CLI](https://en.wikipedia.org/wiki/Command-line_interface) Design**: Command-line tools with [Cobra](https://cobra.dev/) framework.
 - **Security Mindset**: Identifying attack vectors and remediation strategies.
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - **Authorization Code Interception with PKCE**: Add a check for PKCE bypass vulnerabilities.
 - **Token Replay with Caching**: Implement a more sophisticated token replay check.
 
-## 🤝 Contributing
+## Contributing
 
 This is a learning/demonstration project, but feedback is welcome!
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](../LICENSE) for details.

@@ -12,7 +12,7 @@ This project demonstrates how to build a session management service that can han
 - **Token Refresh**: Long-lived sessions with refresh tokens.
 - **Horizontal Scalability**: Stateless service that can be scaled horizontally.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - [Go](https://go.dev) 1.21+
@@ -55,7 +55,7 @@ Refreshes an access token using a refresh token.
 
 Revokes a session.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-4-session-management/
@@ -83,7 +83,7 @@ project-4-session-management/
 └── go.mod
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ### Component Design
 
@@ -133,7 +133,7 @@ project-4-session-management/
                  └───────────────────┘
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 
@@ -141,10 +141,10 @@ project-4-session-management/
 make test
 ```
 
-## 📚 Documentation & References
+## Documentation & References
 
 ### Project-Specific Documentation
-- **[Product Requirements Document (PRD)](docs/PRD.md)** - Comprehensive design and requirements
+- **[Product Requirements Document (PRD)](docs/PRD.md)** - Design and requirements
 - **[CHANGELOG](CHANGELOG.md)** - Version history and changes
 
 ### Specifications
@@ -153,30 +153,28 @@ make test
 ### Best Practices
 - [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 ### Security Patterns Applied
-
-This project demonstrates several security engineering patterns:
 
 1.  **Multi-Tenant Security**: Cryptographic isolation of tenants.
 2.  **Defense in Depth**: Combining stateless and stateful validation.
 
-### Technical Skills Demonstrated
+### Technical Skills Practiced
 
-- **Protocol Expertise**: Deep understanding of JWT specifications.
+- **Protocol Knowledge**: JWT specifications.
 - **Distributed Systems**: Designing for scalability and high availability.
 - **[API](https://en.wikipedia.org/wiki/API) Design**: Building a RESTful API for session management.
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - **Load Testing**: Add load tests with `k6` to validate performance at scale.
 - **Observability**: Add [Prometheus](https://prometheus.io/) metrics and a [Grafana](https://grafana.com/) dashboard.
 
-## 🤝 Contributing
+## Contributing
 
 This is a learning/demonstration project, but feedback is welcome!
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](../LICENSE) for details.
