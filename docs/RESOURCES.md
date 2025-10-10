@@ -72,6 +72,11 @@ These are the authoritative sources for protocol specifications:
 - [OWASP ASVS - Identity and Authentication](https://owasp.org/www-project-application-security-verification-standard/) - Security verification standards
 - [NIST SP 800-63B - Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html) - US government identity standards
 
+## Blogs
+
+- [OAuth 2.0 and Open ID Connect Cheat Sheet](https://thecodinginterface.com/blog/oauth-oidc-cheat-sheet/) - includes nice diagrams
+- [Demystifying JWT, OAuth, OIDC, and SAML: A Technical Guide](https://guptadeepak.com/demystifying-jwt-oauth-oidc-and-saml-a-technical-guide/)
+
 ## 🎓 Why These Resources?
 
 These resources complement the RFC specifications with:
