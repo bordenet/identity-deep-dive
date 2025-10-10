@@ -4,7 +4,7 @@
 
 This repository contains a collection of projects built to explore and learn core identity and access management concepts. The primary focus is on implementing protocols like [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) from specifications, building practical security tools, and understanding production patterns for scale and security.
 
-**This is an AI-assisted learning exercise.** The code was primarily generated with AI pair-programming tools ([Claude Code](https://claude.ai/claude-code) and [Google Gemini](https://gemini.google.com)) to accelerate learning and explore the domain, not to demonstrate implementation from scratch.
+**This is an AI-assisted learning exercise.** The code was primarily generated with AI pair-programming tools ([Claude Code](https://github.com/anthropics/claude-code) and [Google Gemini](https://gemini.google.com)) to accelerate learning and explore the domain, not to demonstrate implementation from scratch.
 
 ## Getting Started
 
@@ -49,7 +49,7 @@ A distributed session management service using JWTs and Redis.
 
 ## Out of Scope
 
-These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like [federation](https://www.cloudflare.com/learning/access-management/what-is-federated-identity/), [directory services](https://www.techtarget.com/searchwindowsserver/definition/directory-service), [certificate management](https://www.techtarget.com/searchsecurity/definition/certificate-management), [SAML/OIDC brokers/bridges](https://medium.com/@curity.io/saml-and-oidc-bridging-and-brokering-d04946702937), popular [IdP vendor solutions](https://www.g2.com/categories/identity-provider-idp), [MFA/OTP/biometrics](https://www.cisa.gov/MFA), [risk-based authentication](https://www.pingidentity.com/en/resources/blog/post/what-is-risk-based-authentication.html), [step-up AuthZ](https://www.authress.io/knowledge-base/step-up-authentication-and-authorization), and numerous other concepts are not explored here.
+These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like [federated identity](https://en.wikipedia.org/wiki/Federated_identity), [directory services](https://en.wikipedia.org/wiki/Directory_service) ([LDAP](https://datatracker.ietf.org/doc/html/rfc4511)), [certificate management](https://en.wikipedia.org/wiki/Public_key_certificate) ([X.509](https://datatracker.ietf.org/doc/html/rfc5280)), [SAML](https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) protocol bridging, identity provider ecosystems, [multi-factor authentication](https://www.cisa.gov/MFA) ([TOTP](https://datatracker.ietf.org/doc/html/rfc6238), [WebAuthn](https://www.w3.org/TR/webauthn/)), [risk-based authentication](https://en.wikipedia.org/wiki/Risk-based_authentication), [step-up authentication](https://www.rfc-editor.org/rfc/rfc8176.html#section-4), and numerous other concepts are not explored here.
 
 ---
 
