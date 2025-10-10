@@ -410,8 +410,19 @@ func (d *HardcodedSecretDetector) Detect(tree *models.ConfigTree) []models.Findi
 func parseDurationToSeconds(duration string) int {
 	duration = strings.TrimSpace(strings.ToLower(duration))
 
-	// Parse simple duration formats: 24h, 1d, 60m, 3600s
+	// Try to parse as plain integer first (no unit means seconds)
 	var value int
+	if _, err := fmt.Sscanf(duration, "%d", &value); err == nil {
+		// Check if there's more content after the number
+		var rest string
+		if n, _ := fmt.Sscanf(duration, "%d%s", &value, &rest); n == 1 {
+			// Just a number, treat as seconds
+			return value
+		}
+		// Has a unit, parse it below
+	}
+
+	// Parse duration formats with units: 24h, 1d, 60m, 3600s
 	var unit string
 	if _, err := fmt.Sscanf(duration, "%d%s", &value, &unit); err != nil {
 		log.Printf("parseDurationToSeconds: failed to parse duration %q: %v", duration, err)
@@ -430,7 +441,7 @@ func parseDurationToSeconds(duration string) int {
 	case "w", "week", "weeks":
 		return value * 604800
 	default:
-		// Return value as seconds if no unit specified
+		// Unknown unit, treat as seconds
 		return value
 	}
 }
