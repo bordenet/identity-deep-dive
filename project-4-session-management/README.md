@@ -141,6 +141,97 @@ project-4-session-management/
 make test
 ```
 
+### Debugging Session Management Flows
+
+Use [Delve](https://github.com/go-delve/delve) or your IDE debugger to step through the session lifecycle shown in the architecture diagram.
+
+#### Install Delve
+
+```bash
+go install github.com/go-delve/delve/cmd/dlv@latest
+```
+
+#### Critical Breakpoint Locations
+
+Based on the multi-tenant session management architecture, set breakpoints at these key functions:
+
+**1. Session Creation** (`POST /sessions`):
+- File: `internal/handlers/session.go`
+- Function: `CreateSession`
+- Line: First line (request validation)
+- **What to inspect**: `tenant_id`, `user_id`, session creation parameters
+
+**2. JWT Token Generation**:
+- File: `internal/tokens/jwt.go`
+- Function: `GenerateToken`
+- Line: Claims creation and signing
+- **What to inspect**: JWT claims, tenant-specific signing key, token expiration
+
+**3. Session Validation** (`POST /sessions/validate`):
+- File: `internal/handlers/session.go`
+- Function: `ValidateSession`
+- Line: Token parsing and validation
+- **What to inspect**: Incoming token, validation result, revocation check
+
+**4. Revocation Check**:
+- File: `internal/session/redis.go`
+- Function: `IsRevoked`
+- Line: Redis blocklist lookup
+- **What to inspect**: Token ID, blocklist key, TTL
+
+**5. Token Refresh** (`POST /sessions/refresh`):
+- File: `internal/handlers/session.go`
+- Function: `RefreshSession`
+- Line: Refresh token validation
+- **What to inspect**: Refresh token, new access token generation, rotation
+
+**6. Multi-Tenant Key Resolution**:
+- File: `internal/tokens/keymanager.go`
+- Function: `GetPrivateKey` or `GetPublicKey`
+- Line: Tenant key lookup
+- **What to inspect**: `tenant_id`, cached vs. fresh key fetch
+
+#### Example: Debug with Delve
+
+```bash
+# Start server with debugger
+cd project-4-session-management
+dlv debug cmd/server/main.go
+
+# In dlv console:
+(dlv) break internal/handlers/session.go:CreateSession
+(dlv) break internal/handlers/session.go:ValidateSession
+(dlv) break internal/tokens/jwt.go:GenerateToken
+(dlv) continue
+
+# Then send API requests with curl
+```
+
+#### Example: Debug with VS Code
+
+Add to `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Session Server",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/project-4-session-management/cmd/server",
+      "env": {
+        "REDIS_ADDR": "localhost:6379",
+        "SERVER_PORT": "8081"
+      }
+    }
+  ]
+}
+```
+
+Set breakpoints in VS Code at the locations listed above.
+
 ## Documentation & References
 
 ### Project-Specific Documentation

@@ -366,6 +366,98 @@ project-1-oauth2-oidc-demo/
 make test
 ```
 
+### Debugging OAuth2/OIDC Flows
+
+Use [Delve](https://github.com/go-delve/delve) or your IDE debugger to step through the critical inflection points shown in the [OIDC flow diagrams](docs/OIDC_Walk_Thru.md).
+
+#### Install Delve
+
+```bash
+go install github.com/go-delve/delve/cmd/dlv@latest
+```
+
+#### Critical Breakpoint Locations
+
+Based on the [OIDC Authorization Code Flow](docs/OIDC_Walk_Thru.md), set breakpoints at these key functions:
+
+**1. Authorization Request** (`/authorize` endpoint):
+- File: `internal/handlers/authorize.go`
+- Function: `HandleAuthorize`
+- Line: First line of function (PKCE challenge validation)
+- **What to inspect**: `code_challenge`, `code_challenge_method`, `state`, `client_id`, `redirect_uri`
+
+**2. Authorization Code Generation**:
+- File: `internal/handlers/authorize.go`
+- Function: `HandleAuthorize`
+- Line: Authorization code storage (Redis write)
+- **What to inspect**: Generated authorization code, associated PKCE challenge
+
+**3. Token Exchange** (`/oauth2/token` endpoint):
+- File: `internal/handlers/token.go`
+- Function: `HandleToken`
+- Line: First line of `authorization_code` grant type handler
+- **What to inspect**: `code`, `code_verifier`, `client_id`, `redirect_uri`
+
+**4. PKCE Verification**:
+- File: `internal/tokens/pkce.go`
+- Function: `ValidatePKCE`
+- Line: Challenge comparison
+- **What to inspect**: `code_verifier`, `code_challenge`, computed SHA-256 hash
+
+**5. JWT Token Generation**:
+- File: `internal/tokens/jwt.go`
+- Function: `GenerateAccessToken` or `GenerateIDToken`
+- Line: Token signing
+- **What to inspect**: Claims (`sub`, `aud`, `iss`, `exp`, `scope`)
+
+**6. UserInfo Request** (`/userinfo` endpoint):
+- File: `internal/handlers/userinfo.go`
+- Function: `HandleUserInfo`
+- Line: Token validation
+- **What to inspect**: Access token, extracted claims, user lookup
+
+#### Example: Debug with Delve
+
+```bash
+# Start server with debugger
+cd project-1-oauth2-oidc-demo
+dlv debug cmd/server/main.go
+
+# In dlv console:
+(dlv) break internal/handlers/authorize.go:HandleAuthorize
+(dlv) break internal/handlers/token.go:HandleToken
+(dlv) break internal/tokens/pkce.go:ValidatePKCE
+(dlv) continue
+
+# Then trigger the flow with the demo client or curl
+```
+
+#### Example: Debug with VS Code
+
+Add to `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug OAuth2 Server",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/project-1-oauth2-oidc-demo/cmd/server",
+      "env": {
+        "REDIS_ADDR": "localhost:6379",
+        "PRIVATE_KEY_PATH": "${workspaceFolder}/.secrets/jwt-private.pem",
+        "PUBLIC_KEY_PATH": "${workspaceFolder}/.secrets/jwt-public.pem"
+      }
+    }
+  ]
+}
+```
+
+Set breakpoints in VS Code at the locations listed above.
+
 ### Cleaning Up
 
 Remove generated keys and temporary files:
