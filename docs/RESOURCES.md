@@ -4,11 +4,13 @@
 
 ## 📑 Documentation
 
-- [README](../README.md) - Project overview and introduction
+- [README](../README.md) - Project overview
 - [Quick Start](./QUICK_START.md) - Setup and running instructions
 - [Architecture](./ARCHITECTURE.md) - System design and technology choices
-- [Learning Journey](./LEARNING_JOURNEY.md) - Three-day learning chronicle
-- **Resources** (this document) - External learning materials and references
+- [Learning Journey](./LEARNING_JOURNEY.md) - Development chronicle
+- **Resources** (this document) - External learning materials
+- [Logging](./LOGGING.md) - Structured logging setup
+- [Quality Controls](./QUALITY_CONTROLS.md) - Pre-commit validation
 
 ---
 

@@ -186,7 +186,7 @@ See [QUALITY_CONTROLS.md](./QUALITY_CONTROLS.md) for detailed cleanup options.
 
 All projects use structured logging with [zerolog](https://github.com/rs/zerolog) for JSON-formatted logs with timestamps.
 
-**📖 Full Documentation**: See [LOGGING.md](../LOGGING.md) for:
+**📖 Full Documentation**: See [LOGGING.md](./LOGGING.md) for:
 - Log format and configuration
 - Free tier log storage options (Grafana Loki, Elastic, Better Stack, Datadog)
 - Query examples (LogQL, SQL)

@@ -1,10 +1,8 @@
 # Identity Deep Dive
 
-> **Learning identity protocols through implementation**
+Four identity and access management projects implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), and security scanning tools. Built to learn core IAM concepts through hands-on implementation.
 
-This repository contains a collection of projects built to explore and learn core identity and access management concepts. The primary focus is on implementing protocols like [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) and [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) from specifications, building practical security tools, and understanding production patterns for scale and security.
-
-**This is an AI-assisted learning exercise.** The code was primarily generated with AI pair-programming tools ([Claude Code](https://github.com/anthropics/claude-code) and [Google Gemini](https://gemini.google.com)) to accelerate learning and explore the domain, not to demonstrate implementation from scratch.
+**Note**: This is a learning repository. Code was developed with AI assistance to accelerate exploration of identity protocols and security patterns.
 
 ## Getting Started
 
@@ -49,7 +47,7 @@ A distributed session management service using JWTs and Redis.
 
 ## Out of Scope
 
-These projects cover core authentication and authorization patterns, but identity and access management is a vast domain. Topics like [federated identity](https://en.wikipedia.org/wiki/Federated_identity), [directory services](https://en.wikipedia.org/wiki/Directory_service) ([LDAP](https://datatracker.ietf.org/doc/html/rfc4511)), [certificate management](https://en.wikipedia.org/wiki/Public_key_certificate) ([X.509](https://datatracker.ietf.org/doc/html/rfc5280)), [SAML](https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) protocol bridging, identity provider ecosystems, [multi-factor authentication](https://www.cisa.gov/MFA) ([TOTP](https://datatracker.ietf.org/doc/html/rfc6238), [WebAuthn](https://www.w3.org/TR/webauthn/)), [risk-based authentication](https://en.wikipedia.org/wiki/Risk-based_authentication), [step-up authentication](https://www.rfc-editor.org/rfc/rfc8176.html#section-4), and numerous other concepts are not explored here.
+These projects cover basic authentication and authorization patterns. Not included: [federated identity](https://en.wikipedia.org/wiki/Federated_identity), [directory services](https://en.wikipedia.org/wiki/Directory_service) ([LDAP](https://datatracker.ietf.org/doc/html/rfc4511)), [certificate management](https://en.wikipedia.org/wiki/Public_key_certificate) ([X.509](https://datatracker.ietf.org/doc/html/rfc5280)), [SAML](https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html) protocol bridging, [multi-factor authentication](https://www.cisa.gov/MFA) ([TOTP](https://datatracker.ietf.org/doc/html/rfc6238), [WebAuthn](https://www.w3.org/TR/webauthn/)), [risk-based authentication](https://en.wikipedia.org/wiki/Risk-based_authentication), and [step-up authentication](https://www.rfc-editor.org/rfc/rfc8176.html#section-4).
 
 ---
 

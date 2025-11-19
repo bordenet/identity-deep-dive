@@ -146,8 +146,8 @@ func loadConfig() *Config {
 		RedisAddr:      getEnv("REDIS_ADDR", "localhost:6379"),
 		RedisPassword:  getEnv("REDIS_PASSWORD", ""),
 		RedisDB:        0,
-		PrivateKeyPath: getEnv("PRIVATE_KEY_PATH", "./keys/jwt-private.key"),
-		PublicKeyPath:  getEnv("PUBLIC_KEY_PATH", "./keys/jwt-public.key"),
+		PrivateKeyPath: getEnv("PRIVATE_KEY_PATH", "../.secrets/jwt-private.pem"),
+		PublicKeyPath:  getEnv("PUBLIC_KEY_PATH", "../.secrets/jwt-public.pem"),
 	}
 }
 
