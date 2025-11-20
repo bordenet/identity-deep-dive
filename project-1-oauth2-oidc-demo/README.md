@@ -495,7 +495,7 @@ This starts:
 - [ ] Rotate RSA keys regularly
 - [ ] Implement rate limiting on token endpoint
 - [ ] Add brute-force protection on login
-- [ ] Use production-grade user store (PostgreSQL, MySQL)
+- [ ] Use persistent user store (PostgreSQL, MySQL)
 - [ ] Enable Redis authentication and encryption
 - [ ] Implement consent screen for authorization
 - [ ] Add logging and monitoring (Prometheus, Grafana)

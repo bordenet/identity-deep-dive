@@ -16,7 +16,7 @@ Build a standards-compliant [OAuth2](https://datatracker.ietf.org/doc/html/rfc67
 ### 1.2 Goals
 - **Primary**: Implement [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749) authorization flows per [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
 - **Secondary**: Add [OIDC](https://openid.net/specs/openid-connect-core-1_0.html) identity layer per [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) spec
-- **Tertiary**: Follow production-quality patterns (error handling, security, observability)
+- **Tertiary**: Implement proper error handling, security, and observability
 
 ### 1.3 Non-Goals
 - Full production deployment (this is a learning/demonstration project)

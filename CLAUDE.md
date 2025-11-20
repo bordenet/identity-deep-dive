@@ -4,7 +4,7 @@
 Build 4 identity projects in 3 days to brush up on key concepts ahead of senior leadership role interview (Friday).
 
 ## Core Principles
-1. **Production-quality patterns**: Error handling, observability, security, testing
+1. **Code quality**: Error handling, observability, security, testing
 2. **Document learning**: Capture notes and explain trade-offs
 3. **Multi-tenant thinking**: Design for global scale, HA requirements
 4. **Security first**: Follow OWASP identity best practices
@@ -205,9 +205,9 @@ This makes documentation self-navigating with one-click access to authoritative 
 - State parameter for CSRF protection
 - Short token lifetimes (15m access, 30d refresh)
 
-### Production Patterns
-- Comprehensive error handling with context
-- Structured logging (ready for observability platforms)
+### Implementation Patterns
+- Error handling with context
+- Structured logging
 - Graceful shutdown and health checks
 - Configuration via environment (12-factor app)
 - Podman deployments with podman-compose
