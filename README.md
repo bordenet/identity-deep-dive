@@ -1,5 +1,9 @@
 # Identity Deep Dive
 
+[![Go Version](https://img.shields.io/badge/Go-1.23%2B-00ADD8?logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Podman](https://img.shields.io/badge/Container-Podman-892CA0?logo=podman)](https://podman.io/)
+
 Four identity and access management projects implementing [OAuth2](https://datatracker.ietf.org/doc/html/rfc6749), [OIDC](https://openid.net/specs/openid-connect-core-1_0.html), and security scanning tools. Built to learn core IAM concepts through hands-on implementation.
 
 **Note**: This is a learning repository. Code was developed with AI assistance to accelerate exploration of identity protocols and security patterns.

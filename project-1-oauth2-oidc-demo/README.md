@@ -49,10 +49,11 @@ Alternatively, you can run components individually:
 ### 1. Generate RSA Keys
 
 ```bash
-make generate-keys
+cd ..
+./setup-macos.sh
 ```
 
-This creates `keys/private.pem` and `keys/public.pem` for JWT signing.
+This creates `.secrets/jwt-private.pem` and `.secrets/jwt-public.pem` for JWT signing.
 
 ### 2. Start Redis
 
