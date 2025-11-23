@@ -60,3 +60,4 @@ These projects cover basic authentication and authorization patterns. Not includ
 This is a personal learning repository, but feedback and suggestions are welcome. Please feel free to open an issue.
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
