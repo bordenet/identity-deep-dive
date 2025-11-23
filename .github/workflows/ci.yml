@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.21', '1.22', '1.23']
+        project:
+          - project-1-oauth2-oidc-demo
+          - project-2-identity-security-scanner
+          - project-3-runtime-security-scanner
+          - project-4-session-management
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache-dependency-path: ${{ matrix.project }}/go.sum
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.project }}
+        run: go mod download
+
+      - name: Run tests with coverage
+        working-directory: ${{ matrix.project }}
+        run: |
+          go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+          go tool cover -func=coverage.out
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./${{ matrix.project }}/coverage.out
+          flags: ${{ matrix.project }}
+          name: codecov-${{ matrix.project }}-go${{ matrix.go-version }}
+          fail_ci_if_error: false
+          verbose: true
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - project-1-oauth2-oidc-demo
+          - project-2-identity-security-scanner
+          - project-3-runtime-security-scanner
+          - project-4-session-management
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: ${{ matrix.project }}/go.sum
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: latest
+          working-directory: ${{ matrix.project }}
+          args: --timeout=5m
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - project-1-oauth2-oidc-demo
+          - project-2-identity-security-scanner
+          - project-3-runtime-security-scanner
+          - project-4-session-management
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: ${{ matrix.project }}/go.sum
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: -fmt sarif -out results.sarif ${{ matrix.project }}/...
+        continue-on-error: true
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - project-1-oauth2-oidc-demo
+          - project-2-identity-security-scanner
+          - project-3-runtime-security-scanner
+          - project-4-session-management
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: ${{ matrix.project }}/go.sum
+
+      - name: Build
+        working-directory: ${{ matrix.project }}
+        run: make build
+
+      - name: Verify binaries
+        working-directory: ${{ matrix.project }}
+        run: |
+          if [ -d "bin" ]; then
+            ls -lh bin/
+            file bin/* || true
+          fi
+
