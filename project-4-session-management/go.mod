@@ -1,6 +1,6 @@
 module github.com/bordenet/identity-deep-dive/project-4-session-management
 
-go 1.25.2
+go 1.23
 
 require (
 	github.com/bordenet/identity-deep-dive v0.0.0-20251009205848-db894859a08b
