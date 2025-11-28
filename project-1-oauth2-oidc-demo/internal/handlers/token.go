@@ -158,7 +158,7 @@ func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *mo
 		return nil, fmt.Errorf("%s: PKCE validation failed: %w", models.ErrorInvalidGrant, err)
 	}
 
-	// Mark authorization code as used (one-time use)
+	// Mark authorization code as used (one-time use).
 	if err := h.sessionStore.InvalidateAuthorizationCode(ctx, req.Code); err != nil {
 		return nil, fmt.Errorf("%w: %w", models.ErrServerError, err)
 	}
@@ -175,7 +175,7 @@ func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *mo
 		return nil, fmt.Errorf("%w: %w", models.ErrServerError, err)
 	}
 
-	// Calculate expires_in (seconds until expiration)
+	// Calculate expires_in (seconds until expiration).
 	expiresIn := int(time.Until(expiresAt).Seconds())
 
 	// Build token response.
@@ -186,7 +186,7 @@ func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *mo
 		Scope:       authCode.Scope,
 	}
 
-	// Generate refresh token (optional, for long-lived sessions)
+	// Generate refresh token (optional, for long-lived sessions).
 	if models.HasScope(authCode.Scope, "offline_access") {
 		refreshToken, err := h.generateRefreshToken(ctx, client.ID, user.ID, authCode.Scope)
 		if err != nil {
@@ -308,13 +308,13 @@ func (h *TokenHandler) handleClientCredentialsGrant(ctx context.Context, req *mo
 		return nil, fmt.Errorf("%w: %w", models.ErrInvalidClient, models.ErrInvalidClientSecret)
 	}
 
-	// Determine scope (use requested scope or default to client's allowed scopes)
+	// Determine scope (use requested scope or default to client's allowed scopes).
 	scope := req.Scope
 	if scope == "" && len(client.Scopes) > 0 {
-		scope = client.Scopes[0] // Use first allowed scope as default
+		scope = client.Scopes[0] // Use first allowed scope as default.
 	}
 
-	// Generate access token (no user context for client_credentials)
+	// Generate access token (no user context for client_credentials).
 	accessToken, expiresAt, err := h.jwtManager.GenerateAccessToken(client.ID, "", scope)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %w", models.ErrServerError, err)
@@ -322,7 +322,7 @@ func (h *TokenHandler) handleClientCredentialsGrant(ctx context.Context, req *mo
 
 	expiresIn := int(time.Until(expiresAt).Seconds())
 
-	// Build token response (no refresh token or ID token for client_credentials)
+	// Build token response (no refresh token or ID token for client_credentials).
 	tokenResp := &models.TokenResponse{
 		AccessToken: accessToken,
 		TokenType:   "Bearer",
@@ -348,7 +348,7 @@ func (h *TokenHandler) generateRefreshToken(ctx context.Context, clientID, userI
 		ClientID:  clientID,
 		UserID:    userID,
 		Scope:     scope,
-		ExpiresAt: time.Now().Add(30 * 24 * time.Hour), // 30 days
+		ExpiresAt: time.Now().Add(30 * 24 * time.Hour), // 30 days.
 		Revoked:   false,
 	}
 

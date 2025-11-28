@@ -44,7 +44,7 @@ func main() {
 	// Initialize session store.
 	sessionStore := session.NewRedisStore(redisClient, "identity:")
 
-	// Initialize user store (in-memory for demo)
+	// Initialize user store (in-memory for demo).
 	userStore := store.NewInMemoryUserStore()
 
 	// Load RSA keys.
@@ -55,9 +55,9 @@ func main() {
 		privateKey,
 		publicKey,
 		config.Issuer,
-		15*time.Minute,  // Access token TTL
-		30*24*time.Hour, // Refresh token TTL (30 days)
-		15*time.Minute,  // ID token TTL
+		15*time.Minute,  // Access token TTL.
+		30*24*time.Hour, // Refresh token TTL (30 days).
+		15*time.Minute,  // ID token TTL.
 	)
 
 	// Initialize handlers.
@@ -203,10 +203,10 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 	block, _ := pem.Decode(privateKeyData)
 	if block == nil {
 		log.Fatal().Str("path", config.PrivateKeyPath).Msg("Failed to parse PEM block containing private key")
-		return nil, nil // Unreachable but satisfies staticcheck
+		return nil, nil // Unreachable but satisfies staticcheck.
 	}
 
-	// Try PKCS#8 format first (modern format), fallback to PKCS#1 (legacy RSA format)
+	// Try PKCS#8 format first (modern format), fallback to PKCS#1 (legacy RSA format).
 	var privateKey *rsa.PrivateKey
 	parsedKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
@@ -233,10 +233,10 @@ func loadRSAKeys(config *Config) (*rsa.PrivateKey, *rsa.PublicKey) {
 	block, _ = pem.Decode(publicKeyData)
 	if block == nil {
 		log.Fatal().Str("path", config.PublicKeyPath).Msg("Failed to parse PEM block containing public key")
-		return nil, nil // Unreachable but satisfies staticcheck
+		return nil, nil // Unreachable but satisfies staticcheck.
 	}
 
-	// Try PKIX (X.509) format first (standard), fallback to PKCS#1 (legacy RSA format)
+	// Try PKIX (X.509) format first (standard), fallback to PKCS#1 (legacy RSA format).
 	var publicKey *rsa.PublicKey
 	parsedPubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
@@ -283,7 +283,7 @@ func seedDemoClients(ctx context.Context, sessionStore *session.RedisStore) {
 		},
 		{
 			ID:     "mobile-app",
-			Secret: "", // Public client - no secret
+			Secret: "", // Public client - no secret.
 			RedirectURIs: []string{
 				"myapp://callback",
 				"http://localhost:3000/mobile/callback",

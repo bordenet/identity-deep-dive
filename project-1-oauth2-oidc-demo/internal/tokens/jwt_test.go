@@ -117,7 +117,7 @@ func TestValidateAccessToken_InvalidSignature(t *testing.T) {
 		t.Fatalf("GenerateAccessToken failed: %v", err)
 	}
 
-	// Try to validate with key2 (should fail)
+	// Try to validate with key2 (should fail).
 	_, err = manager2.ValidateAccessToken(token)
 	if err == nil {
 		t.Error("ValidateAccessToken should fail for token signed with different key")

@@ -46,7 +46,7 @@ type AccessTokenClaims struct {
 	jwt.RegisteredClaims
 	Scope    string `json:"scope,omitempty"`
 	ClientID string `json:"client_id"`
-	UserID   string `json:"user_id,omitempty"` // Empty for client_credentials
+	UserID   string `json:"user_id,omitempty"` // Empty for client_credentials.
 }
 
 // GenerateAccessToken generates a JWT access token.
@@ -188,7 +188,7 @@ func (jm *JWTManager) ValidateIDToken(tokenString string) (*models.IDTokenClaims
 // For RS256: Left-most 128 bits of SHA-256 hash, base64url encoded.
 func generateTokenHash(token string) string {
 	hash := sha256.Sum256([]byte(token))
-	// Take left-most 128 bits (16 bytes)
+	// Take left-most 128 bits (16 bytes).
 	halfHash := hash[:16]
 	// Base64url encode without padding.
 	return base64.RawURLEncoding.EncodeToString(halfHash)

@@ -73,10 +73,10 @@ func handleHome(w http.ResponseWriter, _ *http.Request) {
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
-	// Generate state (CSRF protection)
+	// Generate state (CSRF protection).
 	state := generateRandomString(32)
 
-	// Generate nonce (replay protection for ID token)
+	// Generate nonce (replay protection for ID token).
 	nonce := generateRandomString(32)
 
 	// Generate PKCE code_verifier and code_challenge.
@@ -96,7 +96,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		Name:     "session_id",
 		Value:    sessionID,
 		Path:     "/",
-		MaxAge:   600, // 10 minutes
+		MaxAge:   600, // 10 minutes.
 		HttpOnly: true,
 	})
 
@@ -142,7 +142,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate state (CSRF protection)
+	// Validate state (CSRF protection).
 	if state != session.State {
 		http.Error(w, "Invalid state parameter", http.StatusBadRequest)
 		return
@@ -209,7 +209,7 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 }
 
 func fetchUserInfo(accessToken string) (map[string]any, error) {
-	req, err := http.NewRequest("GET", authzServerURL+"/userinfo", nil)
+	req, err := http.NewRequest("GET", authzServerURL+"/userinfo", http.NoBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func TestGenerateCodeChallenge(t *testing.T) {
-	// Generate a valid verifier (43-128 chars)
+	// Generate a valid verifier (43-128 chars).
 	verifier := strings.Repeat("a", 43)
 
 	tests := []struct {
@@ -38,7 +38,7 @@ func TestGenerateCodeChallenge(t *testing.T) {
 				t.Error("GenerateCodeChallenge() returned empty challenge")
 			}
 
-			// For S256, challenge should be 43 characters (base64url of SHA256)
+			// For S256, challenge should be 43 characters (base64url of SHA256).
 			if tt.method == PKCEMethodS256 && len(challenge) != 43 {
 				t.Errorf("S256 challenge length = %d, want 43", len(challenge))
 			}

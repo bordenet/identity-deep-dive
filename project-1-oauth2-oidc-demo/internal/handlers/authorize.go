@@ -56,7 +56,7 @@ func (h *AuthorizeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Validate redirect URI.
 	if !client.ValidateRedirectURI(authReq.RedirectURI) {
-		// Per OAuth2 spec: if redirect_uri is invalid, DO NOT redirect (prevents open redirect)
+		// Per OAuth2 spec: if redirect_uri is invalid, DO NOT redirect (prevents open redirect).
 		h.writeErrorPage(w, "Invalid redirect_uri")
 		return
 	}
@@ -157,7 +157,7 @@ func (h *AuthorizeHandler) generateAuthorizationCode(ctx context.Context, authRe
 		UserID:              userID,
 		RedirectURI:         authReq.RedirectURI,
 		Scope:               authReq.Scope,
-		ExpiresAt:           time.Now().Add(10 * time.Minute), // 10 minute expiry
+		ExpiresAt:           time.Now().Add(10 * time.Minute), // 10 minute expiry.
 		Used:                false,
 		CodeChallenge:       authReq.CodeChallenge,
 		CodeChallengeMethod: authReq.CodeChallengeMethod,
@@ -181,7 +181,7 @@ func (h *AuthorizeHandler) getAuthenticatedUser(_ *http.Request) string {
 	// 1. Check session cookie.
 	// 2. Validate session in Redis.
 	// 3. Return user ID from session.
-	// 4. Or return "" if not authenticated (redirect to login)
+	// 4. Or return "" if not authenticated (redirect to login).
 
 	// Demo: return a test user ID.
 	return "demo-user-123"

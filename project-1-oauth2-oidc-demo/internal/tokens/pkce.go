@@ -22,7 +22,7 @@ const (
 // Per RFC 7636: https://tools.ietf.org/html/rfc7636.
 func ValidatePKCE(codeVerifier, codeChallenge, codeChallengeMethod string) error {
 	if codeChallenge == "" {
-		// No PKCE was used (allowed for confidential clients)
+		// No PKCE was used (allowed for confidential clients).
 		return nil
 	}
 
@@ -30,9 +30,9 @@ func ValidatePKCE(codeVerifier, codeChallenge, codeChallengeMethod string) error
 		return models.ErrCodeVerifierRequired
 	}
 
-	// Validate code verifier format (RFC 7636 Section 4.1)
+	// Validate code verifier format (RFC 7636 Section 4.1).
 	// ABNF: code-verifier = 43*128unreserved.
-	// unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~".
+	// Unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~".
 	if len(codeVerifier) < 43 || len(codeVerifier) > 128 {
 		return models.ErrCodeVerifierLength
 	}

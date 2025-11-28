@@ -55,7 +55,7 @@ func TestPKCEValidation(t *testing.T) {
 			verifier:      "",
 			challenge:     "",
 			method:        "S256",
-			shouldSucceed: true, // ValidatePKCE returns nil when challenge is empty
+			shouldSucceed: true, // ValidatePKCE returns nil when challenge is empty.
 		},
 	}
 

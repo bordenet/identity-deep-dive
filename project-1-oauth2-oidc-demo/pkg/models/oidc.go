@@ -89,7 +89,7 @@ func (c *IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
 
 // UserInfoResponse represents the OIDC UserInfo endpoint response.
 type UserInfoResponse struct {
-	Subject       string `json:"sub"` // Required
+	Subject       string `json:"sub"` // Required.
 	Name          string `json:"name,omitempty"`
 	GivenName     string `json:"given_name,omitempty"`
 	FamilyName    string `json:"family_name,omitempty"`

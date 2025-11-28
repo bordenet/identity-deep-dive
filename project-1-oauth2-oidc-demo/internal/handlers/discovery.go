@@ -141,11 +141,11 @@ func (h *JWKSHandler) rsaPublicKeyToJWK(pubKey *rsa.PublicKey) map[string]interf
 	e := base64.RawURLEncoding.EncodeToString(big.NewInt(int64(pubKey.E)).Bytes())
 
 	return map[string]interface{}{
-		"kty": "RSA",     // Key type
-		"use": "sig",     // Public key use (signature)
-		"alg": "RS256",   // Algorithm
-		"kid": "default", // Key ID
-		"n":   n,         // Modulus
-		"e":   e,         // Exponent
+		"kty": "RSA",     // Key type.
+		"use": "sig",     // Public key use (signature).
+		"alg": "RS256",   // Algorithm.
+		"kid": "default", // Key ID.
+		"n":   n,         // Modulus.
+		"e":   e,         // Exponent.
 	}
 }
