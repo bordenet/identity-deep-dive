@@ -15,9 +15,9 @@ import (
 
 // TenantKeyManager manages RSA keys for multiple tenants.
 type TenantKeyManager struct {
-	keyCache   map[string]*models.Tenant // In-memory cache of tenant keys
-	cacheMutex sync.RWMutex              // Protects key cache
-	keyStore   KeyStore                  // Persistent storage for keys
+	keyCache   map[string]*models.Tenant // In-memory cache of tenant keys.
+	cacheMutex sync.RWMutex              // Protects key cache.
+	keyStore   KeyStore                  // Persistent storage for keys.
 }
 
 // KeyStore interface for persistent key storage (Redis, Vault, etc.).
@@ -26,7 +26,7 @@ type KeyStore interface {
 	StoreKeyPair(tenantID string, privateKeyPEM, publicKeyPEM []byte) error
 	// GetKeyPair retrieves a tenant's RSA key pair.
 	GetKeyPair(tenantID string) (privateKeyPEM, publicKeyPEM []byte, err error)
-	// DeleteKeyPair deletes a tenant's RSA key pair (for rotation)
+	// DeleteKeyPair deletes a tenant's RSA key pair (for rotation).
 	DeleteKeyPair(tenantID string) error
 }
 
@@ -72,7 +72,7 @@ func (tkm *TenantKeyManager) GetJWKS(tenantID string) (*models.JWKSDocument, err
 
 // getTenant retrieves a tenant from cache or loads from store.
 func (tkm *TenantKeyManager) getTenant(tenantID string) (*models.Tenant, error) {
-	// Try cache first (read lock)
+	// Try cache first (read lock).
 	tkm.cacheMutex.RLock()
 	if tenant, ok := tkm.keyCache[tenantID]; ok {
 		tkm.cacheMutex.RUnlock()
@@ -80,7 +80,7 @@ func (tkm *TenantKeyManager) getTenant(tenantID string) (*models.Tenant, error) 
 	}
 	tkm.cacheMutex.RUnlock()
 
-	// Not in cache, acquire write lock and check again (double-check locking)
+	// Not in cache, acquire write lock and check again (double-check locking).
 	tkm.cacheMutex.Lock()
 	defer tkm.cacheMutex.Unlock()
 
@@ -173,7 +173,7 @@ func (tkm *TenantKeyManager) RotateKey(tenantID string) error {
 		return fmt.Errorf("failed to delete old key: %w", err)
 	}
 
-	// Generate new key pair (will be cached automatically)
+	// Generate new key pair (will be cached automatically).
 	_, err := tkm.generateAndStoreKeyPair(tenantID)
 	return err
 }

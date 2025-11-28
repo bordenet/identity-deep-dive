@@ -95,7 +95,7 @@ func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, 
 		return fmt.Errorf("failed to marshal refresh token: %w", err)
 	}
 
-	// Update in Redis (keep existing TTL)
+	// Update in Redis (keep existing TTL).
 	ttl := time.Until(token.ExpiresAt)
 	if ttl <= 0 {
 		return models.ErrRefreshTokenExpired
@@ -125,7 +125,7 @@ func (rs *RedisStore) DeleteRefreshToken(ctx context.Context, tenantID, tokenID 
 func (rs *RedisStore) RevokeToken(ctx context.Context, tenantID, tokenID string, ttl time.Duration) error {
 	key := rs.revokedTokenKey(tenantID, tokenID)
 
-	// Store with TTL matching token expiration (auto-cleanup)
+	// Store with TTL matching token expiration (auto-cleanup).
 	err := rs.client.Set(ctx, key, "1", ttl).Err()
 	if err != nil {
 		return fmt.Errorf("failed to revoke token: %w", err)
@@ -164,18 +164,18 @@ func (rs *RedisStore) RevokeAllUserTokens(ctx context.Context, tenantID, userID 
 			// Get token to check if it belongs to this user.
 			data, err := rs.client.Get(ctx, key).Bytes()
 			if err != nil {
-				continue // Skip if error (might be deleted)
+				continue // Skip if error (might be deleted).
 			}
 
 			var token models.RefreshToken
 			if err := json.Unmarshal(data, &token); err != nil {
-				continue // Skip if can't parse
+				continue // Skip if can't parse.
 			}
 
 			if token.UserID == userID {
 				// Delete refresh token.
 				if err := rs.client.Del(ctx, key).Err(); err != nil {
-					continue // Skip if error
+					continue // Skip if error.
 				}
 
 				// Add to revocation blocklist.

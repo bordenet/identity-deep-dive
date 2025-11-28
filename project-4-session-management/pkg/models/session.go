@@ -8,51 +8,51 @@ import (
 
 // Session represents an authenticated user session.
 type Session struct {
-	ID        string            `json:"id"`         // Unique session identifier
-	TenantID  string            `json:"tenant_id"`  // Multi-tenant isolation
-	UserID    string            `json:"user_id"`    // User identifier
-	Scope     string            `json:"scope"`      // OAuth2 scopes
-	Metadata  map[string]string `json:"metadata"`   // Custom claims (email, roles, etc.)
-	CreatedAt time.Time         `json:"created_at"` // Session creation time
-	ExpiresAt time.Time         `json:"expires_at"` // Session expiration
+	ID        string            `json:"id"`         // Unique session identifier.
+	TenantID  string            `json:"tenant_id"`  // Multi-tenant isolation.
+	UserID    string            `json:"user_id"`    // User identifier.
+	Scope     string            `json:"scope"`      // OAuth2 scopes.
+	Metadata  map[string]string `json:"metadata"`   // Custom claims (email, roles, etc.).
+	CreatedAt time.Time         `json:"created_at"` // Session creation time.
+	ExpiresAt time.Time         `json:"expires_at"` // Session expiration.
 }
 
 // TokenPair represents access and refresh tokens.
 type TokenPair struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	TokenType    string `json:"token_type"` // Always "Bearer"
-	ExpiresIn    int    `json:"expires_in"` // Access token TTL in seconds
+	TokenType    string `json:"token_type"` // Always "Bearer".
+	ExpiresIn    int    `json:"expires_in"` // Access token TTL in seconds.
 }
 
 // TokenClaims represents JWT token claims.
 type TokenClaims struct {
 	// Standard JWT claims.
-	Subject   string `json:"sub"` // User ID
-	Issuer    string `json:"iss"` // Token issuer
-	Audience  string `json:"aud"` // Token audience
-	ExpiresAt int64  `json:"exp"` // Expiration time (Unix timestamp)
-	IssuedAt  int64  `json:"iat"` // Issued at (Unix timestamp)
-	NotBefore int64  `json:"nbf"` // Not before (Unix timestamp)
-	JTI       string `json:"jti"` // JWT ID (unique token identifier)
+	Subject   string `json:"sub"` // User ID.
+	Issuer    string `json:"iss"` // Token issuer.
+	Audience  string `json:"aud"` // Token audience.
+	ExpiresAt int64  `json:"exp"` // Expiration time (Unix timestamp).
+	IssuedAt  int64  `json:"iat"` // Issued at (Unix timestamp).
+	NotBefore int64  `json:"nbf"` // Not before (Unix timestamp).
+	JTI       string `json:"jti"` // JWT ID (unique token identifier).
 
 	// Custom claims.
-	TenantID  string            `json:"tenant_id"`          // Multi-tenant isolation
-	Scope     string            `json:"scope"`              // OAuth2 scopes
-	Metadata  map[string]string `json:"metadata,omitempty"` // Custom metadata
-	TokenType string            `json:"token_type"`         // "access" or "refresh"
+	TenantID  string            `json:"tenant_id"`          // Multi-tenant isolation.
+	Scope     string            `json:"scope"`              // OAuth2 scopes.
+	Metadata  map[string]string `json:"metadata,omitempty"` // Custom metadata.
+	TokenType string            `json:"token_type"`         // "access" or "refresh".
 }
 
 // RefreshToken represents a stored refresh token.
 type RefreshToken struct {
-	ID        string            `json:"id"`         // Token ID (jti)
-	TenantID  string            `json:"tenant_id"`  // Multi-tenant isolation
-	UserID    string            `json:"user_id"`    // User identifier
-	Scope     string            `json:"scope"`      // OAuth2 scopes
-	Metadata  map[string]string `json:"metadata"`   // Custom metadata
-	CreatedAt time.Time         `json:"created_at"` // Token creation time
-	ExpiresAt time.Time         `json:"expires_at"` // Token expiration
-	LastUsed  time.Time         `json:"last_used"`  // Last refresh time
+	ID        string            `json:"id"`         // Token ID (jti).
+	TenantID  string            `json:"tenant_id"`  // Multi-tenant isolation.
+	UserID    string            `json:"user_id"`    // User identifier.
+	Scope     string            `json:"scope"`      // OAuth2 scopes.
+	Metadata  map[string]string `json:"metadata"`   // Custom metadata.
+	CreatedAt time.Time         `json:"created_at"` // Token creation time.
+	ExpiresAt time.Time         `json:"expires_at"` // Token expiration.
+	LastUsed  time.Time         `json:"last_used"`  // Last refresh time.
 }
 
 // IsExpired checks if the refresh token has expired.
@@ -118,8 +118,8 @@ func (req *RefreshSessionRequest) Validate() error {
 
 // RevokeSessionRequest represents the request to revoke a session.
 type RevokeSessionRequest struct {
-	Token  string `json:"token,omitempty"`  // Specific token to revoke
-	Reason string `json:"reason,omitempty"` // Reason for revocation
+	Token  string `json:"token,omitempty"`  // Specific token to revoke.
+	Reason string `json:"reason,omitempty"` // Reason for revocation.
 }
 
 // Validate validates the revoke session request.
@@ -155,9 +155,9 @@ type RevokeAllSessionsResponse struct {
 
 // HealthResponse represents the health check response.
 type HealthResponse struct {
-	Status        string `json:"status"`         // "healthy" or "unhealthy"
-	Redis         string `json:"redis"`          // Redis connection status
-	UptimeSeconds int64  `json:"uptime_seconds"` // Server uptime
+	Status        string `json:"status"`         // "healthy" or "unhealthy".
+	Redis         string `json:"redis"`          // Redis connection status.
+	UptimeSeconds int64  `json:"uptime_seconds"` // Server uptime.
 }
 
 // Error codes for session management.

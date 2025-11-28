@@ -18,7 +18,7 @@ type JWTManager struct {
 	issuer          string
 	accessTokenTTL  time.Duration
 	refreshTokenTTL time.Duration
-	keyManager      KeyManager // Interface for multi-tenant key management
+	keyManager      KeyManager // Interface for multi-tenant key management.
 }
 
 // KeyManager interface for retrieving tenant-specific keys.
@@ -266,7 +266,7 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 
 // generateTokenID generates a cryptographically random token ID.
 func generateTokenID() (string, error) {
-	b := make([]byte, 32) // 256 bits
+	b := make([]byte, 32) // 256 bits.
 	if _, err := rand.Read(b); err != nil {
 		return "", err
 	}

@@ -15,7 +15,11 @@ type mockKeyManager struct {
 func (m *mockKeyManager) GetPrivateKey(tenantID string) (*rsa.PrivateKey, error) {
 	key, ok := m.keys[tenantID]
 	if !ok {
-		key, _ = rsa.GenerateKey(rand.Reader, 2048)
+		var err error
+		key, err = rsa.GenerateKey(rand.Reader, 2048)
+		if err != nil {
+			return nil, err
+		}
 		m.keys[tenantID] = key
 	}
 	return key, nil
