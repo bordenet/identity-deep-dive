@@ -20,7 +20,7 @@ var (
 func DiscoverOIDCConfig(ctx context.Context, issuer string) (*models.OIDCDiscoveryDocument, error) {
 	discoveryURL := fmt.Sprintf("%s/.well-known/openid-configuration", issuer)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, discoveryURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, discoveryURL, http.NoBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

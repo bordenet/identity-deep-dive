@@ -19,12 +19,12 @@ func (s *Scanner) checkCSRF(ctx context.Context) string {
 
 	q := authURL.Query()
 	q.Set("response_type", "code")
-	q.Set("client_id", "some-client-id")                    // This should be a configurable value
-	q.Set("redirect_uri", "http://localhost:8080/callback") // This should be a configurable value
+	q.Set("client_id", "some-client-id")                    // This should be a configurable value.
+	q.Set("redirect_uri", "http://localhost:8080/callback") // This should be a configurable value.
 	authURL.RawQuery = q.Encode()
 
 	// 2. Make request to authorization endpoint.
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, authURL.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, authURL.String(), http.NoBody)
 	if err != nil {
 		return fmt.Sprintf("CSRF check failed: could not create request: %v", err)
 	}
