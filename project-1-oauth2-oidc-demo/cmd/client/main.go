@@ -186,8 +186,8 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 		return nil, err
 	}
 	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Printf("WARN: Failed to close response body: %v", err)
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Printf("WARN: Failed to close response body: %v", closeErr)
 		}
 	}()
 
@@ -220,8 +220,8 @@ func fetchUserInfo(accessToken string) (map[string]any, error) {
 		return nil, err
 	}
 	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Printf("WARN: Failed to close response body: %v", err)
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Printf("WARN: Failed to close response body: %v", closeErr)
 		}
 	}()
 

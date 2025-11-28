@@ -154,13 +154,13 @@ func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *mo
 
 	log.Debug().Msg("MERMAID: Token Endpoint: 5. Token endpoint validates PKCE")
 	// Validate PKCE.
-	if err := tokens.ValidatePKCE(req.CodeVerifier, authCode.CodeChallenge, authCode.CodeChallengeMethod); err != nil {
-		return nil, fmt.Errorf("%s: PKCE validation failed: %w", models.ErrorInvalidGrant, err)
+	if pkceErr := tokens.ValidatePKCE(req.CodeVerifier, authCode.CodeChallenge, authCode.CodeChallengeMethod); pkceErr != nil {
+		return nil, fmt.Errorf("%s: PKCE validation failed: %w", models.ErrorInvalidGrant, pkceErr)
 	}
 
 	// Mark authorization code as used (one-time use).
-	if err := h.sessionStore.InvalidateAuthorizationCode(ctx, req.Code); err != nil {
-		return nil, fmt.Errorf("%w: %w", models.ErrServerError, err)
+	if invalidateErr := h.sessionStore.InvalidateAuthorizationCode(ctx, req.Code); invalidateErr != nil {
+		return nil, fmt.Errorf("%w: %w", models.ErrServerError, invalidateErr)
 	}
 
 	// Get user information.
