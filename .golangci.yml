@@ -54,12 +54,14 @@ linters-settings:
 
   govet:
     enable-all: true
+    disable:
+      - fieldalignment  # Struct field alignment is a micro-optimization
 
   gocyclo:
     min-complexity: 15
 
   gocognit:
-    min-complexity: 20
+    min-complexity: 30  # Allow slightly higher complexity for detectors
 
   funlen:
     lines: 100

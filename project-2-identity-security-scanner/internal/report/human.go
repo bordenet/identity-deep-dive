@@ -99,8 +99,8 @@ func (h *HumanReportGenerator) formatFindings(findings []models.Finding) string 
 
 	out.WriteString(h.colorize("\n━━━ Findings ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n", color.FgCyan))
 
-	for i, finding := range findings {
-		out.WriteString(h.formatFinding(&finding, i+1))
+	for i := range findings {
+		out.WriteString(h.formatFinding(&findings[i], i+1))
 		out.WriteString("\n")
 	}
 
@@ -192,7 +192,7 @@ func (h *HumanReportGenerator) formatFooter(result *models.ScanResult) string {
 	return out.String()
 }
 
-func (h *HumanReportGenerator) wrapText(text string, indent string) string {
+func (h *HumanReportGenerator) wrapText(text, indent string) string {
 	// Simple word wrapping at 60 characters.
 	words := strings.Fields(text)
 	var lines []string

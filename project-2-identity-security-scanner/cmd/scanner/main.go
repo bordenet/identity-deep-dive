@@ -96,7 +96,7 @@ func runScan(_ *cobra.Command, args []string) error {
 	}
 
 	// Create scanner.
-	s := scanner.New(config)
+	s := scanner.New(&config)
 
 	// Discover files.
 	files, err := s.DiscoverFiles(args)
@@ -124,8 +124,6 @@ func runScan(_ *cobra.Command, args []string) error {
 	switch format {
 	case "json":
 		reportGen = report.NewJSONReportGenerator()
-	case "human":
-		fallthrough
 	default:
 		reportGen = report.NewHumanReportGenerator()
 	}

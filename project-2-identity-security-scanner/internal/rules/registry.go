@@ -24,135 +24,127 @@ func NewRegistry() *Registry {
 //
 //nolint:funlen,dupl // Comprehensive built-in rule definitions
 func (r *Registry) loadBuiltInRules() {
-	// OAuth2 rules.
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-001",
-		Name:        "Weak Client Secret",
-		Description: "Detects OAuth2 client secrets that are too short",
-		Severity:    models.SeverityCritical,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewWeakClientSecretDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-002",
-		Name:        "Insecure Redirect URI",
-		Description: "Detects HTTP redirect URIs and wildcard patterns",
-		Severity:    models.SeverityCritical,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewInsecureRedirectURIDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-003",
-		Name:        "Missing PKCE Enforcement",
-		Description: "Detects public clients without PKCE requirement",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewMissingPKCEDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-004",
-		Name:        "Overly Permissive Scopes",
-		Description: "Detects dangerous OAuth2 scopes like admin or wildcard",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewOverlyPermissiveScopesDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-005",
-		Name:        "Deprecated Flows",
-		Description: "Detects deprecated OAuth2 flows (implicit, password)",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewDeprecatedFlowsDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "OAUTH2-006",
-		Name:        "Missing State Parameter",
-		Description: "Detects missing state parameter requirement (CSRF risk)",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryOAuth2,
-		Detector:    detector.NewMissingStateParameterDetector(),
-		Enabled:     true,
-	})
-
-	// JWT rules.
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-001",
-		Name:        "Algorithm Confusion",
-		Description: "Detects JWT 'none' algorithm acceptance",
-		Severity:    models.SeverityCritical,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewAlgorithmConfusionDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-002",
-		Name:        "Weak Signing Algorithm",
-		Description: "Detects weak JWT signing secrets",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewWeakSigningAlgorithmDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-003",
-		Name:        "Missing Expiration",
-		Description: "Detects missing JWT expiration validation",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewMissingExpirationDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-004",
-		Name:        "Excessive Token Lifetime",
-		Description: "Detects overly long JWT token lifetimes",
-		Severity:    models.SeverityMedium,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewExcessiveTokenLifetimeDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-005",
-		Name:        "Missing Audience Validation",
-		Description: "Detects missing JWT audience validation",
-		Severity:    models.SeverityHigh,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewMissingAudienceValidationDetector(),
-		Enabled:     true,
-	})
-
-	r.rules = append(r.rules, models.Rule{
-		ID:          "JWT-006",
-		Name:        "Hardcoded Secret",
-		Description: "Detects hardcoded JWT secrets in configuration",
-		Severity:    models.SeverityCritical,
-		Category:    models.CategoryJWT,
-		Detector:    detector.NewHardcodedSecretDetector(),
-		Enabled:     true,
-	})
+	// OAuth2 and JWT rules.
+	r.rules = append(r.rules,
+		// OAuth2 rules.
+		models.Rule{
+			ID:          "OAUTH2-001",
+			Name:        "Weak Client Secret",
+			Description: "Detects OAuth2 client secrets that are too short",
+			Severity:    models.SeverityCritical,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewWeakClientSecretDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "OAUTH2-002",
+			Name:        "Insecure Redirect URI",
+			Description: "Detects HTTP redirect URIs and wildcard patterns",
+			Severity:    models.SeverityCritical,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewInsecureRedirectURIDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "OAUTH2-003",
+			Name:        "Missing PKCE Enforcement",
+			Description: "Detects public clients without PKCE requirement",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewMissingPKCEDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "OAUTH2-004",
+			Name:        "Overly Permissive Scopes",
+			Description: "Detects dangerous OAuth2 scopes like admin or wildcard",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewOverlyPermissiveScopesDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "OAUTH2-005",
+			Name:        "Deprecated Flows",
+			Description: "Detects deprecated OAuth2 flows (implicit, password)",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewDeprecatedFlowsDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "OAUTH2-006",
+			Name:        "Missing State Parameter",
+			Description: "Detects missing state parameter requirement (CSRF risk)",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryOAuth2,
+			Detector:    detector.NewMissingStateParameterDetector(),
+			Enabled:     true,
+		},
+		// JWT rules.
+		models.Rule{
+			ID:          "JWT-001",
+			Name:        "Algorithm Confusion",
+			Description: "Detects JWT 'none' algorithm acceptance",
+			Severity:    models.SeverityCritical,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewAlgorithmConfusionDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "JWT-002",
+			Name:        "Weak Signing Algorithm",
+			Description: "Detects weak JWT signing secrets",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewWeakSigningAlgorithmDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "JWT-003",
+			Name:        "Missing Expiration",
+			Description: "Detects missing JWT expiration validation",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewMissingExpirationDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "JWT-004",
+			Name:        "Excessive Token Lifetime",
+			Description: "Detects overly long JWT token lifetimes",
+			Severity:    models.SeverityMedium,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewExcessiveTokenLifetimeDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "JWT-005",
+			Name:        "Missing Audience Validation",
+			Description: "Detects missing JWT audience validation",
+			Severity:    models.SeverityHigh,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewMissingAudienceValidationDetector(),
+			Enabled:     true,
+		},
+		models.Rule{
+			ID:          "JWT-006",
+			Name:        "Hardcoded Secret",
+			Description: "Detects hardcoded JWT secrets in configuration",
+			Severity:    models.SeverityCritical,
+			Category:    models.CategoryJWT,
+			Detector:    detector.NewHardcodedSecretDetector(),
+			Enabled:     true,
+		},
+	)
 }
 
 // GetRules returns all enabled rules.
 func (r *Registry) GetRules() []models.Rule {
 	enabled := []models.Rule{}
-	for _, rule := range r.rules {
-		if rule.Enabled {
-			enabled = append(enabled, rule)
+	for i := range r.rules {
+		if r.rules[i].Enabled {
+			enabled = append(enabled, r.rules[i])
 		}
 	}
 	return enabled
@@ -160,9 +152,9 @@ func (r *Registry) GetRules() []models.Rule {
 
 // GetRuleByID returns a rule by its ID.
 func (r *Registry) GetRuleByID(id string) *models.Rule {
-	for _, rule := range r.rules {
-		if rule.ID == id {
-			return &rule
+	for i := range r.rules {
+		if r.rules[i].ID == id {
+			return &r.rules[i]
 		}
 	}
 	return nil
@@ -206,7 +198,7 @@ func (r *Registry) ListRules() []struct {
 		Enabled     bool
 	}, len(r.rules))
 
-	for i, rule := range r.rules {
+	for i := range r.rules {
 		list[i] = struct {
 			ID          string
 			Name        string
@@ -215,12 +207,12 @@ func (r *Registry) ListRules() []struct {
 			Category    models.Category
 			Enabled     bool
 		}{
-			ID:          rule.ID,
-			Name:        rule.Name,
-			Description: rule.Description,
-			Severity:    rule.Severity,
-			Category:    rule.Category,
-			Enabled:     rule.Enabled,
+			ID:          r.rules[i].ID,
+			Name:        r.rules[i].Name,
+			Description: r.rules[i].Description,
+			Severity:    r.rules[i].Severity,
+			Category:    r.rules[i].Category,
+			Enabled:     r.rules[i].Enabled,
 		}
 	}
 

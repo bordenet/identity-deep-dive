@@ -60,7 +60,7 @@ func (p *JSONParser) buildLineMap(obj interface{}, path string, lineMap map[stri
 
 			// Try to find the line number by searching for the key in content.
 			lines := strings.Split(content, "\n")
-			searchKey := fmt.Sprintf("\"%s\"", key)
+			searchKey := fmt.Sprintf("%q", key)
 			for lineNum, line := range lines {
 				if strings.Contains(line, searchKey) {
 					lineMap[newPath] = lineNum + 1

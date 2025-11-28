@@ -39,7 +39,7 @@ func (d *AlgorithmConfusionDetector) Detect(tree *models.ConfigTree) []models.Fi
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
 			if alg, ok := node.Value.(string); ok {
-				if strings.ToLower(alg) == "none" {
+				if strings.EqualFold(alg, "none") {
 					findings = append(findings, models.Finding{
 						RuleID:      "JWT-001",
 						Title:       "Algorithm Confusion Attack - 'none' Algorithm",
@@ -260,7 +260,7 @@ func (d *ExcessiveTokenLifetimeDetector) Detect(tree *models.ConfigTree) []model
 				seconds = parseDurationToSeconds(v)
 			}
 
-			if seconds > 3600 { // More than 1 hour
+			if seconds > 3600 { // More than 1 hour.
 				findings = append(findings, models.Finding{
 					RuleID:      "JWT-004",
 					Title:       "Excessive JWT Token Lifetime",
@@ -392,7 +392,7 @@ func (d *HardcodedSecretDetector) Detect(tree *models.ConfigTree) []models.Findi
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
 			if secret, ok := node.Value.(string); ok {
-				// Check if it's a hardcoded value (not a reference)
+				// Check if it's a hardcoded value (not a reference).
 				if !strings.HasPrefix(secret, "${") && !strings.HasPrefix(secret, "{{") &&
 					!strings.Contains(secret, "ENV") && !strings.Contains(secret, "SECRET") {
 
@@ -435,12 +435,13 @@ func (d *HardcodedSecretDetector) Detect(tree *models.ConfigTree) []models.Findi
 func parseDurationToSeconds(duration string) int {
 	duration = strings.TrimSpace(strings.ToLower(duration))
 
-	// Try to parse as plain integer first (no unit means seconds)
+	// Try to parse as plain integer first (no unit means seconds).
 	var value int
 	if _, err := fmt.Sscanf(duration, "%d", &value); err == nil {
 		// Check if there's more content after the number.
 		var rest string
-		if n, _ := fmt.Sscanf(duration, "%d%s", &value, &rest); n == 1 {
+		n, scanErr := fmt.Sscanf(duration, "%d%s", &value, &rest)
+		if scanErr == nil && n == 1 {
 			// Just a number, treat as seconds.
 			return value
 		}

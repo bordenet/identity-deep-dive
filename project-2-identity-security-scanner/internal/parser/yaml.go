@@ -29,7 +29,10 @@ func (p *YAMLParser) Parse(filename string, content []byte) (*models.ConfigTree,
 
 	// Convert to map with line numbers.
 	lineMap := make(map[string]int)
-	root = p.convertNode(&node, "", lineMap).(map[string]interface{})
+	converted := p.convertNode(&node, "", lineMap)
+	if m, ok := converted.(map[string]interface{}); ok {
+		root = m
+	}
 
 	return &models.ConfigTree{
 		Root: root,

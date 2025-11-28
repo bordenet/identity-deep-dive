@@ -51,7 +51,7 @@ type Finding struct {
 	Remediation []string   `json:"remediation"`
 	References  []string   `json:"references"`
 	CWE         string     `json:"cwe,omitempty"`
-	RawValue    string     `json:"raw_value,omitempty"` // Redacted in output
+	RawValue    string     `json:"raw_value,omitempty"` // Redacted in output.
 }
 
 // ConfigTree represents a parsed configuration file.
@@ -63,7 +63,7 @@ type ConfigTree struct {
 // FileMetadata contains information about the source file.
 type FileMetadata struct {
 	Filename string
-	Format   string // "yaml", "json", "toml", "env"
+	Format   string // "yaml", "json", "toml", "env".
 	LineMap  map[string]int
 }
 
@@ -171,8 +171,8 @@ func RedactSecret(secret string) string {
 // CalculateSummary generates severity summary from findings.
 func CalculateSummary(findings []Finding) SeveritySummary {
 	summary := SeveritySummary{}
-	for _, f := range findings {
-		switch f.Severity {
+	for i := range findings {
+		switch findings[i].Severity {
 		case SeverityCritical:
 			summary.Critical++
 		case SeverityHigh:

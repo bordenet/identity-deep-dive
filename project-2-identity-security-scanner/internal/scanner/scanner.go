@@ -16,11 +16,11 @@ import (
 type Scanner struct {
 	registry       *rules.Registry
 	parserRegistry *parser.Registry
-	config         models.ScanConfig
+	config         *models.ScanConfig
 }
 
 // New creates a new scanner instance.
-func New(config models.ScanConfig) *Scanner {
+func New(config *models.ScanConfig) *Scanner {
 	return &Scanner{
 		registry:       rules.NewRegistry(),
 		parserRegistry: parser.NewRegistry(),
@@ -74,7 +74,11 @@ func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
 	}
 
 	// Parse file.
-	tree, err := p.(*parser.YAMLParser).ParseFile(filename)
+	yamlParser, ok := p.(*parser.YAMLParser)
+	if !ok {
+		return nil, fmt.Errorf("unexpected parser type for file %s", filename)
+	}
+	tree, err := yamlParser.ParseFile(filename)
 	if err != nil {
 		// Try JSON parser if YAML fails.
 		jsonParser := parser.NewJSONParser()
@@ -92,12 +96,12 @@ func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
 	findings := []models.Finding{}
 	enabledRules := s.registry.GetRules()
 
-	for _, rule := range enabledRules {
-		if s.isRuleDisabled(rule.ID) {
+	for i := range enabledRules {
+		if s.isRuleDisabled(enabledRules[i].ID) {
 			continue
 		}
 
-		ruleFindings := rule.Detector.Detect(tree)
+		ruleFindings := enabledRules[i].Detector.Detect(tree)
 		findings = append(findings, ruleFindings...)
 	}
 
@@ -156,7 +160,8 @@ func (s *Scanner) shouldInclude(path string) bool {
 	}
 
 	for _, pattern := range s.config.Include {
-		if matched, _ := filepath.Match(pattern, filepath.Base(path)); matched {
+		matched, err := filepath.Match(pattern, filepath.Base(path))
+		if err == nil && matched {
 			return true
 		}
 	}
@@ -172,7 +177,8 @@ func (s *Scanner) shouldExclude(path string) bool {
 	}
 
 	for _, pattern := range s.config.Exclude {
-		if matched, _ := filepath.Match(pattern, filepath.Base(path)); matched {
+		matched, err := filepath.Match(pattern, filepath.Base(path))
+		if err == nil && matched {
 			return true
 		}
 	}
@@ -192,13 +198,13 @@ func (s *Scanner) isRuleDisabled(ruleID string) bool {
 func (s *Scanner) applyConfiguration(findings []models.Finding) []models.Finding {
 	result := []models.Finding{}
 
-	for _, finding := range findings {
+	for i := range findings {
 		// Apply severity override if configured.
-		if override, ok := s.config.SeverityOverride[finding.RuleID]; ok {
-			finding.Severity = override
+		if override, ok := s.config.SeverityOverride[findings[i].RuleID]; ok {
+			findings[i].Severity = override
 		}
 
-		result = append(result, finding)
+		result = append(result, findings[i])
 	}
 
 	return result

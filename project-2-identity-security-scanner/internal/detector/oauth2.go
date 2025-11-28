@@ -112,7 +112,7 @@ func (d *InsecureRedirectURIDetector) Detect(tree *models.ConfigTree) []models.F
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
 			if uri, ok := node.Value.(string); ok {
-				// Check for HTTP (non-localhost)
+				// Check for HTTP (non-localhost).
 				if strings.HasPrefix(uri, "http://") && !strings.Contains(uri, "localhost") && !strings.Contains(uri, "127.0.0.1") {
 					findings = append(findings, models.Finding{
 						RuleID:      "OAUTH2-002",
@@ -202,44 +202,46 @@ func (d *MissingPKCEDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	for _, path := range searchPaths {
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
-			if provider, ok := node.Value.(map[string]interface{}); ok {
-				// Check if it's a public client (mobile, SPA)
-				clientType, hasType := provider["client_type"]
-				pkceRequired, hasPKCE := provider["pkce_required"]
-				pkceEnforced, hasEnforced := provider["pkce_enforced"]
-				requirePKCE, hasRequire := provider["require_pkce"]
+			provider, ok := node.Value.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			// Check if it's a public client (mobile, SPA).
+			clientType, hasType := provider["client_type"]
+			pkceRequired, hasPKCE := provider["pkce_required"]
+			pkceEnforced, hasEnforced := provider["pkce_enforced"]
+			requirePKCE, hasRequire := provider["require_pkce"]
 
-				isPublicClient := hasType && (clientType == "public" || clientType == "mobile" || clientType == "spa")
-				pkceEnabled := (hasPKCE && pkceRequired == true) ||
-					(hasEnforced && pkceEnforced == true) ||
-					(hasRequire && requirePKCE == true)
+			isPublicClient := hasType && (clientType == "public" || clientType == "mobile" || clientType == "spa")
+			pkceEnabled := (hasPKCE && pkceRequired == true) ||
+				(hasEnforced && pkceEnforced == true) ||
+				(hasRequire && requirePKCE == true)
 
-				if isPublicClient && !pkceEnabled {
-					findings = append(findings, models.Finding{
-						RuleID:      "OAUTH2-003",
-						Title:       "Missing PKCE Enforcement",
-						Description: fmt.Sprintf("Public client (type: %v) does not enforce PKCE", clientType),
-						Severity:    models.SeverityHigh,
-						Confidence:  models.ConfidenceHigh,
-						Category:    models.CategoryOAuth2,
-						File:        tree.Metadata.Filename,
-						Line:        node.Line,
-						Column:      node.Column,
-						Risk:        "Without PKCE, public clients (mobile apps, SPAs) are vulnerable to authorization code interception attacks. Attackers can steal authorization codes and exchange them for access tokens.",
-						Remediation: []string{
-							"Enable PKCE for all public clients: pkce_required: true",
-							"PKCE is mandatory for mobile and single-page applications",
-							"Use code_challenge_method: S256 (SHA-256)",
-							"Reject authorization requests without PKCE parameters",
-						},
-						References: []string{
-							"RFC 7636 - Proof Key for Code Exchange (PKCE)",
-							"OAuth 2.0 for Native Apps (RFC 8252)",
-							"OAuth 2.0 Security Best Current Practice Section 2.1.1",
-						},
-						CWE: "CWE-319",
-					})
-				}
+			if isPublicClient && !pkceEnabled {
+				findings = append(findings, models.Finding{
+					RuleID:      "OAUTH2-003",
+					Title:       "Missing PKCE Enforcement",
+					Description: fmt.Sprintf("Public client (type: %v) does not enforce PKCE", clientType),
+					Severity:    models.SeverityHigh,
+					Confidence:  models.ConfidenceHigh,
+					Category:    models.CategoryOAuth2,
+					File:        tree.Metadata.Filename,
+					Line:        node.Line,
+					Column:      node.Column,
+					Risk:        "Without PKCE, public clients (mobile apps, SPAs) are vulnerable to authorization code interception attacks. Attackers can steal authorization codes and exchange them for access tokens.",
+					Remediation: []string{
+						"Enable PKCE for all public clients: pkce_required: true",
+						"PKCE is mandatory for mobile and single-page applications",
+						"Use code_challenge_method: S256 (SHA-256)",
+						"Reject authorization requests without PKCE parameters",
+					},
+					References: []string{
+						"RFC 7636 - Proof Key for Code Exchange (PKCE)",
+						"OAuth 2.0 for Native Apps (RFC 8252)",
+						"OAuth 2.0 Security Best Current Practice Section 2.1.1",
+					},
+					CWE: "CWE-319",
+				})
 			}
 		}
 	}
@@ -433,69 +435,70 @@ func (d *MissingStateParameterDetector) Detect(tree *models.ConfigTree) []models
 	for _, path := range searchPaths {
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
-			if config, ok := node.Value.(map[string]interface{}); ok {
-				requireState, hasRequire := config["require_state"]
-				stateRequired, hasState := config["state_required"]
-				enforceState, hasEnforce := config["enforce_state"]
+			config, ok := node.Value.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			requireState, hasRequire := config["require_state"]
+			stateRequired, hasState := config["state_required"]
+			enforceState, hasEnforce := config["enforce_state"]
 
-				stateEnabled := (hasRequire && requireState == true) ||
-					(hasState && stateRequired == true) ||
-					(hasEnforce && enforceState == true)
+			stateEnabled := (hasRequire && requireState == true) ||
+				(hasState && stateRequired == true) ||
+				(hasEnforce && enforceState == true)
 
-				// If any state config exists and it's false, that's a finding.
-				if (hasRequire && requireState == false) ||
-					(hasState && stateRequired == false) ||
-					(hasEnforce && enforceState == false) {
-
-					findings = append(findings, models.Finding{
-						RuleID:      "OAUTH2-006",
-						Title:       "State Parameter Not Required",
-						Description: "OAuth2 configuration does not require state parameter in authorization requests",
-						Severity:    models.SeverityHigh,
-						Confidence:  models.ConfidenceHigh,
-						Category:    models.CategoryOAuth2,
-						File:        tree.Metadata.Filename,
-						Line:        node.Line,
-						Column:      node.Column,
-						Risk:        "Missing state parameter enables CSRF attacks on the OAuth2 flow. Attackers can trick users into authorizing malicious applications or linking accounts without consent.",
-						Remediation: []string{
-							"Enable state parameter requirement: require_state: true",
-							"Generate cryptographically random state values",
-							"Validate state parameter on callback",
-							"Reject authorization requests without state parameter",
-						},
-						References: []string{
-							"RFC 6749 Section 10.12 (CSRF Protection)",
-							"OAuth 2.0 Security Best Current Practice Section 4.7",
-							"CWE-352: Cross-Site Request Forgery (CSRF)",
-						},
-						CWE: "CWE-352",
-					})
-				} else if !stateEnabled && (hasRequire || hasState || hasEnforce) {
-					// State config exists but is not explicitly enabled - potential misconfiguration.
-					findings = append(findings, models.Finding{
-						RuleID:      "OAUTH2-006",
-						Title:       "State Parameter Configuration Unclear",
-						Description: "OAuth2 state parameter requirement is not explicitly configured",
-						Severity:    models.SeverityMedium,
-						Confidence:  models.ConfidenceMedium,
-						Category:    models.CategoryOAuth2,
-						File:        tree.Metadata.Filename,
-						Line:        node.Line,
-						Column:      node.Column,
-						Risk:        "Unclear state parameter configuration may lead to CSRF vulnerabilities if the default behavior doesn't enforce state validation.",
-						Remediation: []string{
-							"Explicitly enable state parameter: require_state: true",
-							"Document state parameter requirements",
-							"Ensure validation is enforced in authorization flow",
-						},
-						References: []string{
-							"RFC 6749 Section 10.12",
-							"OAuth 2.0 Security Best Current Practice",
-						},
-						CWE: "CWE-352",
-					})
-				}
+			// If any state config exists and it's false, that's a finding.
+			if (hasRequire && requireState == false) ||
+				(hasState && stateRequired == false) ||
+				(hasEnforce && enforceState == false) {
+				findings = append(findings, models.Finding{
+					RuleID:      "OAUTH2-006",
+					Title:       "State Parameter Not Required",
+					Description: "OAuth2 configuration does not require state parameter in authorization requests",
+					Severity:    models.SeverityHigh,
+					Confidence:  models.ConfidenceHigh,
+					Category:    models.CategoryOAuth2,
+					File:        tree.Metadata.Filename,
+					Line:        node.Line,
+					Column:      node.Column,
+					Risk:        "Missing state parameter enables CSRF attacks on the OAuth2 flow. Attackers can trick users into authorizing malicious applications or linking accounts without consent.",
+					Remediation: []string{
+						"Enable state parameter requirement: require_state: true",
+						"Generate cryptographically random state values",
+						"Validate state parameter on callback",
+						"Reject authorization requests without state parameter",
+					},
+					References: []string{
+						"RFC 6749 Section 10.12 (CSRF Protection)",
+						"OAuth 2.0 Security Best Current Practice Section 4.7",
+						"CWE-352: Cross-Site Request Forgery (CSRF)",
+					},
+					CWE: "CWE-352",
+				})
+			} else if !stateEnabled && (hasRequire || hasState || hasEnforce) {
+				// State config exists but is not explicitly enabled - potential misconfiguration.
+				findings = append(findings, models.Finding{
+					RuleID:      "OAUTH2-006",
+					Title:       "State Parameter Configuration Unclear",
+					Description: "OAuth2 state parameter requirement is not explicitly configured",
+					Severity:    models.SeverityMedium,
+					Confidence:  models.ConfidenceMedium,
+					Category:    models.CategoryOAuth2,
+					File:        tree.Metadata.Filename,
+					Line:        node.Line,
+					Column:      node.Column,
+					Risk:        "Unclear state parameter configuration may lead to CSRF vulnerabilities if the default behavior doesn't enforce state validation.",
+					Remediation: []string{
+						"Explicitly enable state parameter: require_state: true",
+						"Document state parameter requirements",
+						"Ensure validation is enforced in authorization flow",
+					},
+					References: []string{
+						"RFC 6749 Section 10.12",
+						"OAuth 2.0 Security Best Current Practice",
+					},
+					CWE: "CWE-352",
+				})
 			}
 		}
 	}
