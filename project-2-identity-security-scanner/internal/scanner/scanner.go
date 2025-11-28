@@ -76,7 +76,7 @@ func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
 	// Parse file.
 	yamlParser, ok := p.(*parser.YAMLParser)
 	if !ok {
-		return nil, fmt.Errorf("unexpected parser type for file %s", filename)
+		return nil, fmt.Errorf("%w for file %s", models.ErrUnexpectedParserType, filename)
 	}
 	tree, err := yamlParser.ParseFile(filename)
 	if err != nil {

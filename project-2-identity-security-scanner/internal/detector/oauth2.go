@@ -422,7 +422,7 @@ func (d *MissingStateParameterDetector) Name() string {
 
 // Detect finds missing state parameter vulnerabilities.
 //
-//nolint:funlen // Comprehensive OAuth2 state parameter validation
+//nolint:funlen,gocyclo // Comprehensive OAuth2 state parameter validation
 func (d *MissingStateParameterDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 

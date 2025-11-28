@@ -1,7 +1,15 @@
 // Package models provides data models for security scanning results.
 package models
 
-import "time"
+import (
+	"errors"
+	"time"
+)
+
+// Errors for scanner operations.
+var (
+	ErrUnexpectedParserType = errors.New("unexpected parser type")
+)
 
 // Severity represents the severity level of a security finding.
 type Severity string

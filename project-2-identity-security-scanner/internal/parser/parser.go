@@ -245,7 +245,7 @@ func GetInt(tree *models.ConfigTree, path string) (int, bool) {
 }
 
 // GetBool retrieves a boolean value from the config tree.
-func GetBool(tree *models.ConfigTree, path string) (boolValue bool, found bool) {
+func GetBool(tree *models.ConfigTree, path string) (boolValue, found bool) {
 	value, ok := GetValue(tree, path)
 	if !ok {
 		return false, false
