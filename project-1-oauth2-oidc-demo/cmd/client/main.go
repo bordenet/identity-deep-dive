@@ -159,7 +159,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	userInfo, err := fetchUserInfo(tokens.AccessToken)
 	if err != nil {
 		log.Printf("Failed to fetch user info: %v", err)
-		userInfo = map[string]interface{}{"error": err.Error()}
+		userInfo = map[string]any{"error": err.Error()}
 	}
 
 	// Display results.
@@ -191,7 +191,10 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 		}
 	}()
 
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("%w: %d: %s", models.ErrTokenEndpointFailed, resp.StatusCode, string(body))
@@ -205,8 +208,11 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 	return &tokens, nil
 }
 
-func fetchUserInfo(accessToken string) (map[string]interface{}, error) {
-	req, _ := http.NewRequest("GET", authzServerURL+"/userinfo", nil)
+func fetchUserInfo(accessToken string) (map[string]any, error) {
+	req, err := http.NewRequest("GET", authzServerURL+"/userinfo", nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 
 	resp, err := http.DefaultClient.Do(req)
@@ -219,13 +225,16 @@ func fetchUserInfo(accessToken string) (map[string]interface{}, error) {
 		}
 	}()
 
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("%w: %d: %s", models.ErrUserInfoEndpointFailed, resp.StatusCode, string(body))
 	}
 
-	var userInfo map[string]interface{}
+	var userInfo map[string]any
 	if err := json.Unmarshal(body, &userInfo); err != nil {
 		return nil, err
 	}
@@ -233,8 +242,12 @@ func fetchUserInfo(accessToken string) (map[string]interface{}, error) {
 	return userInfo, nil
 }
 
-func displayTokens(w http.ResponseWriter, tokens *TokenResponse, userInfo map[string]interface{}) {
-	userInfoJSON, _ := json.MarshalIndent(userInfo, "", "  ")
+func displayTokens(w http.ResponseWriter, tokens *TokenResponse, userInfo map[string]any) {
+	userInfoJSON, err := json.MarshalIndent(userInfo, "", "  ")
+	if err != nil {
+		log.Printf("WARN: Failed to marshal user info: %v", err)
+		userInfoJSON = []byte("{}")
+	}
 
 	html := fmt.Sprintf(`<!DOCTYPE html>
 <html>

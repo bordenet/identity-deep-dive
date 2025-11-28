@@ -12,7 +12,7 @@ type Client struct {
 	Secret       string    `json:"client_secret,omitempty"`
 	RedirectURIs []string  `json:"redirect_uris"`
 	Name         string    `json:"name"`
-	Type         string    `json:"type"` // "public" or "confidential"
+	Type         string    `json:"type"` // "public" or "confidential".
 	Scopes       []string  `json:"scopes"`
 	CreatedAt    time.Time `json:"created_at"`
 }
@@ -34,18 +34,18 @@ func (c *Client) ValidateRedirectURI(uri string) bool {
 
 // AuthorizationRequest represents an OAuth2 authorization request.
 type AuthorizationRequest struct {
-	ResponseType string `json:"response_type"` // "code" for authorization code flow
+	ResponseType string `json:"response_type"` // "code" for authorization code flow.
 	ClientID     string `json:"client_id"`
 	RedirectURI  string `json:"redirect_uri"`
 	Scope        string `json:"scope"`
-	State        string `json:"state"` // CSRF protection
+	State        string `json:"state"` // CSRF protection.
 
-	// PKCE parameters (RFC 7636)
+	// PKCE parameters (RFC 7636).
 	CodeChallenge       string `json:"code_challenge,omitempty"`
-	CodeChallengeMethod string `json:"code_challenge_method,omitempty"` // "S256" or "plain"
+	CodeChallengeMethod string `json:"code_challenge_method,omitempty"` // "S256" or "plain".
 
 	// OIDC parameters.
-	Nonce string `json:"nonce,omitempty"` // OIDC replay protection
+	Nonce string `json:"nonce,omitempty"` // OIDC replay protection.
 }
 
 // AuthorizationCode represents an issued authorization code.
@@ -73,7 +73,7 @@ func (ac *AuthorizationCode) IsExpired() bool {
 
 // TokenRequest represents an OAuth2 token request.
 type TokenRequest struct {
-	GrantType    string `json:"grant_type"` // "authorization_code", "client_credentials", "refresh_token"
+	GrantType    string `json:"grant_type"` // "authorization_code", "client_credentials", "refresh_token".
 	Code         string `json:"code,omitempty"`
 	RedirectURI  string `json:"redirect_uri,omitempty"`
 	ClientID     string `json:"client_id"`
@@ -92,8 +92,8 @@ type TokenRequest struct {
 // TokenResponse represents an OAuth2 token response.
 type TokenResponse struct {
 	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"` // "Bearer"
-	ExpiresIn    int    `json:"expires_in"` // seconds
+	TokenType    string `json:"token_type"` // "Bearer".
+	ExpiresIn    int    `json:"expires_in"` // Seconds.
 	RefreshToken string `json:"refresh_token,omitempty"`
 	Scope        string `json:"scope,omitempty"`
 
@@ -105,7 +105,7 @@ type TokenResponse struct {
 type AccessToken struct {
 	Token     string    `json:"token"`
 	ClientID  string    `json:"client_id"`
-	UserID    string    `json:"user_id,omitempty"` // Empty for client credentials
+	UserID    string    `json:"user_id,omitempty"` // Empty for client credentials.
 	Scope     string    `json:"scope"`
 	ExpiresAt time.Time `json:"expires_at"`
 	Revoked   bool      `json:"revoked"`

@@ -74,7 +74,7 @@ func (h *UserInfoHandler) extractBearerToken(r *http.Request) (string, error) {
 
 	// Authorization: Bearer <token>.
 	parts := strings.SplitN(authHeader, " ", 2)
-	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+	if len(parts) != 2 || !strings.EqualFold(parts[0], "bearer") {
 		return "", &UserInfoError{Code: "invalid_request", Description: "Invalid Authorization header format"}
 	}
 

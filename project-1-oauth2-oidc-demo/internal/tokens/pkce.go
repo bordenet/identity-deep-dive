@@ -45,7 +45,7 @@ func ValidatePKCE(codeVerifier, codeChallenge, codeChallengeMethod string) error
 		expectedChallenge = codeVerifier
 
 	case PKCEMethodS256:
-		// S256: challenge = BASE64URL(SHA256(verifier))
+		// S256 method: challenge = BASE64URL(SHA256(verifier)).
 		hash := sha256.Sum256([]byte(codeVerifier))
 		expectedChallenge = base64.RawURLEncoding.EncodeToString(hash[:])
 

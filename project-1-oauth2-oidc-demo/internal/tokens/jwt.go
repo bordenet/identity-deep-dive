@@ -144,7 +144,7 @@ func (jm *JWTManager) GenerateIDToken(
 		claims.EmailVerified = user.EmailVerified
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, &claims)
 	signedToken, err := token.SignedString(jm.privateKey)
 	if err != nil {
 		return "", fmt.Errorf("failed to sign ID token: %w", err)

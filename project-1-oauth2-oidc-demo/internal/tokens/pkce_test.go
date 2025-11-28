@@ -54,8 +54,14 @@ func TestGenerateCodeChallenge(t *testing.T) {
 //nolint:funlen // Test function with comprehensive test cases
 func TestValidatePKCE(t *testing.T) {
 	verifier := strings.Repeat("a", 43)
-	s256Challenge, _ := GenerateCodeChallenge(verifier, PKCEMethodS256)
-	plainChallenge, _ := GenerateCodeChallenge(verifier, PKCEMethodPlain)
+	s256Challenge, err := GenerateCodeChallenge(verifier, PKCEMethodS256)
+	if err != nil {
+		t.Fatalf("Failed to generate S256 challenge: %v", err)
+	}
+	plainChallenge, err := GenerateCodeChallenge(verifier, PKCEMethodPlain)
+	if err != nil {
+		t.Fatalf("Failed to generate plain challenge: %v", err)
+	}
 
 	tests := []struct {
 		name                string

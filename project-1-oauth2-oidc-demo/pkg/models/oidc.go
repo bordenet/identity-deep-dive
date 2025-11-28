@@ -8,7 +8,7 @@ import (
 
 // User represents an authenticated user.
 type User struct {
-	ID            string    `json:"sub"` // Subject identifier (OIDC standard claim)
+	ID            string    `json:"sub"` // Subject identifier (OIDC standard claim).
 	Email         string    `json:"email"`
 	EmailVerified bool      `json:"email_verified"`
 	Name          string    `json:"name"`
@@ -21,21 +21,21 @@ type User struct {
 
 // IDTokenClaims represents OIDC ID Token claims (JWT payload).
 type IDTokenClaims struct {
-	// Standard JWT claims (RFC 7519)
-	Issuer    string `json:"iss"`           // Issuer (authorization server URL)
-	Subject   string `json:"sub"`           // Subject (user ID)
-	Audience  string `json:"aud"`           // Audience (client ID)
-	ExpiresAt int64  `json:"exp"`           // Expiration time (Unix timestamp)
-	IssuedAt  int64  `json:"iat"`           // Issued at (Unix timestamp)
-	NotBefore int64  `json:"nbf,omitempty"` // Not before (Unix timestamp)
+	// Standard JWT claims (RFC 7519).
+	Issuer    string `json:"iss"`           // Issuer (authorization server URL).
+	Subject   string `json:"sub"`           // Subject (user ID).
+	Audience  string `json:"aud"`           // Audience (client ID).
+	ExpiresAt int64  `json:"exp"`           // Expiration time (Unix timestamp).
+	IssuedAt  int64  `json:"iat"`           // Issued at (Unix timestamp).
+	NotBefore int64  `json:"nbf,omitempty"` // Not before (Unix timestamp).
 
 	// OIDC-specific claims.
-	Nonce      string `json:"nonce,omitempty"`     // Replay protection
-	AuthTime   int64  `json:"auth_time,omitempty"` // Time of authentication
-	AccessHash string `json:"at_hash,omitempty"`   // Access token hash
-	CodeHash   string `json:"c_hash,omitempty"`    // Authorization code hash
+	Nonce      string `json:"nonce,omitempty"`     // Replay protection.
+	AuthTime   int64  `json:"auth_time,omitempty"` // Time of authentication.
+	AccessHash string `json:"at_hash,omitempty"`   // Access token hash.
+	CodeHash   string `json:"c_hash,omitempty"`    // Authorization code hash.
 
-	// User profile claims (optional, based on scope)
+	// User profile claims (optional, based on scope).
 	Name          string `json:"name,omitempty"`
 	GivenName     string `json:"given_name,omitempty"`
 	FamilyName    string `json:"family_name,omitempty"`
@@ -46,7 +46,7 @@ type IDTokenClaims struct {
 }
 
 // GetExpirationTime implements jwt.Claims interface.
-func (c IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
+func (c *IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
 	if c.ExpiresAt == 0 {
 		return nil, nil
 	}
@@ -54,7 +54,7 @@ func (c IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
 }
 
 // GetIssuedAt implements jwt.Claims interface.
-func (c IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
+func (c *IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
 	if c.IssuedAt == 0 {
 		return nil, nil
 	}
@@ -62,7 +62,7 @@ func (c IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
 }
 
 // GetNotBefore implements jwt.Claims interface.
-func (c IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
+func (c *IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
 	if c.NotBefore == 0 {
 		return nil, nil
 	}
@@ -70,17 +70,17 @@ func (c IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
 }
 
 // GetIssuer implements jwt.Claims interface.
-func (c IDTokenClaims) GetIssuer() (string, error) {
+func (c *IDTokenClaims) GetIssuer() (string, error) {
 	return c.Issuer, nil
 }
 
 // GetSubject implements jwt.Claims interface.
-func (c IDTokenClaims) GetSubject() (string, error) {
+func (c *IDTokenClaims) GetSubject() (string, error) {
 	return c.Subject, nil
 }
 
 // GetAudience implements jwt.Claims interface.
-func (c IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
+func (c *IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
 	if c.Audience == "" {
 		return nil, nil
 	}

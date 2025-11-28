@@ -85,8 +85,14 @@ func TestValidateAccessToken_Expired(t *testing.T) {
 }
 
 func TestValidateAccessToken_InvalidSignature(t *testing.T) {
-	privateKey1, _ := rsa.GenerateKey(rand.Reader, 2048)
-	privateKey2, _ := rsa.GenerateKey(rand.Reader, 2048)
+	privateKey1, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		t.Fatalf("Failed to generate key 1: %v", err)
+	}
+	privateKey2, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		t.Fatalf("Failed to generate key 2: %v", err)
+	}
 
 	manager1 := NewJWTManager(
 		privateKey1,

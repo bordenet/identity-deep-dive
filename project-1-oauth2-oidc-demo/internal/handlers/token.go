@@ -105,7 +105,7 @@ func (h *TokenHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleAuthorizationCodeGrant handles the authorization_code grant type.
 //
-//nolint:funlen // OAuth2 authorization code flow with comprehensive validation
+//nolint:funlen,gocyclo // OAuth2 authorization code flow with comprehensive validation
 func (h *TokenHandler) handleAuthorizationCodeGrant(ctx context.Context, req *models.TokenRequest) (*models.TokenResponse, error) {
 	// Validate required parameters.
 	if req.Code == "" {
