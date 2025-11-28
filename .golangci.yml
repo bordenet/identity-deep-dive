@@ -1,8 +1,6 @@
 # golangci-lint configuration for identity-deep-dive
 # Based on GO_STYLE_GUIDE.md from bordenet/codebase-reviewer
 
-version: 2
-
 run:
   timeout: 5m
   tests: true
