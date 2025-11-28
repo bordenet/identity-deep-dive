@@ -1,23 +1,24 @@
 package handlers
 
 import (
-	"github.com/rs/zerolog/log"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
 	"math/big"
 	"net/http"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
 )
 
-// DiscoveryHandler handles the OIDC Discovery endpoint
+// DiscoveryHandler handles the OIDC Discovery endpoint.
 type DiscoveryHandler struct {
 	issuer    string
 	publicKey *rsa.PublicKey
 }
 
-// NewDiscoveryHandler creates a new discovery handler
+// NewDiscoveryHandler creates a new discovery handler.
 func NewDiscoveryHandler(issuer string, publicKey *rsa.PublicKey) *DiscoveryHandler {
 	return &DiscoveryHandler{
 		issuer:    issuer,
@@ -25,7 +26,9 @@ func NewDiscoveryHandler(issuer string, publicKey *rsa.PublicKey) *DiscoveryHand
 	}
 }
 
-// ServeHTTP handles GET /.well-known/openid-configuration
+// ServeHTTP handles GET /.well-known/openid-configuration.
+//
+//nolint:funlen // OIDC discovery endpoint with comprehensive metadata
 func (h *DiscoveryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET method allowed", http.StatusMethodNotAllowed)
@@ -98,26 +101,26 @@ func (h *DiscoveryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// JWKSHandler handles the JWKs endpoint
+// JWKSHandler handles the JWKs endpoint.
 type JWKSHandler struct {
 	publicKey *rsa.PublicKey
 }
 
-// NewJWKSHandler creates a new JWKs handler
+// NewJWKSHandler creates a new JWKs handler.
 func NewJWKSHandler(publicKey *rsa.PublicKey) *JWKSHandler {
 	return &JWKSHandler{
 		publicKey: publicKey,
 	}
 }
 
-// ServeHTTP handles GET /.well-known/jwks.json
+// ServeHTTP handles GET /.well-known/jwks.json.
 func (h *JWKSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET method allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Convert RSA public key to JWK format
+	// Convert RSA public key to JWK format.
 	jwk := h.rsaPublicKeyToJWK(h.publicKey)
 
 	jwks := map[string]interface{}{
@@ -131,18 +134,18 @@ func (h *JWKSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// rsaPublicKeyToJWK converts an RSA public key to JWK format
+// rsaPublicKeyToJWK converts an RSA public key to JWK format.
 func (h *JWKSHandler) rsaPublicKeyToJWK(pubKey *rsa.PublicKey) map[string]interface{} {
-	// Encode modulus (n) and exponent (e) as base64url
+	// Encode modulus (n) and exponent (e) as base64url.
 	n := base64.RawURLEncoding.EncodeToString(pubKey.N.Bytes())
 	e := base64.RawURLEncoding.EncodeToString(big.NewInt(int64(pubKey.E)).Bytes())
 
 	return map[string]interface{}{
-		"kty": "RSA",           // Key type
-		"use": "sig",           // Public key use (signature)
-		"alg": "RS256",         // Algorithm
-		"kid": "default",       // Key ID
-		"n":   n,               // Modulus
-		"e":   e,               // Exponent
+		"kty": "RSA",     // Key type
+		"use": "sig",     // Public key use (signature)
+		"alg": "RS256",   // Algorithm
+		"kid": "default", // Key ID
+		"n":   n,         // Modulus
+		"e":   e,         // Exponent
 	}
 }

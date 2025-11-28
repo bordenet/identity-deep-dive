@@ -1,3 +1,4 @@
+// Package tokens provides JWT token generation and validation functionality.
 package tokens
 
 import (
@@ -11,17 +12,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWTManager handles JWT token generation and validation
+// JWTManager handles JWT token generation and validation.
 type JWTManager struct {
-	privateKey            *rsa.PrivateKey
-	publicKey             *rsa.PublicKey
-	issuer                string
-	accessTokenTTL        time.Duration
-	refreshTokenTTL       time.Duration
-	idTokenTTL            time.Duration
+	privateKey      *rsa.PrivateKey
+	publicKey       *rsa.PublicKey
+	issuer          string
+	accessTokenTTL  time.Duration
+	refreshTokenTTL time.Duration
+	idTokenTTL      time.Duration
 }
 
-// NewJWTManager creates a new JWT manager
+// NewJWTManager creates a new JWT manager.
 func NewJWTManager(
 	privateKey *rsa.PrivateKey,
 	publicKey *rsa.PublicKey,
@@ -40,7 +41,7 @@ func NewJWTManager(
 	}
 }
 
-// AccessTokenClaims represents the claims in an access token
+// AccessTokenClaims represents the claims in an access token.
 type AccessTokenClaims struct {
 	jwt.RegisteredClaims
 	Scope    string `json:"scope,omitempty"`
@@ -48,7 +49,7 @@ type AccessTokenClaims struct {
 	UserID   string `json:"user_id,omitempty"` // Empty for client_credentials
 }
 
-// GenerateAccessToken generates a JWT access token
+// GenerateAccessToken generates a JWT access token.
 func (jm *JWTManager) GenerateAccessToken(clientID, userID, scope string) (string, time.Time, error) {
 	now := time.Now()
 	expiresAt := now.Add(jm.accessTokenTTL)
@@ -76,12 +77,12 @@ func (jm *JWTManager) GenerateAccessToken(clientID, userID, scope string) (strin
 	return signedToken, expiresAt, nil
 }
 
-// ValidateAccessToken validates and parses an access token
+// ValidateAccessToken validates and parses an access token.
 func (jm *JWTManager) ValidateAccessToken(tokenString string) (*AccessTokenClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// Verify signing method
+		// Verify signing method.
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("%w: %v", models.ErrUnexpectedSigningMethod, token.Header["alg"])
 		}
 		return jm.publicKey, nil
 	})
@@ -91,18 +92,18 @@ func (jm *JWTManager) ValidateAccessToken(tokenString string) (*AccessTokenClaim
 	}
 
 	if !token.Valid {
-		return nil, fmt.Errorf("invalid token")
+		return nil, models.ErrInvalidToken
 	}
 
 	claims, ok := token.Claims.(*AccessTokenClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid token claims")
+		return nil, models.ErrInvalidTokenClaims
 	}
 
 	return claims, nil
 }
 
-// GenerateIDToken generates an OIDC ID token
+// GenerateIDToken generates an OIDC ID token.
 func (jm *JWTManager) GenerateIDToken(
 	user *models.User,
 	clientID string,
@@ -124,12 +125,12 @@ func (jm *JWTManager) GenerateIDToken(
 		AuthTime:  now.Unix(),
 	}
 
-	// Add at_hash (access token hash) per OIDC spec
+	// Add at_hash (access token hash) per OIDC spec.
 	if accessToken != "" {
 		claims.AccessHash = generateTokenHash(accessToken)
 	}
 
-	// Add user profile claims based on scope
+	// Add user profile claims based on scope.
 	if models.HasScope(scope, models.ScopeProfile) {
 		claims.Name = user.Name
 		claims.GivenName = user.GivenName
@@ -152,12 +153,12 @@ func (jm *JWTManager) GenerateIDToken(
 	return signedToken, nil
 }
 
-// ValidateIDToken validates and parses an ID token
+// ValidateIDToken validates and parses an ID token.
 func (jm *JWTManager) ValidateIDToken(tokenString string) (*models.IDTokenClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &models.IDTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// Verify signing method
+		// Verify signing method.
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("%w: %v", models.ErrUnexpectedSigningMethod, token.Header["alg"])
 		}
 		return jm.publicKey, nil
 	})
@@ -167,33 +168,33 @@ func (jm *JWTManager) ValidateIDToken(tokenString string) (*models.IDTokenClaims
 	}
 
 	if !token.Valid {
-		return nil, fmt.Errorf("invalid ID token")
+		return nil, models.ErrInvalidToken
 	}
 
 	claims, ok := token.Claims.(*models.IDTokenClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid ID token claims")
+		return nil, models.ErrInvalidTokenClaims
 	}
 
-	// Validate expiration
+	// Validate expiration.
 	if time.Now().Unix() > claims.ExpiresAt {
-		return nil, fmt.Errorf("ID token expired")
+		return nil, models.ErrIDTokenExpired
 	}
 
 	return claims, nil
 }
 
-// generateTokenHash generates at_hash or c_hash per OIDC spec
-// For RS256: Left-most 128 bits of SHA-256 hash, base64url encoded
+// generateTokenHash generates at_hash or c_hash per OIDC spec.
+// For RS256: Left-most 128 bits of SHA-256 hash, base64url encoded.
 func generateTokenHash(token string) string {
 	hash := sha256.Sum256([]byte(token))
 	// Take left-most 128 bits (16 bytes)
 	halfHash := hash[:16]
-	// Base64url encode without padding
+	// Base64url encode without padding.
 	return base64.RawURLEncoding.EncodeToString(halfHash)
 }
 
-// GetPublicKey returns the public key for external verification
+// GetPublicKey returns the public key for external verification.
 func (jm *JWTManager) GetPublicKey() *rsa.PublicKey {
 	return jm.publicKey
 }

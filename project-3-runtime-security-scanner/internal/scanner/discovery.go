@@ -3,11 +3,17 @@ package scanner
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/bordenet/identity-deep-dive/project-3-runtime-security-scanner/pkg/models"
 	"github.com/rs/zerolog/log"
+)
+
+var (
+	// ErrDiscoveryFailed is returned when OIDC discovery fails.
+	ErrDiscoveryFailed = errors.New("failed to fetch discovery document")
 )
 
 // DiscoverOIDCConfig fetches and parses the OIDC discovery document.
@@ -30,7 +36,7 @@ func DiscoverOIDCConfig(ctx context.Context, issuer string) (*models.OIDCDiscove
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch discovery document: status code %d", resp.StatusCode)
+		return nil, fmt.Errorf("%w: status code %d", ErrDiscoveryFailed, resp.StatusCode)
 	}
 
 	var doc models.OIDCDiscoveryDocument

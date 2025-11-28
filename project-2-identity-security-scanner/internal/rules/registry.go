@@ -1,3 +1,4 @@
+// Package rules provides vulnerability detection rule registry.
 package rules
 
 import (
@@ -5,12 +6,12 @@ import (
 	"github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner/pkg/models"
 )
 
-// Registry holds all security rules
+// Registry holds all security rules.
 type Registry struct {
 	rules []models.Rule
 }
 
-// NewRegistry creates a new rule registry with all built-in rules
+// NewRegistry creates a new rule registry with all built-in rules.
 func NewRegistry() *Registry {
 	r := &Registry{
 		rules: []models.Rule{},
@@ -19,9 +20,11 @@ func NewRegistry() *Registry {
 	return r
 }
 
-// loadBuiltInRules loads all built-in security rules
+// loadBuiltInRules loads all built-in security rules.
+//
+//nolint:funlen,dupl // Comprehensive built-in rule definitions
 func (r *Registry) loadBuiltInRules() {
-	// OAuth2 rules
+	// OAuth2 rules.
 	r.rules = append(r.rules, models.Rule{
 		ID:          "OAUTH2-001",
 		Name:        "Weak Client Secret",
@@ -82,7 +85,7 @@ func (r *Registry) loadBuiltInRules() {
 		Enabled:     true,
 	})
 
-	// JWT rules
+	// JWT rules.
 	r.rules = append(r.rules, models.Rule{
 		ID:          "JWT-001",
 		Name:        "Algorithm Confusion",
@@ -144,7 +147,7 @@ func (r *Registry) loadBuiltInRules() {
 	})
 }
 
-// GetRules returns all enabled rules
+// GetRules returns all enabled rules.
 func (r *Registry) GetRules() []models.Rule {
 	enabled := []models.Rule{}
 	for _, rule := range r.rules {
@@ -155,7 +158,7 @@ func (r *Registry) GetRules() []models.Rule {
 	return enabled
 }
 
-// GetRuleByID returns a rule by its ID
+// GetRuleByID returns a rule by its ID.
 func (r *Registry) GetRuleByID(id string) *models.Rule {
 	for _, rule := range r.rules {
 		if rule.ID == id {
@@ -165,7 +168,7 @@ func (r *Registry) GetRuleByID(id string) *models.Rule {
 	return nil
 }
 
-// DisableRule disables a rule by ID
+// DisableRule disables a rule by ID.
 func (r *Registry) DisableRule(id string) {
 	for i := range r.rules {
 		if r.rules[i].ID == id {
@@ -175,7 +178,7 @@ func (r *Registry) DisableRule(id string) {
 	}
 }
 
-// OverrideSeverity changes the severity of a rule
+// OverrideSeverity changes the severity of a rule.
 func (r *Registry) OverrideSeverity(id string, severity models.Severity) {
 	for i := range r.rules {
 		if r.rules[i].ID == id {
@@ -185,7 +188,7 @@ func (r *Registry) OverrideSeverity(id string, severity models.Severity) {
 	}
 }
 
-// ListRules returns a list of all rules with their metadata
+// ListRules returns a list of all rules with their metadata.
 func (r *Registry) ListRules() []struct {
 	ID          string
 	Name        string

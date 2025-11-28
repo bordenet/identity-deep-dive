@@ -43,7 +43,7 @@ func TestGenerateCodeChallenge(t *testing.T) {
 				t.Errorf("S256 challenge length = %d, want 43", len(challenge))
 			}
 
-			// For plain, challenge should equal verifier
+			// For plain, challenge should equal verifier.
 			if tt.method == PKCEMethodPlain && challenge != verifier {
 				t.Error("Plain challenge should equal verifier")
 			}
@@ -51,18 +51,19 @@ func TestGenerateCodeChallenge(t *testing.T) {
 	}
 }
 
+//nolint:funlen // Test function with comprehensive test cases
 func TestValidatePKCE(t *testing.T) {
 	verifier := strings.Repeat("a", 43)
 	s256Challenge, _ := GenerateCodeChallenge(verifier, PKCEMethodS256)
 	plainChallenge, _ := GenerateCodeChallenge(verifier, PKCEMethodPlain)
 
 	tests := []struct {
-		name                  string
-		codeVerifier          string
-		codeChallenge         string
-		codeChallengeMethod   string
-		wantErr               bool
-		errContains           string
+		name                string
+		codeVerifier        string
+		codeChallenge       string
+		codeChallengeMethod string
+		wantErr             bool
+		errContains         string
 	}{
 		{
 			name:                "valid S256",

@@ -1,3 +1,6 @@
+# golangci-lint configuration for identity-deep-dive
+# Based on GO_STYLE_GUIDE.md from bordenet/codebase-reviewer
+
 version: 2
 
 run:
@@ -7,25 +10,105 @@ run:
 
 linters:
   enable:
-    - govet
-    - errcheck
-    - staticcheck
-    - ineffassign
-    - unused
+    # Error checking
+    - errcheck        # Check error returns
+    - govet           # Static analysis
+    - staticcheck     # Advanced checks
+
+    # Security
+    - gosec           # Security issues
+
+    # Style
+    - misspell        # Spelling
+
+    # Complexity
+    - gocyclo         # Cyclomatic complexity
+    - gocognit        # Cognitive complexity
+    - funlen          # Function length
+
+    # Best practices
+    - gocritic        # Opinionated checks
+    - revive          # Fast, configurable linter
+    - unconvert       # Unnecessary conversions
+    - unparam         # Unused parameters
+    - unused          # Unused code
+    - ineffassign     # Ineffectual assignments
+    - dupl            # Code duplication
+
+    # Documentation
+    - godot           # Comment punctuation
+    - godox           # TODO/FIXME comments
+
+    # Error handling
+    - err113          # Error wrapping (was goerr113)
+    - errorlint       # Error wrapping check
+
+    # Naming
+    - predeclared     # Shadowing predeclared identifiers
+
+    # Performance
+    - prealloc        # Slice preallocation
 
 linters-settings:
+  errcheck:
+    check-blank: true
+    check-type-assertions: true
+
+  govet:
+    enable-all: true
+
+  gocyclo:
+    min-complexity: 15
+
+  gocognit:
+    min-complexity: 20
+
+  funlen:
+    lines: 100
+    statements: 50
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+      - opinionated
+
   revive:
     rules:
       - name: exported
-        disabled: true
+        arguments:
+          - "checkPrivateReceivers"
+          - "sayRepetitiveInsteadOfStutters"
       - name: package-comments
-        disabled: true
+      - name: var-naming
+      - name: indent-error-flow
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: if-return
+
+  godot:
+    scope: all
+    capital: true
+
+  gosec:
+    excludes:
+      - G104  # Audit errors not checked (covered by errcheck)
+
+  misspell:
+    locale: US
 
 issues:
   exclude-rules:
-    # Exclude some linters from running on tests files.
+    # Exclude some linters from running on tests files
     - path: _test\.go
       linters:
-        - errcheck
+        - funlen
+        - gocyclo
+        - gocognit
+        - dupl
+
   max-issues-per-linter: 0
   max-same-issues: 0

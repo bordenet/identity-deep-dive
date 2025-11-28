@@ -1,8 +1,10 @@
+// Package session provides session storage implementations.
 package session
 
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,13 +12,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// RedisStore implements session storage using Redis
+// RedisStore implements session storage using Redis.
 type RedisStore struct {
 	client    *redis.Client
 	keyPrefix string
 }
 
-// NewRedisStore creates a new Redis-backed session store
+// NewRedisStore creates a new Redis-backed session store.
 func NewRedisStore(client *redis.Client, keyPrefix string) *RedisStore {
 	return &RedisStore{
 		client:    client,
@@ -24,7 +26,7 @@ func NewRedisStore(client *redis.Client, keyPrefix string) *RedisStore {
 	}
 }
 
-// StoreAuthorizationCode stores an authorization code in Redis
+// StoreAuthorizationCode stores an authorization code in Redis.
 func (rs *RedisStore) StoreAuthorizationCode(ctx context.Context, code *models.AuthorizationCode) error {
 	key := rs.authCodeKey(code.Code)
 
@@ -35,7 +37,7 @@ func (rs *RedisStore) StoreAuthorizationCode(ctx context.Context, code *models.A
 
 	ttl := time.Until(code.ExpiresAt)
 	if ttl <= 0 {
-		return fmt.Errorf("authorization code already expired")
+		return models.ErrCodeExpired
 	}
 
 	err = rs.client.Set(ctx, key, data, ttl).Err()
@@ -46,13 +48,13 @@ func (rs *RedisStore) StoreAuthorizationCode(ctx context.Context, code *models.A
 	return nil
 }
 
-// GetAuthorizationCode retrieves an authorization code from Redis
+// GetAuthorizationCode retrieves an authorization code from Redis.
 func (rs *RedisStore) GetAuthorizationCode(ctx context.Context, code string) (*models.AuthorizationCode, error) {
 	key := rs.authCodeKey(code)
 
 	data, err := rs.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
-		return nil, fmt.Errorf("authorization code not found")
+	if errors.Is(err, redis.Nil) {
+		return nil, models.ErrAuthCodeNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get authorization code: %w", err)
@@ -67,11 +69,11 @@ func (rs *RedisStore) GetAuthorizationCode(ctx context.Context, code string) (*m
 	return &authCode, nil
 }
 
-// InvalidateAuthorizationCode marks an authorization code as used
+// InvalidateAuthorizationCode marks an authorization code as used.
 func (rs *RedisStore) InvalidateAuthorizationCode(ctx context.Context, code string) error {
 	key := rs.authCodeKey(code)
 
-	// Delete the authorization code from Redis
+	// Delete the authorization code from Redis.
 	err := rs.client.Del(ctx, key).Err()
 	if err != nil {
 		return fmt.Errorf("failed to invalidate authorization code: %w", err)
@@ -80,7 +82,7 @@ func (rs *RedisStore) InvalidateAuthorizationCode(ctx context.Context, code stri
 	return nil
 }
 
-// StoreRefreshToken stores a refresh token in Redis
+// StoreRefreshToken stores a refresh token in Redis.
 func (rs *RedisStore) StoreRefreshToken(ctx context.Context, refreshToken *models.RefreshToken) error {
 	key := rs.refreshTokenKey(refreshToken.Token)
 
@@ -91,7 +93,7 @@ func (rs *RedisStore) StoreRefreshToken(ctx context.Context, refreshToken *model
 
 	ttl := time.Until(refreshToken.ExpiresAt)
 	if ttl <= 0 {
-		return fmt.Errorf("refresh token already expired")
+		return models.ErrRefreshTokenExpired
 	}
 
 	err = rs.client.Set(ctx, key, data, ttl).Err()
@@ -102,13 +104,13 @@ func (rs *RedisStore) StoreRefreshToken(ctx context.Context, refreshToken *model
 	return nil
 }
 
-// GetRefreshToken retrieves a refresh token from Redis
+// GetRefreshToken retrieves a refresh token from Redis.
 func (rs *RedisStore) GetRefreshToken(ctx context.Context, token string) (*models.RefreshToken, error) {
 	key := rs.refreshTokenKey(token)
 
 	data, err := rs.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
-		return nil, fmt.Errorf("refresh token not found")
+	if errors.Is(err, redis.Nil) {
+		return nil, models.ErrRefreshTokenNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get refresh token: %w", err)
@@ -123,7 +125,7 @@ func (rs *RedisStore) GetRefreshToken(ctx context.Context, token string) (*model
 	return &refreshToken, nil
 }
 
-// RevokeRefreshToken deletes a refresh token from Redis
+// RevokeRefreshToken deletes a refresh token from Redis.
 func (rs *RedisStore) RevokeRefreshToken(ctx context.Context, token string) error {
 	key := rs.refreshTokenKey(token)
 
@@ -135,12 +137,12 @@ func (rs *RedisStore) RevokeRefreshToken(ctx context.Context, token string) erro
 	return nil
 }
 
-// RevokeToken adds a token to the revocation blocklist
-// Used for access token revocation
+// RevokeToken adds a token to the revocation blocklist.
+// Used for access token revocation.
 func (rs *RedisStore) RevokeToken(ctx context.Context, token string, ttl time.Duration) error {
 	key := rs.revokedTokenKey(token)
 
-	// Store "1" with TTL matching token expiration
+	// Store "1" with TTL matching token expiration.
 	err := rs.client.Set(ctx, key, "1", ttl).Err()
 	if err != nil {
 		return fmt.Errorf("failed to add token to revocation list: %w", err)
@@ -149,7 +151,7 @@ func (rs *RedisStore) RevokeToken(ctx context.Context, token string, ttl time.Du
 	return nil
 }
 
-// IsTokenRevoked checks if a token is in the revocation blocklist
+// IsTokenRevoked checks if a token is in the revocation blocklist.
 func (rs *RedisStore) IsTokenRevoked(ctx context.Context, token string) (bool, error) {
 	key := rs.revokedTokenKey(token)
 
@@ -161,7 +163,7 @@ func (rs *RedisStore) IsTokenRevoked(ctx context.Context, token string) (bool, e
 	return exists > 0, nil
 }
 
-// StoreClient stores a client in Redis (for demo purposes)
+// StoreClient stores a client in Redis (for demo purposes).
 func (rs *RedisStore) StoreClient(ctx context.Context, client *models.Client) error {
 	key := rs.clientKey(client.ID)
 
@@ -170,7 +172,7 @@ func (rs *RedisStore) StoreClient(ctx context.Context, client *models.Client) er
 		return fmt.Errorf("failed to marshal client: %w", err)
 	}
 
-	// No TTL for clients
+	// No TTL for clients.
 	err = rs.client.Set(ctx, key, data, 0).Err()
 	if err != nil {
 		return fmt.Errorf("failed to store client: %w", err)
@@ -179,13 +181,13 @@ func (rs *RedisStore) StoreClient(ctx context.Context, client *models.Client) er
 	return nil
 }
 
-// GetClient retrieves a client from Redis
+// GetClient retrieves a client from Redis.
 func (rs *RedisStore) GetClient(ctx context.Context, clientID string) (*models.Client, error) {
 	key := rs.clientKey(clientID)
 
 	data, err := rs.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
-		return nil, fmt.Errorf("client not found")
+	if errors.Is(err, redis.Nil) {
+		return nil, models.ErrClientNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get client: %w", err)
@@ -200,12 +202,12 @@ func (rs *RedisStore) GetClient(ctx context.Context, clientID string) (*models.C
 	return &client, nil
 }
 
-// Ping checks Redis connectivity
+// Ping checks Redis connectivity.
 func (rs *RedisStore) Ping(ctx context.Context) error {
 	return rs.client.Ping(ctx).Err()
 }
 
-// Helper functions for key generation
+// Helper functions for key generation.
 func (rs *RedisStore) authCodeKey(code string) string {
 	return fmt.Sprintf("%sauth:code:%s", rs.keyPrefix, code)
 }

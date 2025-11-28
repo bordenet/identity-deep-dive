@@ -1,3 +1,4 @@
+// Package detector provides vulnerability detectors for OAuth2 configurations.
 package detector
 
 import (
@@ -8,23 +9,26 @@ import (
 	"github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner/pkg/models"
 )
 
-// WeakClientSecretDetector checks for weak OAuth2 client secrets
+// WeakClientSecretDetector checks for weak OAuth2 client secrets.
 type WeakClientSecretDetector struct {
 	MinLength int
 }
 
+// NewWeakClientSecretDetector creates a new weak client secret detector.
 func NewWeakClientSecretDetector() *WeakClientSecretDetector {
 	return &WeakClientSecretDetector{MinLength: 32}
 }
 
+// Name returns the detector name.
 func (d *WeakClientSecretDetector) Name() string {
 	return "WeakClientSecret"
 }
 
+// Detect finds weak client secret vulnerabilities.
 func (d *WeakClientSecretDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
-	// Search for client_secret fields in various common paths
+	// Search for client_secret fields in various common paths.
 	searchPaths := []string{
 		"$.oauth2.providers[*].client_secret",
 		"$.oauth2.client_secret",
@@ -37,7 +41,7 @@ func (d *WeakClientSecretDetector) Detect(tree *models.ConfigTree) []models.Find
 		nodes := parser.SelectAll(tree, path)
 		for _, node := range nodes {
 			if secret, ok := node.Value.(string); ok {
-				// Skip references to secret managers
+				// Skip references to secret managers.
 				if strings.HasPrefix(secret, "${") || strings.HasPrefix(secret, "{{") {
 					continue
 				}
@@ -76,17 +80,22 @@ func (d *WeakClientSecretDetector) Detect(tree *models.ConfigTree) []models.Find
 	return findings
 }
 
-// InsecureRedirectURIDetector checks for insecure redirect URIs
+// InsecureRedirectURIDetector checks for insecure redirect URIs.
 type InsecureRedirectURIDetector struct{}
 
+// NewInsecureRedirectURIDetector creates a new insecure redirect URI detector.
 func NewInsecureRedirectURIDetector() *InsecureRedirectURIDetector {
 	return &InsecureRedirectURIDetector{}
 }
 
+// Name returns the detector name.
 func (d *InsecureRedirectURIDetector) Name() string {
 	return "InsecureRedirectURI"
 }
 
+// Detect finds insecure redirect URI vulnerabilities.
+//
+//nolint:funlen // Comprehensive OAuth2 redirect URI validation
 func (d *InsecureRedirectURIDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -132,7 +141,7 @@ func (d *InsecureRedirectURIDetector) Detect(tree *models.ConfigTree) []models.F
 					})
 				}
 
-				// Check for wildcard
+				// Check for wildcard.
 				if strings.Contains(uri, "*") {
 					findings = append(findings, models.Finding{
 						RuleID:      "OAUTH2-002",
@@ -167,21 +176,24 @@ func (d *InsecureRedirectURIDetector) Detect(tree *models.ConfigTree) []models.F
 	return findings
 }
 
-// MissingPKCEDetector checks for missing PKCE enforcement
+// MissingPKCEDetector checks for missing PKCE enforcement.
 type MissingPKCEDetector struct{}
 
+// NewMissingPKCEDetector creates a new missing PKCE detector.
 func NewMissingPKCEDetector() *MissingPKCEDetector {
 	return &MissingPKCEDetector{}
 }
 
+// Name returns the detector name.
 func (d *MissingPKCEDetector) Name() string {
 	return "MissingPKCE"
 }
 
+// Detect finds missing PKCE vulnerabilities.
 func (d *MissingPKCEDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
-	// Check for public clients without PKCE
+	// Check for public clients without PKCE.
 	searchPaths := []string{
 		"$.oauth2.providers[*]",
 		"$.providers[*]",
@@ -235,17 +247,20 @@ func (d *MissingPKCEDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	return findings
 }
 
-// OverlyPermissiveScopesDetector checks for overly broad scopes
+// OverlyPermissiveScopesDetector checks for overly broad scopes.
 type OverlyPermissiveScopesDetector struct{}
 
+// NewOverlyPermissiveScopesDetector creates a new overly permissive scopes detector.
 func NewOverlyPermissiveScopesDetector() *OverlyPermissiveScopesDetector {
 	return &OverlyPermissiveScopesDetector{}
 }
 
+// Name returns the detector name.
 func (d *OverlyPermissiveScopesDetector) Name() string {
 	return "OverlyPermissiveScopes"
 }
 
+// Detect finds overly permissive scope vulnerabilities.
 func (d *OverlyPermissiveScopesDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -304,17 +319,22 @@ func (d *OverlyPermissiveScopesDetector) Detect(tree *models.ConfigTree) []model
 	return findings
 }
 
-// DeprecatedFlowsDetector checks for deprecated OAuth2 flows
+// DeprecatedFlowsDetector checks for deprecated OAuth2 flows.
 type DeprecatedFlowsDetector struct{}
 
+// NewDeprecatedFlowsDetector creates a new deprecated flows detector.
 func NewDeprecatedFlowsDetector() *DeprecatedFlowsDetector {
 	return &DeprecatedFlowsDetector{}
 }
 
+// Name returns the detector name.
 func (d *DeprecatedFlowsDetector) Name() string {
 	return "DeprecatedFlows"
 }
 
+// Detect finds deprecated flow vulnerabilities.
+//
+//nolint:funlen // Comprehensive OAuth2 deprecated flow detection
 func (d *DeprecatedFlowsDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -385,17 +405,22 @@ func (d *DeprecatedFlowsDetector) Detect(tree *models.ConfigTree) []models.Findi
 	return findings
 }
 
-// MissingStateParameterDetector checks for missing state parameter requirement
+// MissingStateParameterDetector checks for missing state parameter requirement.
 type MissingStateParameterDetector struct{}
 
+// NewMissingStateParameterDetector creates a new missing state parameter detector.
 func NewMissingStateParameterDetector() *MissingStateParameterDetector {
 	return &MissingStateParameterDetector{}
 }
 
+// Name returns the detector name.
 func (d *MissingStateParameterDetector) Name() string {
 	return "MissingStateParameter"
 }
 
+// Detect finds missing state parameter vulnerabilities.
+//
+//nolint:funlen // Comprehensive OAuth2 state parameter validation
 func (d *MissingStateParameterDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -417,7 +442,7 @@ func (d *MissingStateParameterDetector) Detect(tree *models.ConfigTree) []models
 					(hasState && stateRequired == true) ||
 					(hasEnforce && enforceState == true)
 
-				// If any state config exists and it's false, that's a finding
+				// If any state config exists and it's false, that's a finding.
 				if (hasRequire && requireState == false) ||
 					(hasState && stateRequired == false) ||
 					(hasEnforce && enforceState == false) {
@@ -447,7 +472,7 @@ func (d *MissingStateParameterDetector) Detect(tree *models.ConfigTree) []models
 						CWE: "CWE-352",
 					})
 				} else if !stateEnabled && (hasRequire || hasState || hasEnforce) {
-					// State config exists but is not explicitly enabled - potential misconfiguration
+					// State config exists but is not explicitly enabled - potential misconfiguration.
 					findings = append(findings, models.Finding{
 						RuleID:      "OAUTH2-006",
 						Title:       "State Parameter Configuration Unclear",

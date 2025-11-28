@@ -1,9 +1,11 @@
+// Package tokens provides JWT token generation and multi-tenant key management.
 package tokens
 
 import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"time"
 
@@ -11,21 +13,21 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWTManager handles JWT token generation and validation
+// JWTManager handles JWT token generation and validation.
 type JWTManager struct {
-	issuer              string
-	accessTokenTTL      time.Duration
-	refreshTokenTTL     time.Duration
-	keyManager          KeyManager // Interface for multi-tenant key management
+	issuer          string
+	accessTokenTTL  time.Duration
+	refreshTokenTTL time.Duration
+	keyManager      KeyManager // Interface for multi-tenant key management
 }
 
-// KeyManager interface for retrieving tenant-specific keys
+// KeyManager interface for retrieving tenant-specific keys.
 type KeyManager interface {
 	GetPrivateKey(tenantID string) (*rsa.PrivateKey, error)
 	GetPublicKey(tenantID string) (*rsa.PublicKey, error)
 }
 
-// NewJWTManager creates a new JWT manager
+// NewJWTManager creates a new JWT manager.
 func NewJWTManager(
 	issuer string,
 	accessTokenTTL time.Duration,
@@ -40,20 +42,20 @@ func NewJWTManager(
 	}
 }
 
-// GenerateAccessToken generates a new access token (JWT with RS256)
+// GenerateAccessToken generates a new access token (JWT with RS256).
 func (jm *JWTManager) GenerateAccessToken(
 	tenantID string,
 	userID string,
 	scope string,
 	metadata map[string]string,
 ) (string, time.Time, error) {
-	// Get tenant's private key
+	// Get tenant's private key.
 	privateKey, err := jm.keyManager.GetPrivateKey(tenantID)
 	if err != nil {
 		return "", time.Time{}, fmt.Errorf("failed to get private key: %w", err)
 	}
 
-	// Generate unique token ID
+	// Generate unique token ID.
 	tokenID, err := generateTokenID()
 	if err != nil {
 		return "", time.Time{}, fmt.Errorf("failed to generate token ID: %w", err)
@@ -62,7 +64,7 @@ func (jm *JWTManager) GenerateAccessToken(
 	now := time.Now()
 	expiresAt := now.Add(jm.accessTokenTTL)
 
-	// Create claims
+	// Create claims.
 	claims := models.TokenClaims{
 		Subject:   userID,
 		Issuer:    jm.issuer,
@@ -77,7 +79,7 @@ func (jm *JWTManager) GenerateAccessToken(
 		TokenType: "access",
 	}
 
-	// Create token
+	// Create token.
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"sub":        claims.Subject,
 		"iss":        claims.Issuer,
@@ -92,7 +94,7 @@ func (jm *JWTManager) GenerateAccessToken(
 		"token_type": claims.TokenType,
 	})
 
-	// Sign token
+	// Sign token.
 	tokenString, err := token.SignedString(privateKey)
 	if err != nil {
 		return "", time.Time{}, fmt.Errorf("failed to sign token: %w", err)
@@ -101,20 +103,22 @@ func (jm *JWTManager) GenerateAccessToken(
 	return tokenString, expiresAt, nil
 }
 
-// GenerateRefreshToken generates a new refresh token (JWT with RS256)
+// GenerateRefreshToken generates a new refresh token (JWT with RS256).
+//
+//nolint:funlen // JWT refresh token generation with comprehensive claims
 func (jm *JWTManager) GenerateRefreshToken(
 	tenantID string,
 	userID string,
 	scope string,
 	metadata map[string]string,
 ) (string, *models.RefreshToken, error) {
-	// Get tenant's private key
+	// Get tenant's private key.
 	privateKey, err := jm.keyManager.GetPrivateKey(tenantID)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to get private key: %w", err)
 	}
 
-	// Generate unique token ID
+	// Generate unique token ID.
 	tokenID, err := generateTokenID()
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to generate token ID: %w", err)
@@ -123,7 +127,7 @@ func (jm *JWTManager) GenerateRefreshToken(
 	now := time.Now()
 	expiresAt := now.Add(jm.refreshTokenTTL)
 
-	// Create refresh token record
+	// Create refresh token record.
 	refreshToken := &models.RefreshToken{
 		ID:        tokenID,
 		TenantID:  tenantID,
@@ -135,7 +139,7 @@ func (jm *JWTManager) GenerateRefreshToken(
 		LastUsed:  now,
 	}
 
-	// Create claims
+	// Create claims.
 	claims := models.TokenClaims{
 		Subject:   userID,
 		Issuer:    jm.issuer,
@@ -150,7 +154,7 @@ func (jm *JWTManager) GenerateRefreshToken(
 		TokenType: "refresh",
 	}
 
-	// Create token
+	// Create token.
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"sub":        claims.Subject,
 		"iss":        claims.Issuer,
@@ -165,7 +169,7 @@ func (jm *JWTManager) GenerateRefreshToken(
 		"token_type": claims.TokenType,
 	})
 
-	// Sign token
+	// Sign token.
 	tokenString, err := token.SignedString(privateKey)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to sign token: %w", err)
@@ -174,15 +178,17 @@ func (jm *JWTManager) GenerateRefreshToken(
 	return tokenString, refreshToken, nil
 }
 
-// ValidateToken validates a JWT token and returns the claims
+// ValidateToken validates a JWT token and returns the claims.
+//
+//nolint:funlen // JWT validation with comprehensive claim extraction
 func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, error) {
-	// Parse token without validation to extract tenant ID
+	// Parse token without validation to extract tenant ID.
 	unverifiedToken, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse token: %w", err)
 	}
 
-	// Extract tenant ID from claims
+	// Extract tenant ID from claims.
 	claims, ok := unverifiedToken.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, models.ErrInvalidToken
@@ -190,27 +196,27 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 
 	tenantID, ok := claims["tenant_id"].(string)
 	if !ok {
-		return nil, fmt.Errorf("tenant_id not found in token")
+		return nil, models.ErrTenantIDNotFound
 	}
 
-	// Get tenant's public key
+	// Get tenant's public key.
 	publicKey, err := jm.keyManager.GetPublicKey(tenantID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get public key: %w", err)
 	}
 
-	// Parse and validate token with public key
+	// Parse and validate token with public key.
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Verify signing method
+		// Verify signing method.
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("%w: %v", models.ErrUnexpectedSigningMethod, token.Header["alg"])
 		}
 		return publicKey, nil
 	})
 
 	if err != nil {
-		// Check for specific error types
-		if err == jwt.ErrTokenExpired {
+		// Check for specific error types.
+		if errors.Is(err, jwt.ErrTokenExpired) {
 			return nil, models.ErrTokenExpired
 		}
 		return nil, fmt.Errorf("token validation failed: %w", err)
@@ -220,13 +226,13 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 		return nil, models.ErrInvalidToken
 	}
 
-	// Extract claims
+	// Extract claims.
 	mapClaims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, models.ErrInvalidToken
 	}
 
-	// Convert to TokenClaims
+	// Convert to TokenClaims.
 	tokenClaims := &models.TokenClaims{
 		Subject:   getStringClaim(mapClaims, "sub"),
 		Issuer:    getStringClaim(mapClaims, "iss"),
@@ -240,7 +246,7 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 		TokenType: getStringClaim(mapClaims, "token_type"),
 	}
 
-	// Extract metadata if present
+	// Extract metadata if present.
 	if metadata, ok := mapClaims["metadata"].(map[string]interface{}); ok {
 		tokenClaims.Metadata = make(map[string]string)
 		for k, v := range metadata {
@@ -250,15 +256,15 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 		}
 	}
 
-	// Verify issuer matches
+	// Verify issuer matches.
 	if tokenClaims.Issuer != jm.issuer {
-		return nil, fmt.Errorf("invalid issuer: expected %s, got %s", jm.issuer, tokenClaims.Issuer)
+		return nil, fmt.Errorf("%w: expected %s, got %s", models.ErrInvalidIssuer, jm.issuer, tokenClaims.Issuer)
 	}
 
 	return tokenClaims, nil
 }
 
-// generateTokenID generates a cryptographically random token ID
+// generateTokenID generates a cryptographically random token ID.
 func generateTokenID() (string, error) {
 	b := make([]byte, 32) // 256 bits
 	if _, err := rand.Read(b); err != nil {
@@ -267,7 +273,7 @@ func generateTokenID() (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
-// Helper functions to extract claims safely
+// Helper functions to extract claims safely.
 func getStringClaim(claims jwt.MapClaims, key string) string {
 	if val, ok := claims[key].(string); ok {
 		return val

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// mockKeyManager implements KeyManager for testing
+// mockKeyManager implements KeyManager for testing.
 type mockKeyManager struct {
 	keys map[string]*rsa.PrivateKey
 }
@@ -52,7 +52,7 @@ func TestGenerateAccessToken(t *testing.T) {
 		t.Error("ExpiresAt is zero")
 	}
 
-	// Validate token
+	// Validate token.
 	claims, err := manager.ValidateToken(token)
 	if err != nil {
 		t.Fatalf("ValidateToken failed: %v", err)
@@ -80,7 +80,7 @@ func TestGenerateRefreshToken(t *testing.T) {
 		t.Error("Generated refresh token is empty")
 	}
 
-	// Validate token
+	// Validate token.
 	claims, err := manager.ValidateToken(token)
 	if err != nil {
 		t.Fatalf("ValidateToken failed: %v", err)
@@ -116,7 +116,7 @@ func TestValidateToken_WrongTenant(t *testing.T) {
 	km := newMockKeyManager()
 	manager := NewJWTManager("test-issuer", 15*time.Minute, 30*24*time.Hour, km)
 
-	// Generate key for tenant2
+	// Generate key for tenant2.
 	_, err := km.GetPrivateKey("tenant2")
 	if err != nil {
 		t.Fatalf("failed to generate key for tenant2: %v", err)
@@ -127,7 +127,7 @@ func TestValidateToken_WrongTenant(t *testing.T) {
 		t.Fatalf("GenerateAccessToken failed: %v", err)
 	}
 
-	// Create a new key manager to simulate a different environment
+	// Create a new key manager to simulate a different environment.
 	km2 := newMockKeyManager()
 	manager2 := NewJWTManager("test-issuer", 15*time.Minute, 30*24*time.Hour, km2)
 

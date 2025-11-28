@@ -35,7 +35,7 @@ func TestGenerateAccessToken(t *testing.T) {
 		t.Error("ExpiresAt is zero")
 	}
 
-	// Validate token structure
+	// Validate token structure.
 	claims, err := manager.ValidateAccessToken(token)
 	if err != nil {
 		t.Fatalf("ValidateAccessToken failed: %v", err)
@@ -60,7 +60,7 @@ func TestValidateAccessToken_Expired(t *testing.T) {
 		t.Fatalf("Failed to generate RSA key: %v", err)
 	}
 
-	// Create manager with very short expiration
+	// Create manager with very short expiration.
 	manager := NewJWTManager(
 		privateKey,
 		&privateKey.PublicKey,
@@ -75,7 +75,7 @@ func TestValidateAccessToken_Expired(t *testing.T) {
 		t.Fatalf("GenerateAccessToken failed: %v", err)
 	}
 
-	// Wait for token to expire
+	// Wait for token to expire.
 	time.Sleep(10 * time.Millisecond)
 
 	_, err = manager.ValidateAccessToken(token)
@@ -105,7 +105,7 @@ func TestValidateAccessToken_InvalidSignature(t *testing.T) {
 		15*time.Minute,
 	)
 
-	// Generate token with key1
+	// Generate token with key1.
 	token, _, err := manager1.GenerateAccessToken("client456", "user123", "read")
 	if err != nil {
 		t.Fatalf("GenerateAccessToken failed: %v", err)

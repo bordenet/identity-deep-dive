@@ -1,8 +1,10 @@
+// Package session provides session storage and management functionality.
 package session
 
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,13 +12,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// RedisStore implements session storage using Redis
+// RedisStore implements session storage using Redis.
 type RedisStore struct {
 	client    *redis.Client
 	keyPrefix string
 }
 
-// NewRedisStore creates a new Redis session store
+// NewRedisStore creates a new Redis session store.
 func NewRedisStore(client *redis.Client, keyPrefix string) *RedisStore {
 	return &RedisStore{
 		client:    client,
@@ -24,23 +26,23 @@ func NewRedisStore(client *redis.Client, keyPrefix string) *RedisStore {
 	}
 }
 
-// StoreRefreshToken stores a refresh token in Redis
+// StoreRefreshToken stores a refresh token in Redis.
 func (rs *RedisStore) StoreRefreshToken(ctx context.Context, token *models.RefreshToken) error {
 	key := rs.refreshTokenKey(token.TenantID, token.ID)
 
-	// Serialize token to JSON
+	// Serialize token to JSON.
 	data, err := json.Marshal(token)
 	if err != nil {
 		return fmt.Errorf("failed to marshal refresh token: %w", err)
 	}
 
-	// Calculate TTL
+	// Calculate TTL.
 	ttl := time.Until(token.ExpiresAt)
 	if ttl <= 0 {
-		return fmt.Errorf("refresh token already expired")
+		return models.ErrRefreshTokenExpired
 	}
 
-	// Store in Redis with TTL
+	// Store in Redis with TTL.
 	err = rs.client.Set(ctx, key, data, ttl).Err()
 	if err != nil {
 		return fmt.Errorf("failed to store refresh token: %w", err)
@@ -49,12 +51,12 @@ func (rs *RedisStore) StoreRefreshToken(ctx context.Context, token *models.Refre
 	return nil
 }
 
-// GetRefreshToken retrieves a refresh token from Redis
+// GetRefreshToken retrieves a refresh token from Redis.
 func (rs *RedisStore) GetRefreshToken(ctx context.Context, tenantID, tokenID string) (*models.RefreshToken, error) {
 	key := rs.refreshTokenKey(tenantID, tokenID)
 
 	data, err := rs.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return nil, models.ErrRefreshTokenNotFound
 	}
 	if err != nil {
@@ -69,11 +71,11 @@ func (rs *RedisStore) GetRefreshToken(ctx context.Context, tenantID, tokenID str
 	return &token, nil
 }
 
-// UpdateRefreshTokenLastUsed updates the last used timestamp of a refresh token
+// UpdateRefreshTokenLastUsed updates the last used timestamp of a refresh token.
 func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, tokenID string) error {
 	key := rs.refreshTokenKey(tenantID, tokenID)
 
-	// Get current token
+	// Get current token.
 	data, err := rs.client.Get(ctx, key).Bytes()
 	if err != nil {
 		return fmt.Errorf("failed to get refresh token: %w", err)
@@ -84,10 +86,10 @@ func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, 
 		return fmt.Errorf("failed to unmarshal refresh token: %w", err)
 	}
 
-	// Update last used timestamp
+	// Update last used timestamp.
 	token.LastUsed = time.Now()
 
-	// Re-serialize
+	// Re-serialize.
 	updatedData, err := json.Marshal(token)
 	if err != nil {
 		return fmt.Errorf("failed to marshal refresh token: %w", err)
@@ -96,7 +98,7 @@ func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, 
 	// Update in Redis (keep existing TTL)
 	ttl := time.Until(token.ExpiresAt)
 	if ttl <= 0 {
-		return fmt.Errorf("refresh token expired")
+		return models.ErrRefreshTokenExpired
 	}
 
 	err = rs.client.Set(ctx, key, updatedData, ttl).Err()
@@ -107,7 +109,7 @@ func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, 
 	return nil
 }
 
-// DeleteRefreshToken deletes a refresh token from Redis
+// DeleteRefreshToken deletes a refresh token from Redis.
 func (rs *RedisStore) DeleteRefreshToken(ctx context.Context, tenantID, tokenID string) error {
 	key := rs.refreshTokenKey(tenantID, tokenID)
 
@@ -119,7 +121,7 @@ func (rs *RedisStore) DeleteRefreshToken(ctx context.Context, tenantID, tokenID 
 	return nil
 }
 
-// RevokeToken adds a token to the revocation blocklist
+// RevokeToken adds a token to the revocation blocklist.
 func (rs *RedisStore) RevokeToken(ctx context.Context, tenantID, tokenID string, ttl time.Duration) error {
 	key := rs.revokedTokenKey(tenantID, tokenID)
 
@@ -132,7 +134,7 @@ func (rs *RedisStore) RevokeToken(ctx context.Context, tenantID, tokenID string,
 	return nil
 }
 
-// IsTokenRevoked checks if a token is in the revocation blocklist
+// IsTokenRevoked checks if a token is in the revocation blocklist.
 func (rs *RedisStore) IsTokenRevoked(ctx context.Context, tenantID, tokenID string) (bool, error) {
 	key := rs.revokedTokenKey(tenantID, tokenID)
 
@@ -144,9 +146,9 @@ func (rs *RedisStore) IsTokenRevoked(ctx context.Context, tenantID, tokenID stri
 	return exists > 0, nil
 }
 
-// RevokeAllUserTokens revokes all tokens for a user
+// RevokeAllUserTokens revokes all tokens for a user.
 func (rs *RedisStore) RevokeAllUserTokens(ctx context.Context, tenantID, userID string) (int, error) {
-	// Get all refresh tokens for this user
+	// Get all refresh tokens for this user.
 	pattern := rs.refreshTokenKey(tenantID, "*")
 
 	var cursor uint64
@@ -159,7 +161,7 @@ func (rs *RedisStore) RevokeAllUserTokens(ctx context.Context, tenantID, userID 
 		}
 
 		for _, key := range keys {
-			// Get token to check if it belongs to this user
+			// Get token to check if it belongs to this user.
 			data, err := rs.client.Get(ctx, key).Bytes()
 			if err != nil {
 				continue // Skip if error (might be deleted)
@@ -171,12 +173,12 @@ func (rs *RedisStore) RevokeAllUserTokens(ctx context.Context, tenantID, userID 
 			}
 
 			if token.UserID == userID {
-				// Delete refresh token
+				// Delete refresh token.
 				if err := rs.client.Del(ctx, key).Err(); err != nil {
 					continue // Skip if error
 				}
 
-				// Add to revocation blocklist
+				// Add to revocation blocklist.
 				ttl := time.Until(token.ExpiresAt)
 				if ttl > 0 {
 					revokedKey := rs.revokedTokenKey(tenantID, token.ID)
@@ -196,7 +198,7 @@ func (rs *RedisStore) RevokeAllUserTokens(ctx context.Context, tenantID, userID 
 	return count, nil
 }
 
-// StoreKeyPair stores a tenant's RSA key pair (implements KeyStore interface)
+// StoreKeyPair stores a tenant's RSA key pair (implements KeyStore interface).
 func (rs *RedisStore) StoreKeyPair(tenantID string, privateKeyPEM, publicKeyPEM []byte) error {
 	ctx := context.Background()
 
@@ -216,25 +218,25 @@ func (rs *RedisStore) StoreKeyPair(tenantID string, privateKeyPEM, publicKeyPEM 
 	return nil
 }
 
-// GetKeyPair retrieves a tenant's RSA key pair (implements KeyStore interface)
+// GetKeyPair retrieves a tenant's RSA key pair (implements KeyStore interface).
 func (rs *RedisStore) GetKeyPair(tenantID string) (privateKeyPEM, publicKeyPEM []byte, err error) {
 	ctx := context.Background()
 
 	privateKey := rs.privateKeyKey(tenantID)
 	publicKey := rs.publicKeyKey(tenantID)
 
-	// Get private key
+	// Get private key.
 	privateKeyPEM, err = rs.client.Get(ctx, privateKey).Bytes()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return nil, nil, models.ErrTenantNotFound
 	}
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to get private key: %w", err)
 	}
 
-	// Get public key
+	// Get public key.
 	publicKeyPEM, err = rs.client.Get(ctx, publicKey).Bytes()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return nil, nil, models.ErrTenantNotFound
 	}
 	if err != nil {
@@ -244,14 +246,14 @@ func (rs *RedisStore) GetKeyPair(tenantID string) (privateKeyPEM, publicKeyPEM [
 	return privateKeyPEM, publicKeyPEM, nil
 }
 
-// DeleteKeyPair deletes a tenant's RSA key pair (implements KeyStore interface)
+// DeleteKeyPair deletes a tenant's RSA key pair (implements KeyStore interface).
 func (rs *RedisStore) DeleteKeyPair(tenantID string) error {
 	ctx := context.Background()
 
 	privateKey := rs.privateKeyKey(tenantID)
 	publicKey := rs.publicKeyKey(tenantID)
 
-	// Delete both keys
+	// Delete both keys.
 	if err := rs.client.Del(ctx, privateKey, publicKey).Err(); err != nil {
 		return fmt.Errorf("failed to delete key pair: %w", err)
 	}
@@ -259,12 +261,12 @@ func (rs *RedisStore) DeleteKeyPair(tenantID string) error {
 	return nil
 }
 
-// Ping checks Redis connectivity
+// Ping checks Redis connectivity.
 func (rs *RedisStore) Ping(ctx context.Context) error {
 	return rs.client.Ping(ctx).Err()
 }
 
-// Key generation helpers (namespaced per tenant)
+// Key generation helpers (namespaced per tenant).
 func (rs *RedisStore) refreshTokenKey(tenantID, tokenID string) string {
 	return fmt.Sprintf("%stenant:%s:refresh:%s", rs.keyPrefix, tenantID, tokenID)
 }

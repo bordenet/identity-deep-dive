@@ -9,7 +9,7 @@ import (
 )
 
 func TestScanner_Run(t *testing.T) {
-	// Create a mock OIDC server
+	// Create a mock OIDC server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/.well-known/openid-configuration":
@@ -22,7 +22,7 @@ func TestScanner_Run(t *testing.T) {
 			}`,
 				r.Host, r.Host, r.Host, r.Host)
 		case "/authorize":
-			// For the CSRF check, we expect a redirect if the state is missing
+			// For the CSRF check, we expect a redirect if the state is missing.
 			if r.URL.Query().Get("state") == "" {
 				w.Header().Set("Location", "http://localhost:8080/callback?code=1234")
 				w.WriteHeader(http.StatusFound)

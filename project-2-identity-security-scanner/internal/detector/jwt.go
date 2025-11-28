@@ -1,3 +1,4 @@
+// Package detector provides vulnerability detectors for JWT configurations.
 package detector
 
 import (
@@ -9,17 +10,20 @@ import (
 	"github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner/pkg/models"
 )
 
-// AlgorithmConfusionDetector checks for "none" algorithm acceptance
+// AlgorithmConfusionDetector checks for "none" algorithm acceptance.
 type AlgorithmConfusionDetector struct{}
 
+// NewAlgorithmConfusionDetector creates a new algorithm confusion detector.
 func NewAlgorithmConfusionDetector() *AlgorithmConfusionDetector {
 	return &AlgorithmConfusionDetector{}
 }
 
+// Name returns the detector name.
 func (d *AlgorithmConfusionDetector) Name() string {
 	return "AlgorithmConfusion"
 }
 
+// Detect finds algorithm confusion vulnerabilities.
 func (d *AlgorithmConfusionDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -69,21 +73,24 @@ func (d *AlgorithmConfusionDetector) Detect(tree *models.ConfigTree) []models.Fi
 	return findings
 }
 
-// WeakSigningAlgorithmDetector checks for weak JWT signing algorithms
+// WeakSigningAlgorithmDetector checks for weak JWT signing algorithms.
 type WeakSigningAlgorithmDetector struct{}
 
+// NewWeakSigningAlgorithmDetector creates a new weak signing algorithm detector.
 func NewWeakSigningAlgorithmDetector() *WeakSigningAlgorithmDetector {
 	return &WeakSigningAlgorithmDetector{}
 }
 
+// Name returns the detector name.
 func (d *WeakSigningAlgorithmDetector) Name() string {
 	return "WeakSigningAlgorithm"
 }
 
+// Detect finds weak signing algorithm vulnerabilities.
 func (d *WeakSigningAlgorithmDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
-	// Check for HS256 with short secrets
+	// Check for HS256 with short secrets.
 	searchPaths := []string{
 		"$.jwt",
 		"$.token",
@@ -98,7 +105,7 @@ func (d *WeakSigningAlgorithmDetector) Detect(tree *models.ConfigTree) []models.
 
 				if hasAlg && algorithm == "HS256" && hasSecret {
 					if secretStr, ok := secret.(string); ok {
-						// Skip secret references
+						// Skip secret references.
 						if strings.HasPrefix(secretStr, "${") || strings.HasPrefix(secretStr, "{{") {
 							continue
 						}
@@ -139,17 +146,22 @@ func (d *WeakSigningAlgorithmDetector) Detect(tree *models.ConfigTree) []models.
 	return findings
 }
 
-// MissingExpirationDetector checks for missing expiration claim requirement
+// MissingExpirationDetector checks for missing expiration claim requirement.
 type MissingExpirationDetector struct{}
 
+// NewMissingExpirationDetector creates a new missing expiration detector.
 func NewMissingExpirationDetector() *MissingExpirationDetector {
 	return &MissingExpirationDetector{}
 }
 
+// Name returns the detector name.
 func (d *MissingExpirationDetector) Name() string {
 	return "MissingExpiration"
 }
 
+// Detect finds missing expiration vulnerabilities.
+//
+//nolint:dupl // Intentional pattern: each detector follows same structure but checks different config keys.
 func (d *MissingExpirationDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -168,7 +180,7 @@ func (d *MissingExpirationDetector) Detect(tree *models.ConfigTree) []models.Fin
 				validateExp, hasValidate := config["validate_expiration"]
 				checkExp, hasCheck := config["check_expiration"]
 
-				// If explicitly set to false, that's a finding
+				// If explicitly set to false, that's a finding.
 				if (hasRequire && requireExp == false) ||
 					(hasValidate && validateExp == false) ||
 					(hasCheck && checkExp == false) {
@@ -204,17 +216,22 @@ func (d *MissingExpirationDetector) Detect(tree *models.ConfigTree) []models.Fin
 	return findings
 }
 
-// ExcessiveTokenLifetimeDetector checks for overly long JWT lifetimes
+// ExcessiveTokenLifetimeDetector checks for overly long JWT lifetimes.
 type ExcessiveTokenLifetimeDetector struct{}
 
+// NewExcessiveTokenLifetimeDetector creates a new excessive token lifetime detector.
 func NewExcessiveTokenLifetimeDetector() *ExcessiveTokenLifetimeDetector {
 	return &ExcessiveTokenLifetimeDetector{}
 }
 
+// Name returns the detector name.
 func (d *ExcessiveTokenLifetimeDetector) Name() string {
 	return "ExcessiveTokenLifetime"
 }
 
+// Detect finds excessive token lifetime vulnerabilities.
+//
+//nolint:dupl // Similar structure to MissingExpirationDetector but different validation logic
 func (d *ExcessiveTokenLifetimeDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -239,7 +256,7 @@ func (d *ExcessiveTokenLifetimeDetector) Detect(tree *models.ConfigTree) []model
 			case float64:
 				seconds = int(v)
 			case string:
-				// Parse duration strings like "24h", "1d"
+				// Parse duration strings like "24h", "1d".
 				seconds = parseDurationToSeconds(v)
 			}
 
@@ -275,17 +292,22 @@ func (d *ExcessiveTokenLifetimeDetector) Detect(tree *models.ConfigTree) []model
 	return findings
 }
 
-// MissingAudienceValidationDetector checks for missing audience validation
+// MissingAudienceValidationDetector checks for missing audience validation.
 type MissingAudienceValidationDetector struct{}
 
+// NewMissingAudienceValidationDetector creates a new missing audience validation detector.
 func NewMissingAudienceValidationDetector() *MissingAudienceValidationDetector {
 	return &MissingAudienceValidationDetector{}
 }
 
+// Name returns the detector name.
 func (d *MissingAudienceValidationDetector) Name() string {
 	return "MissingAudienceValidation"
 }
 
+// Detect finds missing audience validation vulnerabilities.
+//
+//nolint:dupl // Similar structure to ExcessiveTokenLifetimeDetector but different validation logic
 func (d *MissingAudienceValidationDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -304,7 +326,7 @@ func (d *MissingAudienceValidationDetector) Detect(tree *models.ConfigTree) []mo
 				checkAud, hasCheck := config["check_audience"]
 				verifyAud, hasVerify := config["verify_audience"]
 
-				// If explicitly set to false, that's a finding
+				// If explicitly set to false, that's a finding.
 				if (hasValidate && validateAud == false) ||
 					(hasCheck && checkAud == false) ||
 					(hasVerify && verifyAud == false) {
@@ -340,17 +362,20 @@ func (d *MissingAudienceValidationDetector) Detect(tree *models.ConfigTree) []mo
 	return findings
 }
 
-// HardcodedSecretDetector checks for hardcoded JWT secrets
+// HardcodedSecretDetector checks for hardcoded JWT secrets.
 type HardcodedSecretDetector struct{}
 
+// NewHardcodedSecretDetector creates a new hardcoded secret detector.
 func NewHardcodedSecretDetector() *HardcodedSecretDetector {
 	return &HardcodedSecretDetector{}
 }
 
+// Name returns the detector name.
 func (d *HardcodedSecretDetector) Name() string {
 	return "HardcodedSecret"
 }
 
+// Detect finds hardcoded secret vulnerabilities.
 func (d *HardcodedSecretDetector) Detect(tree *models.ConfigTree) []models.Finding {
 	findings := []models.Finding{}
 
@@ -405,7 +430,7 @@ func (d *HardcodedSecretDetector) Detect(tree *models.ConfigTree) []models.Findi
 	return findings
 }
 
-// Helper functions
+// Helper functions.
 
 func parseDurationToSeconds(duration string) int {
 	duration = strings.TrimSpace(strings.ToLower(duration))
@@ -413,16 +438,16 @@ func parseDurationToSeconds(duration string) int {
 	// Try to parse as plain integer first (no unit means seconds)
 	var value int
 	if _, err := fmt.Sscanf(duration, "%d", &value); err == nil {
-		// Check if there's more content after the number
+		// Check if there's more content after the number.
 		var rest string
 		if n, _ := fmt.Sscanf(duration, "%d%s", &value, &rest); n == 1 {
-			// Just a number, treat as seconds
+			// Just a number, treat as seconds.
 			return value
 		}
-		// Has a unit, parse it below
+		// Has a unit, parse it below.
 	}
 
-	// Parse duration formats with units: 24h, 1d, 60m, 3600s
+	// Parse duration formats with units: 24h, 1d, 60m, 3600s.
 	var unit string
 	if _, err := fmt.Sscanf(duration, "%d%s", &value, &unit); err != nil {
 		log.Printf("parseDurationToSeconds: failed to parse duration %q: %v", duration, err)
@@ -441,7 +466,7 @@ func parseDurationToSeconds(duration string) int {
 	case "w", "week", "weeks":
 		return value * 604800
 	default:
-		// Unknown unit, treat as seconds
+		// Unknown unit, treat as seconds.
 		return value
 	}
 }

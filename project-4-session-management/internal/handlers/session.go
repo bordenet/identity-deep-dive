@@ -1,7 +1,9 @@
+// Package handlers provides HTTP handlers for session management endpoints.
 package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -12,13 +14,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// SessionHandler handles session management endpoints
+// SessionHandler handles session management endpoints.
 type SessionHandler struct {
 	jwtManager   *tokens.JWTManager
 	sessionStore *session.RedisStore
 }
 
-// NewSessionHandler creates a new session handler
+// NewSessionHandler creates a new session handler.
 func NewSessionHandler(jwtManager *tokens.JWTManager, sessionStore *session.RedisStore) *SessionHandler {
 	return &SessionHandler{
 		jwtManager:   jwtManager,
@@ -26,22 +28,22 @@ func NewSessionHandler(jwtManager *tokens.JWTManager, sessionStore *session.Redi
 	}
 }
 
-// CreateSession handles POST /sessions
+// CreateSession handles POST /sessions.
 func (h *SessionHandler) CreateSession(w http.ResponseWriter, r *http.Request) {
-	// Parse request
+	// Parse request.
 	var req models.CreateSessionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, "Invalid request body")
 		return
 	}
 
-	// Validate request
+	// Validate request.
 	if err := req.Validate(); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, err.Error())
 		return
 	}
 
-	// Generate access token
+	// Generate access token.
 	accessToken, expiresAt, err := h.jwtManager.GenerateAccessToken(
 		req.TenantID,
 		req.UserID,
@@ -54,7 +56,7 @@ func (h *SessionHandler) CreateSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Generate refresh token
+	// Generate refresh token.
 	refreshTokenString, refreshToken, err := h.jwtManager.GenerateRefreshToken(
 		req.TenantID,
 		req.UserID,
@@ -67,14 +69,14 @@ func (h *SessionHandler) CreateSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Store refresh token in Redis
+	// Store refresh token in Redis.
 	if err := h.sessionStore.StoreRefreshToken(r.Context(), refreshToken); err != nil {
 		h.writeError(w, http.StatusInternalServerError, models.ErrCodeInternalError,
 			fmt.Sprintf("Failed to store refresh token: %v", err))
 		return
 	}
 
-	// Build response
+	// Build response.
 	response := models.TokenPair{
 		AccessToken:  accessToken,
 		RefreshToken: refreshTokenString,
@@ -85,28 +87,30 @@ func (h *SessionHandler) CreateSession(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusCreated, response)
 }
 
-// ValidateSession handles POST /sessions/validate
+// ValidateSession handles POST /sessions/validate.
+//
+//nolint:funlen // Session validation with comprehensive error handling
 func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request) {
 	log.Debug().Msg("MERMAID: Client->>Service: 1. POST /sessions/validate (access_token)")
-	// Parse request
+	// Parse request.
 	var req models.ValidateSessionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, "Invalid request body")
 		return
 	}
 
-	// Validate request
+	// Validate request.
 	if err := req.Validate(); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, err.Error())
 		return
 	}
 
 	log.Debug().Msg("MERMAID: Service->>Service: 2. Parse JWT and validate signature")
-	// Validate JWT token
+	// Validate JWT token.
 	claims, err := h.jwtManager.ValidateToken(req.AccessToken)
 	if err != nil {
-		// Map errors to appropriate response codes
-		if err == models.ErrTokenExpired {
+		// Map errors to appropriate response codes.
+		if errors.Is(err, models.ErrTokenExpired) {
 			response := models.ValidateSessionResponse{
 				Valid:            false,
 				Error:            models.ErrCodeExpiredToken,
@@ -116,7 +120,7 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		if err == models.ErrInvalidSignature || err == models.ErrInvalidToken {
+		if errors.Is(err, models.ErrInvalidSignature) || errors.Is(err, models.ErrInvalidToken) {
 			response := models.ValidateSessionResponse{
 				Valid:            false,
 				Error:            models.ErrCodeInvalidToken,
@@ -132,7 +136,7 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 	}
 
 	log.Debug().Msg("MERMAID: Service->>Redis: 3. Check revocation list")
-	// Check revocation blocklist
+	// Check revocation blocklist.
 	isRevoked, err := h.sessionStore.IsTokenRevoked(r.Context(), claims.TenantID, claims.JTI)
 	if err != nil {
 		h.writeError(w, http.StatusInternalServerError, models.ErrCodeInternalError,
@@ -151,7 +155,7 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 	}
 
 	log.Debug().Msg("MERMAID: Redis-->>Service: 4. Not revoked")
-	// Token is valid
+	// Token is valid.
 	response := models.ValidateSessionResponse{
 		Valid:  true,
 		Claims: claims,
@@ -161,25 +165,27 @@ func (h *SessionHandler) ValidateSession(w http.ResponseWriter, r *http.Request)
 	h.writeJSON(w, http.StatusOK, response)
 }
 
-// RefreshSession handles POST /sessions/refresh
+// RefreshSession handles POST /sessions/refresh.
+//
+//nolint:funlen // Session refresh with comprehensive validation
 func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) {
-	// Parse request
+	// Parse request.
 	var req models.RefreshSessionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, "Invalid request body")
 		return
 	}
 
-	// Validate request
+	// Validate request.
 	if err := req.Validate(); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, err.Error())
 		return
 	}
 
-	// Validate refresh token
+	// Validate refresh token.
 	claims, err := h.jwtManager.ValidateToken(req.RefreshToken)
 	if err != nil {
-		if err == models.ErrTokenExpired {
+		if errors.Is(err, models.ErrTokenExpired) {
 			h.writeError(w, http.StatusUnauthorized, models.ErrCodeExpiredToken, "Refresh token has expired")
 			return
 		}
@@ -188,16 +194,16 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Verify it's a refresh token
+	// Verify it's a refresh token.
 	if claims.TokenType != "refresh" {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest,
 			"Token is not a refresh token")
 		return
 	}
 
-	// Check if refresh token exists in Redis
+	// Check if refresh token exists in Redis.
 	storedToken, err := h.sessionStore.GetRefreshToken(r.Context(), claims.TenantID, claims.JTI)
-	if err == models.ErrRefreshTokenNotFound {
+	if errors.Is(err, models.ErrRefreshTokenNotFound) {
 		h.writeError(w, http.StatusUnauthorized, models.ErrCodeInvalidToken,
 			"Refresh token not found or expired")
 		return
@@ -208,7 +214,7 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Check if refresh token is revoked
+	// Check if refresh token is revoked.
 	isRevoked, err := h.sessionStore.IsTokenRevoked(r.Context(), claims.TenantID, claims.JTI)
 	if err != nil {
 		h.writeError(w, http.StatusInternalServerError, models.ErrCodeInternalError,
@@ -235,7 +241,7 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Update last used timestamp
+	// Update last used timestamp.
 	if err := h.sessionStore.UpdateRefreshTokenLastUsed(r.Context(), claims.TenantID, claims.JTI); err != nil {
 		log.Warn().Err(err).Msg("Failed to update refresh token last used time")
 	}
@@ -251,26 +257,26 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 	h.writeJSON(w, http.StatusOK, response)
 }
 
-// RevokeSession handles POST /sessions/revoke
+// RevokeSession handles POST /sessions/revoke.
 func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
-	// Parse request
+	// Parse request.
 	var req models.RevokeSessionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, "Invalid request body")
 		return
 	}
 
-	// Validate request
+	// Validate request.
 	if err := req.Validate(); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, err.Error())
 		return
 	}
 
-	// Validate token to extract claims
+	// Validate token to extract claims.
 	claims, err := h.jwtManager.ValidateToken(req.Token)
 	if err != nil {
 		// Allow revoking already-expired tokens (for cleanup)
-		if err != models.ErrTokenExpired {
+		if !errors.Is(err, models.ErrTokenExpired) {
 			h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidToken,
 				fmt.Sprintf("Invalid token: %v", err))
 			return
@@ -289,14 +295,14 @@ func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
 		ttl = time.Hour // If we can't parse expiration, use default TTL
 	}
 
-	// Add to revocation blocklist
+	// Add to revocation blocklist.
 	if err := h.sessionStore.RevokeToken(r.Context(), claims.TenantID, claims.JTI, ttl); err != nil {
 		h.writeError(w, http.StatusInternalServerError, models.ErrCodeInternalError,
 			fmt.Sprintf("Failed to revoke token: %v", err))
 		return
 	}
 
-	// If it's a refresh token, also delete from Redis
+	// If it's a refresh token, also delete from Redis.
 	if claims != nil && claims.TokenType == "refresh" {
 		if err := h.sessionStore.DeleteRefreshToken(r.Context(), claims.TenantID, claims.JTI); err != nil {
 			log.Warn().Err(err).Msg("Failed to delete refresh token")
@@ -306,22 +312,22 @@ func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// RevokeAllSessions handles POST /sessions/revoke-all
+// RevokeAllSessions handles POST /sessions/revoke-all.
 func (h *SessionHandler) RevokeAllSessions(w http.ResponseWriter, r *http.Request) {
-	// Parse request
+	// Parse request.
 	var req models.RevokeAllSessionsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, "Invalid request body")
 		return
 	}
 
-	// Validate request
+	// Validate request.
 	if err := req.Validate(); err != nil {
 		h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidRequest, err.Error())
 		return
 	}
 
-	// Revoke all tokens for this user
+	// Revoke all tokens for this user.
 	count, err := h.sessionStore.RevokeAllUserTokens(r.Context(), req.TenantID, req.UserID)
 	if err != nil {
 		h.writeError(w, http.StatusInternalServerError, models.ErrCodeInternalError,
@@ -329,7 +335,7 @@ func (h *SessionHandler) RevokeAllSessions(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Build response
+	// Build response.
 	response := models.RevokeAllSessionsResponse{
 		RevokedCount: count,
 	}
@@ -337,7 +343,7 @@ func (h *SessionHandler) RevokeAllSessions(w http.ResponseWriter, r *http.Reques
 	h.writeJSON(w, http.StatusOK, response)
 }
 
-// Helper functions
+// Helper functions.
 
 func (h *SessionHandler) writeJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
@@ -354,4 +360,3 @@ func (h *SessionHandler) writeError(w http.ResponseWriter, status int, errorCode
 	}
 	h.writeJSON(w, status, response)
 }
-

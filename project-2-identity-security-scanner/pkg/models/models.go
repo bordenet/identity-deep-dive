@@ -1,10 +1,12 @@
+// Package models provides data models for security scanning results.
 package models
 
 import "time"
 
-// Severity represents the severity level of a security finding
+// Severity represents the severity level of a security finding.
 type Severity string
 
+// Severity levels for security findings.
 const (
 	SeverityCritical Severity = "critical"
 	SeverityHigh     Severity = "high"
@@ -13,18 +15,20 @@ const (
 	SeverityInfo     Severity = "info"
 )
 
-// Confidence represents how confident we are in the finding
+// Confidence represents how confident we are in the finding.
 type Confidence string
 
+// Confidence levels for security findings.
 const (
 	ConfidenceHigh   Confidence = "high"
 	ConfidenceMedium Confidence = "medium"
 	ConfidenceLow    Confidence = "low"
 )
 
-// Category represents the type of security check
+// Category represents the type of security check.
 type Category string
 
+// Category types for security findings.
 const (
 	CategoryOAuth2 Category = "oauth2"
 	CategoryOIDC   Category = "oidc"
@@ -32,7 +36,7 @@ const (
 	CategorySAML   Category = "saml"
 )
 
-// Finding represents a security issue discovered during scanning
+// Finding represents a security issue discovered during scanning.
 type Finding struct {
 	RuleID      string     `json:"rule_id"`
 	Title       string     `json:"title"`
@@ -50,20 +54,20 @@ type Finding struct {
 	RawValue    string     `json:"raw_value,omitempty"` // Redacted in output
 }
 
-// ConfigTree represents a parsed configuration file
+// ConfigTree represents a parsed configuration file.
 type ConfigTree struct {
 	Root     map[string]interface{}
 	Metadata FileMetadata
 }
 
-// FileMetadata contains information about the source file
+// FileMetadata contains information about the source file.
 type FileMetadata struct {
 	Filename string
 	Format   string // "yaml", "json", "toml", "env"
 	LineMap  map[string]int
 }
 
-// ConfigNode represents a value with location information
+// ConfigNode represents a value with location information.
 type ConfigNode struct {
 	Path   string
 	Value  interface{}
@@ -71,7 +75,7 @@ type ConfigNode struct {
 	Column int
 }
 
-// ScanResult represents the complete scan results
+// ScanResult represents the complete scan results.
 type ScanResult struct {
 	ScannerVersion string          `json:"scanner_version"`
 	ScanTime       time.Time       `json:"scan_time"`
@@ -81,7 +85,7 @@ type ScanResult struct {
 	Findings       []Finding       `json:"findings"`
 }
 
-// SeveritySummary provides a count of findings by severity
+// SeveritySummary provides a count of findings by severity.
 type SeveritySummary struct {
 	Critical int `json:"critical"`
 	High     int `json:"high"`
@@ -91,7 +95,7 @@ type SeveritySummary struct {
 	Total    int `json:"total"`
 }
 
-// Rule defines a security check
+// Rule defines a security check.
 type Rule struct {
 	ID          string
 	Name        string
@@ -105,13 +109,13 @@ type Rule struct {
 	Enabled     bool
 }
 
-// Detector interface for vulnerability detection
+// Detector interface for vulnerability detection.
 type Detector interface {
 	Detect(tree *ConfigTree) []Finding
 	Name() string
 }
 
-// ScanConfig holds scanner configuration
+// ScanConfig holds scanner configuration.
 type ScanConfig struct {
 	Include          []string
 	Exclude          []string
@@ -122,7 +126,7 @@ type ScanConfig struct {
 	CustomRulesDir   string
 }
 
-// ExitCode returns the appropriate exit code based on findings
+// ExitCode returns the appropriate exit code based on findings.
 func (sr *ScanResult) ExitCode(failOn []Severity) int {
 	if sr.Summary.Total == 0 {
 		return 0
@@ -152,7 +156,7 @@ func (sr *ScanResult) ExitCode(failOn []Severity) int {
 	return 0
 }
 
-// RedactSecret redacts sensitive values for display
+// RedactSecret redacts sensitive values for display.
 func RedactSecret(secret string) string {
 	if secret == "" {
 		return "[EMPTY]"
@@ -160,11 +164,11 @@ func RedactSecret(secret string) string {
 	if len(secret) <= 4 {
 		return "[REDACTED]"
 	}
-	// Show first 2 and last 2 characters only
+	// Show first 2 and last 2 characters only.
 	return secret[:2] + "..." + secret[len(secret)-2:]
 }
 
-// CalculateSummary generates severity summary from findings
+// CalculateSummary generates severity summary from findings.
 func CalculateSummary(findings []Finding) SeveritySummary {
 	summary := SeveritySummary{}
 	for _, f := range findings {

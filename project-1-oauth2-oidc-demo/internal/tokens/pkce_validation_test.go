@@ -4,7 +4,9 @@ import (
 	"testing"
 )
 
-// TestPKCEValidation tests the critical PKCE validation logic
+// TestPKCEValidation tests the critical PKCE validation logic.
+//
+//nolint:funlen // Test function with comprehensive test cases
 func TestPKCEValidation(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -72,7 +74,7 @@ func TestPKCEValidation(t *testing.T) {
 	}
 }
 
-// TestPKCEChallengeGeneration verifies that challenge generation is deterministic
+// TestPKCEChallengeGeneration verifies that challenge generation is deterministic.
 func TestPKCEChallengeGeneration(t *testing.T) {
 	verifier := "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
 	expectedChallenge := "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
@@ -86,7 +88,7 @@ func TestPKCEChallengeGeneration(t *testing.T) {
 		t.Errorf("Challenge generation mismatch.\nExpected: %s\nGot: %s", expectedChallenge, challenge)
 	}
 
-	// Verify it's deterministic
+	// Verify it's deterministic.
 	challenge2, err := GenerateCodeChallenge(verifier, PKCEMethodS256)
 	if err != nil {
 		t.Fatalf("Failed to generate second challenge: %v", err)

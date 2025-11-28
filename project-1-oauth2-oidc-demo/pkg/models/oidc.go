@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// User represents an authenticated user
+// User represents an authenticated user.
 type User struct {
 	ID            string    `json:"sub"` // Subject identifier (OIDC standard claim)
 	Email         string    `json:"email"`
@@ -19,7 +19,7 @@ type User struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
-// IDTokenClaims represents OIDC ID Token claims (JWT payload)
+// IDTokenClaims represents OIDC ID Token claims (JWT payload).
 type IDTokenClaims struct {
 	// Standard JWT claims (RFC 7519)
 	Issuer    string `json:"iss"`           // Issuer (authorization server URL)
@@ -29,11 +29,11 @@ type IDTokenClaims struct {
 	IssuedAt  int64  `json:"iat"`           // Issued at (Unix timestamp)
 	NotBefore int64  `json:"nbf,omitempty"` // Not before (Unix timestamp)
 
-	// OIDC-specific claims
-	Nonce         string `json:"nonce,omitempty"`          // Replay protection
-	AuthTime      int64  `json:"auth_time,omitempty"`      // Time of authentication
-	AccessHash    string `json:"at_hash,omitempty"`        // Access token hash
-	CodeHash      string `json:"c_hash,omitempty"`         // Authorization code hash
+	// OIDC-specific claims.
+	Nonce      string `json:"nonce,omitempty"`     // Replay protection
+	AuthTime   int64  `json:"auth_time,omitempty"` // Time of authentication
+	AccessHash string `json:"at_hash,omitempty"`   // Access token hash
+	CodeHash   string `json:"c_hash,omitempty"`    // Authorization code hash
 
 	// User profile claims (optional, based on scope)
 	Name          string `json:"name,omitempty"`
@@ -45,7 +45,7 @@ type IDTokenClaims struct {
 	Profile       string `json:"profile,omitempty"`
 }
 
-// GetExpirationTime implements jwt.Claims interface
+// GetExpirationTime implements jwt.Claims interface.
 func (c IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
 	if c.ExpiresAt == 0 {
 		return nil, nil
@@ -53,7 +53,7 @@ func (c IDTokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {
 	return jwt.NewNumericDate(time.Unix(c.ExpiresAt, 0)), nil
 }
 
-// GetIssuedAt implements jwt.Claims interface
+// GetIssuedAt implements jwt.Claims interface.
 func (c IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
 	if c.IssuedAt == 0 {
 		return nil, nil
@@ -61,7 +61,7 @@ func (c IDTokenClaims) GetIssuedAt() (*jwt.NumericDate, error) {
 	return jwt.NewNumericDate(time.Unix(c.IssuedAt, 0)), nil
 }
 
-// GetNotBefore implements jwt.Claims interface
+// GetNotBefore implements jwt.Claims interface.
 func (c IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
 	if c.NotBefore == 0 {
 		return nil, nil
@@ -69,17 +69,17 @@ func (c IDTokenClaims) GetNotBefore() (*jwt.NumericDate, error) {
 	return jwt.NewNumericDate(time.Unix(c.NotBefore, 0)), nil
 }
 
-// GetIssuer implements jwt.Claims interface
+// GetIssuer implements jwt.Claims interface.
 func (c IDTokenClaims) GetIssuer() (string, error) {
 	return c.Issuer, nil
 }
 
-// GetSubject implements jwt.Claims interface
+// GetSubject implements jwt.Claims interface.
 func (c IDTokenClaims) GetSubject() (string, error) {
 	return c.Subject, nil
 }
 
-// GetAudience implements jwt.Claims interface
+// GetAudience implements jwt.Claims interface.
 func (c IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
 	if c.Audience == "" {
 		return nil, nil
@@ -87,9 +87,9 @@ func (c IDTokenClaims) GetAudience() (jwt.ClaimStrings, error) {
 	return jwt.ClaimStrings{c.Audience}, nil
 }
 
-// UserInfoResponse represents the OIDC UserInfo endpoint response
+// UserInfoResponse represents the OIDC UserInfo endpoint response.
 type UserInfoResponse struct {
-	Subject       string `json:"sub"`                      // Required
+	Subject       string `json:"sub"` // Required
 	Name          string `json:"name,omitempty"`
 	GivenName     string `json:"given_name,omitempty"`
 	FamilyName    string `json:"family_name,omitempty"`
@@ -99,8 +99,8 @@ type UserInfoResponse struct {
 	Profile       string `json:"profile,omitempty"`
 }
 
-// OIDCDiscoveryDocument represents the OpenID Connect discovery document
-// Served at /.well-known/openid-configuration
+// OIDCDiscoveryDocument represents the OpenID Connect discovery document.
+// Served at /.well-known/openid-configuration.
 type OIDCDiscoveryDocument struct {
 	Issuer                            string   `json:"issuer"`
 	AuthorizationEndpoint             string   `json:"authorization_endpoint"`
@@ -118,7 +118,7 @@ type OIDCDiscoveryDocument struct {
 	CodeChallengeMethodsSupported     []string `json:"code_challenge_methods_supported"`
 }
 
-// OIDC standard scopes
+// OIDC standard scopes.
 const (
 	ScopeOpenID  = "openid"
 	ScopeProfile = "profile"
@@ -127,7 +127,7 @@ const (
 	ScopePhone   = "phone"
 )
 
-// HasScope checks if a space-separated scope string contains the given scope
+// HasScope checks if a space-separated scope string contains the given scope.
 func HasScope(scopes, scope string) bool {
 	if scopes == "" {
 		return false

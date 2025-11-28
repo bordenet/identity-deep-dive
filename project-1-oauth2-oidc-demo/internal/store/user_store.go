@@ -1,3 +1,4 @@
+// Package store provides user storage implementations.
 package store
 
 import (
@@ -9,45 +10,45 @@ import (
 	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
 )
 
-// InMemoryUserStore is a simple in-memory user store for demo purposes
-// In production, this would be backed by a real database
+// InMemoryUserStore is a simple in-memory user store for demo purposes.
+// In production, this would be backed by a real database.
 type InMemoryUserStore struct {
 	users map[string]*models.User
 	mu    sync.RWMutex
 }
 
-// NewInMemoryUserStore creates a new in-memory user store with demo users
+// NewInMemoryUserStore creates a new in-memory user store with demo users.
 func NewInMemoryUserStore() *InMemoryUserStore {
 	store := &InMemoryUserStore{
 		users: make(map[string]*models.User),
 	}
 
-	// Add demo users
+	// Add demo users.
 	store.addDemoUsers()
 
 	return store
 }
 
-// GetUser retrieves a user by ID
-func (s *InMemoryUserStore) GetUser(ctx context.Context, userID string) (*models.User, error) {
+// GetUser retrieves a user by ID.
+func (s *InMemoryUserStore) GetUser(_ context.Context, userID string) (*models.User, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
 	user, ok := s.users[userID]
 	if !ok {
-		return nil, fmt.Errorf("user not found: %s", userID)
+		return nil, fmt.Errorf("%w: %s", models.ErrUserNotFound, userID)
 	}
 
 	return user, nil
 }
 
-// CreateUser creates a new user
-func (s *InMemoryUserStore) CreateUser(ctx context.Context, user *models.User) error {
+// CreateUser creates a new user.
+func (s *InMemoryUserStore) CreateUser(_ context.Context, user *models.User) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	if _, exists := s.users[user.ID]; exists {
-		return fmt.Errorf("user already exists: %s", user.ID)
+		return fmt.Errorf("%w: %s", models.ErrUserAlreadyExists, user.ID)
 	}
 
 	user.CreatedAt = time.Now()
@@ -56,7 +57,7 @@ func (s *InMemoryUserStore) CreateUser(ctx context.Context, user *models.User) e
 	return nil
 }
 
-// addDemoUsers adds some demo users for testing
+// addDemoUsers adds some demo users for testing.
 func (s *InMemoryUserStore) addDemoUsers() {
 	demoUsers := []*models.User{
 		{

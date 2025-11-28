@@ -1,7 +1,8 @@
+// Package models provides data models for OAuth2/OIDC runtime security scanning.
 package models
 
 // OIDCDiscoveryDocument represents the OIDC discovery document.
-// See: https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+// See: https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata.
 type OIDCDiscoveryDocument struct {
 	Issuer                 string   `json:"issuer"`
 	AuthorizationEndpoint  string   `json:"authorization_endpoint"`

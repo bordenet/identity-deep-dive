@@ -1,3 +1,4 @@
+// Package scanner provides runtime security scanning functionality for OAuth2/OIDC implementations.
 package scanner
 
 import (
@@ -10,7 +11,7 @@ import (
 )
 
 func (s *Scanner) checkCSRF(ctx context.Context) string {
-	// 1. Build authorization URL without state parameter
+	// 1. Build authorization URL without state parameter.
 	authURL, err := url.Parse(s.doc.AuthorizationEndpoint)
 	if err != nil {
 		return fmt.Sprintf("CSRF check failed: could not parse authorization endpoint URL: %v", err)
@@ -18,11 +19,11 @@ func (s *Scanner) checkCSRF(ctx context.Context) string {
 
 	q := authURL.Query()
 	q.Set("response_type", "code")
-	q.Set("client_id", "some-client-id") // This should be a configurable value
+	q.Set("client_id", "some-client-id")                    // This should be a configurable value
 	q.Set("redirect_uri", "http://localhost:8080/callback") // This should be a configurable value
 	authURL.RawQuery = q.Encode()
 
-	// 2. Make request to authorization endpoint
+	// 2. Make request to authorization endpoint.
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, authURL.String(), nil)
 	if err != nil {
 		return fmt.Sprintf("CSRF check failed: could not create request: %v", err)
@@ -30,7 +31,7 @@ func (s *Scanner) checkCSRF(ctx context.Context) string {
 
 	// We use a client that doesn't follow redirects, so we can inspect the redirect response.
 	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 	}
@@ -45,7 +46,7 @@ func (s *Scanner) checkCSRF(ctx context.Context) string {
 		}
 	}()
 
-	// 3. Analyze response
+	// 3. Analyze response.
 	// A secure server should reject the request because the state parameter is missing.
 	// If the server redirects, it might be vulnerable.
 	if resp.StatusCode >= 300 && resp.StatusCode < 400 {

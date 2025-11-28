@@ -1,3 +1,4 @@
+// Package main provides the identity security scanner CLI.
 package main
 
 import (
@@ -67,7 +68,7 @@ Examples:
 	versionCmd := &cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Println("Identity Security Scanner v1.0.0")
 		},
 	}
@@ -80,8 +81,8 @@ Examples:
 	}
 }
 
-func runScan(cmd *cobra.Command, args []string) error {
-	// Build scan configuration
+func runScan(_ *cobra.Command, args []string) error {
+	// Build scan configuration.
 	config := models.ScanConfig{
 		Include:       include,
 		Exclude:       exclude,
@@ -89,15 +90,15 @@ func runScan(cmd *cobra.Command, args []string) error {
 		Format:        format,
 	}
 
-	// Parse failOn severities
+	// Parse failOn severities.
 	for _, s := range failOn {
 		config.FailOn = append(config.FailOn, models.Severity(s))
 	}
 
-	// Create scanner
+	// Create scanner.
 	s := scanner.New(config)
 
-	// Discover files
+	// Discover files.
 	files, err := s.DiscoverFiles(args)
 	if err != nil {
 		return fmt.Errorf("failed to discover files: %w", err)
@@ -108,13 +109,13 @@ func runScan(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	// Scan files
+	// Scan files.
 	result, err := s.ScanFiles(files)
 	if err != nil {
 		return fmt.Errorf("scan failed: %w", err)
 	}
 
-	// Generate report
+	// Generate report.
 	var reportGen interface {
 		Generate(*models.ScanResult) ([]byte, error)
 		Format() string
@@ -134,10 +135,10 @@ func runScan(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to generate report: %w", err)
 	}
 
-	// Print report
+	// Print report.
 	fmt.Println(string(output))
 
-	// Exit with appropriate code
+	// Exit with appropriate code.
 	exitCode := result.ExitCode(config.FailOn)
 	os.Exit(exitCode)
 

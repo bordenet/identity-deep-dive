@@ -1,3 +1,4 @@
+// Package main provides the OAuth2/OIDC demo client.
 package main
 
 import (
@@ -11,18 +12,22 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
+
+	"github.com/bordenet/identity-deep-dive/project-1-oauth2-oidc-demo/pkg/models"
 )
 
 const (
 	authzServerURL = "http://localhost:8080"
 	clientID       = "web-app"
-	clientSecret   = "web-app-secret-change-in-production"
-	redirectURI    = "http://localhost:3000/callback"
-	serverPort     = ":3000"
+	//nolint:gosec // G101: Demo client secret for learning purposes only.
+	clientSecret = "web-app-secret-change-in-production"
+	redirectURI  = "http://localhost:3000/callback"
+	serverPort   = ":3000"
 )
 
 var (
-	// Store state and code_verifier in memory (use sessions in production)
+	// Store state and code_verifier in memory (use sessions in production).
 	sessionStore = make(map[string]*Session)
 )
 
@@ -39,10 +44,19 @@ func main() {
 
 	log.Printf("Client app listening on %s", serverPort)
 	log.Printf("Visit http://localhost:3000 to start OAuth2/OIDC flow")
-	log.Fatal(http.ListenAndServe(serverPort, nil))
+
+	// Create server with timeouts.
+	srv := &http.Server{
+		Addr:              serverPort,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
+func handleHome(w http.ResponseWriter, _ *http.Request) {
 	html := `<!DOCTYPE html>
 <html>
 <head><title>OAuth2/OIDC Demo Client</title></head>
@@ -65,11 +79,11 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	// Generate nonce (replay protection for ID token)
 	nonce := generateRandomString(32)
 
-	// Generate PKCE code_verifier and code_challenge
+	// Generate PKCE code_verifier and code_challenge.
 	codeVerifier := generateRandomString(43)
 	codeChallenge := generateCodeChallenge(codeVerifier)
 
-	// Store session
+	// Store session.
 	sessionID := generateRandomString(16)
 	sessionStore[sessionID] = &Session{
 		State:        state,
@@ -77,7 +91,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		Nonce:        nonce,
 	}
 
-	// Set session cookie
+	// Set session cookie.
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
 		Value:    sessionID,
@@ -86,7 +100,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	// Build authorization URL
+	// Build authorization URL.
 	authURL := fmt.Sprintf("%s/authorize?response_type=code&client_id=%s&redirect_uri=%s&scope=%s&state=%s&nonce=%s&code_challenge=%s&code_challenge_method=S256",
 		authzServerURL,
 		clientID,
@@ -97,12 +111,12 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		codeChallenge,
 	)
 
-	// Redirect to authorization server
+	// Redirect to authorization server.
 	http.Redirect(w, r, authURL, http.StatusFound)
 }
 
 func handleCallback(w http.ResponseWriter, r *http.Request) {
-	// Get session
+	// Get session.
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
 		http.Error(w, "Session not found", http.StatusBadRequest)
@@ -115,13 +129,13 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse query parameters
+	// Parse query parameters.
 	query := r.URL.Query()
 	code := query.Get("code")
 	state := query.Get("state")
 	errorCode := query.Get("error")
 
-	// Check for errors from authorization server
+	// Check for errors from authorization server.
 	if errorCode != "" {
 		errorDesc := query.Get("error_description")
 		http.Error(w, fmt.Sprintf("Authorization error: %s - %s", errorCode, errorDesc), http.StatusBadRequest)
@@ -134,26 +148,26 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Exchange authorization code for tokens
+	// Exchange authorization code for tokens.
 	tokens, err := exchangeCodeForTokens(code, session.CodeVerifier)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Token exchange failed: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	// Fetch user info
+	// Fetch user info.
 	userInfo, err := fetchUserInfo(tokens.AccessToken)
 	if err != nil {
 		log.Printf("Failed to fetch user info: %v", err)
 		userInfo = map[string]interface{}{"error": err.Error()}
 	}
 
-	// Display results
+	// Display results.
 	displayTokens(w, tokens, userInfo)
 }
 
 func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
-	// Build token request
+	// Build token request.
 	data := url.Values{}
 	data.Set("grant_type", "authorization_code")
 	data.Set("code", code)
@@ -162,7 +176,7 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 	data.Set("client_secret", clientSecret)
 	data.Set("code_verifier", codeVerifier)
 
-	// Send POST request to token endpoint
+	// Send POST request to token endpoint.
 	resp, err := http.Post(
 		authzServerURL+"/oauth2/token",
 		"application/x-www-form-urlencoded",
@@ -180,7 +194,7 @@ func exchangeCodeForTokens(code, codeVerifier string) (*TokenResponse, error) {
 	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("token endpoint returned %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("%w: %d: %s", models.ErrTokenEndpointFailed, resp.StatusCode, string(body))
 	}
 
 	var tokens TokenResponse
@@ -208,7 +222,7 @@ func fetchUserInfo(accessToken string) (map[string]interface{}, error) {
 	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("userinfo endpoint returned %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("%w: %d: %s", models.ErrUserInfoEndpointFailed, resp.StatusCode, string(body))
 	}
 
 	var userInfo map[string]interface{}

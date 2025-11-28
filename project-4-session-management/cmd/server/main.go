@@ -1,7 +1,9 @@
+// Package main provides the multi-tenant session management server.
 package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -18,30 +20,29 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+//nolint:funlen // Main function with server initialization
 func main() {
-	// Initialize structured logging
+	// Initialize structured logging.
 	logger.InitLogger("session-management-server")
 
 	log.Info().Msg("Starting Session Management Server")
 
-	// Load configuration from environment
+	// Load configuration from environment.
 	config := loadConfig()
 
-	// Initialize Redis
-	redisClient := initRedis(config)
-	defer func() {
-		if err := redisClient.Close(); err != nil {
-			log.Error().Err(err).Msg("Failed to close Redis client")
-		}
-	}()
+	// Initialize Redis.
+	redisClient, err := initRedis(config)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize Redis")
+	}
 
-	// Initialize session store
+	// Initialize session store.
 	sessionStore := session.NewRedisStore(redisClient, "identity:")
 
-	// Initialize key manager
+	// Initialize key manager.
 	keyManager := tokens.NewTenantKeyManager(sessionStore)
 
-	// Initialize JWT manager
+	// Initialize JWT manager.
 	jwtManager := tokens.NewJWTManager(
 		config.Issuer,
 		15*time.Minute,  // Access token TTL
@@ -49,30 +50,30 @@ func main() {
 		keyManager,
 	)
 
-	// Initialize handlers
+	// Initialize handlers.
 	sessionHandler := handlers.NewSessionHandler(jwtManager, sessionStore)
 	jwksHandler := handlers.NewJWKSHandler(keyManager)
 
-	// Setup router
+	// Setup router.
 	router := mux.NewRouter()
 
-	// Session endpoints
+	// Session endpoints.
 	router.HandleFunc("/sessions", sessionHandler.CreateSession).Methods("POST")
 	router.HandleFunc("/sessions/validate", sessionHandler.ValidateSession).Methods("POST")
 	router.HandleFunc("/sessions/refresh", sessionHandler.RefreshSession).Methods("POST")
 	router.HandleFunc("/sessions/revoke", sessionHandler.RevokeSession).Methods("POST")
 	router.HandleFunc("/sessions/revoke-all", sessionHandler.RevokeAllSessions).Methods("POST")
 
-	// JWKS endpoint
+	// JWKS endpoint.
 	router.HandleFunc("/tenants/{tenant_id}/jwks", jwksHandler.GetJWKS).Methods("GET")
 
-	// Health check endpoint
-	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	// Health check endpoint.
+	router.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = fmt.Fprint(w, "OK")
 	}).Methods("GET")
 
-	// Create HTTP server
+	// Create HTTP server.
 	srv := &http.Server{
 		Addr:         config.Port,
 		Handler:      router,
@@ -81,37 +82,49 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// Start server in goroutine
+	// Start server in goroutine.
 	go func() {
 		log.Info().
 			Str("addr", config.Port).
 			Str("issuer", config.Issuer).
 			Msg("Server starting")
 
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatal().Err(err).Msg("Server failed to start")
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shutdown
+	// Wait for interrupt signal to gracefully shutdown.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
 	log.Info().Msg("Shutting down server")
 
-	// Graceful shutdown with timeout
+	// Graceful shutdown with timeout.
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal().Err(err).Msg("Server forced to shutdown")
+		log.Error().Err(err).Msg("Server forced to shutdown")
+		cancel()
+		// Explicitly close Redis before exiting.
+		if closeErr := redisClient.Close(); closeErr != nil {
+			log.Warn().Err(closeErr).Msg("Failed to close Redis client")
+		}
+		log.Error().Msg("Exiting due to shutdown error")
+		os.Exit(1)
+	}
+	cancel()
+
+	// Close Redis connection.
+	if err := redisClient.Close(); err != nil {
+		log.Error().Err(err).Msg("Failed to close Redis client")
 	}
 
 	log.Info().Msg("Server stopped")
 }
 
-// Config holds server configuration
+// Config holds server configuration.
 type Config struct {
 	Port          string
 	Issuer        string
@@ -120,7 +133,7 @@ type Config struct {
 	RedisDB       int
 }
 
-// loadConfig loads configuration from environment variables
+// loadConfig loads configuration from environment variables.
 func loadConfig() *Config {
 	return &Config{
 		Port:          getEnv("PORT", ":8081"),
@@ -131,7 +144,7 @@ func loadConfig() *Config {
 	}
 }
 
-// getEnv gets an environment variable with a default value
+// getEnv gets an environment variable with a default value.
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
@@ -139,22 +152,22 @@ func getEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
-// initRedis initializes Redis connection
-func initRedis(config *Config) *redis.Client {
+// initRedis initializes Redis connection.
+func initRedis(config *Config) (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddr,
 		Password: config.RedisPassword,
 		DB:       config.RedisDB,
 	})
 
-	// Test connection
+	// Test connection.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
-		log.Fatal().Err(err).Str("addr", config.RedisAddr).Msg("Failed to connect to Redis")
+		return nil, fmt.Errorf("failed to connect to Redis at %s: %w", config.RedisAddr, err)
 	}
 
 	log.Info().Str("addr", config.RedisAddr).Msg("Connected to Redis")
-	return client
+	return client, nil
 }

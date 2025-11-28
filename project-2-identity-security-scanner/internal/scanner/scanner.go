@@ -1,3 +1,4 @@
+// Package scanner provides configuration file scanning and vulnerability detection.
 package scanner
 
 import (
@@ -11,14 +12,14 @@ import (
 	"github.com/bordenet/identity-deep-dive/project-2-identity-security-scanner/pkg/models"
 )
 
-// Scanner performs security scanning on configuration files
+// Scanner performs security scanning on configuration files.
 type Scanner struct {
 	registry       *rules.Registry
 	parserRegistry *parser.Registry
 	config         models.ScanConfig
 }
 
-// New creates a new scanner instance
+// New creates a new scanner instance.
 func New(config models.ScanConfig) *Scanner {
 	return &Scanner{
 		registry:       rules.NewRegistry(),
@@ -27,7 +28,7 @@ func New(config models.ScanConfig) *Scanner {
 	}
 }
 
-// ScanFiles scans multiple files and returns aggregated results
+// ScanFiles scans multiple files and returns aggregated results.
 func (s *Scanner) ScanFiles(files []string) (*models.ScanResult, error) {
 	startTime := time.Now()
 
@@ -37,7 +38,7 @@ func (s *Scanner) ScanFiles(files []string) (*models.ScanResult, error) {
 	for _, file := range files {
 		findings, err := s.ScanFile(file)
 		if err != nil {
-			// Log error but continue with other files
+			// Log error but continue with other files.
 			fmt.Fprintf(os.Stderr, "Error scanning %s: %v\n", file, err)
 			continue
 		}
@@ -46,10 +47,10 @@ func (s *Scanner) ScanFiles(files []string) (*models.ScanResult, error) {
 		scannedFiles = append(scannedFiles, file)
 	}
 
-	// Apply severity overrides and filter disabled rules
+	// Apply severity overrides and filter disabled rules.
 	allFindings = s.applyConfiguration(allFindings)
 
-	// Calculate summary
+	// Calculate summary.
 	summary := models.CalculateSummary(allFindings)
 
 	result := &models.ScanResult{
@@ -64,18 +65,18 @@ func (s *Scanner) ScanFiles(files []string) (*models.ScanResult, error) {
 	return result, nil
 }
 
-// ScanFile scans a single configuration file
+// ScanFile scans a single configuration file.
 func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
-	// Get appropriate parser
+	// Get appropriate parser.
 	p, err := s.parserRegistry.GetParser(filename)
 	if err != nil {
 		return nil, fmt.Errorf("no parser for file %s: %w", filename, err)
 	}
 
-	// Parse file
+	// Parse file.
 	tree, err := p.(*parser.YAMLParser).ParseFile(filename)
 	if err != nil {
-		// Try JSON parser if YAML fails
+		// Try JSON parser if YAML fails.
 		jsonParser := parser.NewJSONParser()
 		if jsonParser.SupportsFormat(filename) {
 			tree, err = jsonParser.ParseFile(filename)
@@ -87,7 +88,7 @@ func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
 		}
 	}
 
-	// Run all rules against the parsed config
+	// Run all rules against the parsed config.
 	findings := []models.Finding{}
 	enabledRules := s.registry.GetRules()
 
@@ -103,7 +104,7 @@ func (s *Scanner) ScanFile(filename string) ([]models.Finding, error) {
 	return findings, nil
 }
 
-// DiscoverFiles finds all configuration files matching patterns
+// DiscoverFiles finds all configuration files matching patterns.
 func (s *Scanner) DiscoverFiles(paths []string) ([]string, error) {
 	files := []string{}
 
@@ -114,21 +115,21 @@ func (s *Scanner) DiscoverFiles(paths []string) ([]string, error) {
 		}
 
 		if info.IsDir() {
-			// Walk directory
+			// Walk directory.
 			err := filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
 
 				if info.IsDir() {
-					// Check if should be excluded
+					// Check if should be excluded.
 					if s.shouldExclude(filePath) {
 						return filepath.SkipDir
 					}
 					return nil
 				}
 
-				// Check if file matches include patterns and should not be excluded
+				// Check if file matches include patterns and should not be excluded.
 				if s.shouldInclude(filePath) && !s.shouldExclude(filePath) {
 					files = append(files, filePath)
 				}
@@ -138,11 +139,9 @@ func (s *Scanner) DiscoverFiles(paths []string) ([]string, error) {
 			if err != nil {
 				return nil, err
 			}
-		} else {
-			// Single file
-			if s.shouldInclude(path) && !s.shouldExclude(path) {
-				files = append(files, path)
-			}
+		} else if s.shouldInclude(path) && !s.shouldExclude(path) {
+			// Single file.
+			files = append(files, path)
 		}
 	}
 
@@ -151,7 +150,7 @@ func (s *Scanner) DiscoverFiles(paths []string) ([]string, error) {
 
 func (s *Scanner) shouldInclude(path string) bool {
 	if len(s.config.Include) == 0 {
-		// Default: include common config files
+		// Default: include common config files.
 		ext := filepath.Ext(path)
 		return ext == ".yaml" || ext == ".yml" || ext == ".json"
 	}
@@ -166,7 +165,7 @@ func (s *Scanner) shouldInclude(path string) bool {
 }
 
 func (s *Scanner) shouldExclude(path string) bool {
-	// Always exclude common directories
+	// Always exclude common directories.
 	base := filepath.Base(path)
 	if base == "node_modules" || base == "vendor" || base == ".git" || base == "dist" || base == "build" {
 		return true
@@ -194,7 +193,7 @@ func (s *Scanner) applyConfiguration(findings []models.Finding) []models.Finding
 	result := []models.Finding{}
 
 	for _, finding := range findings {
-		// Apply severity override if configured
+		// Apply severity override if configured.
 		if override, ok := s.config.SeverityOverride[finding.RuleID]; ok {
 			finding.Severity = override
 		}

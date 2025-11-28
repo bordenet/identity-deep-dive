@@ -1,3 +1,4 @@
+// Package main provides the runtime security scanner CLI.
 package main
 
 import (
@@ -19,7 +20,7 @@ func main() {
 		Use:   "run [issuer]",
 		Short: "Run the scanner against a target issuer.",
 		Args:  cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, args []string) {
 			issuer := args[0]
 			fmt.Printf("Scanning issuer: %s\n", issuer)
 

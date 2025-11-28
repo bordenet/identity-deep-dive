@@ -10,13 +10,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// UserInfoHandler handles the OIDC UserInfo endpoint
+// UserInfoHandler handles the OIDC UserInfo endpoint.
 type UserInfoHandler struct {
 	jwtManager *tokens.JWTManager
 	userStore  UserStore
 }
 
-// NewUserInfoHandler creates a new UserInfo handler
+// NewUserInfoHandler creates a new UserInfo handler.
 func NewUserInfoHandler(jwtManager *tokens.JWTManager, userStore UserStore) *UserInfoHandler {
 	return &UserInfoHandler{
 		jwtManager: jwtManager,
@@ -24,40 +24,40 @@ func NewUserInfoHandler(jwtManager *tokens.JWTManager, userStore UserStore) *Use
 	}
 }
 
-// ServeHTTP handles GET /userinfo requests
+// ServeHTTP handles GET /userinfo requests.
 func (h *UserInfoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Debug().Msg("MERMAID: UserInfo Endpoint: 5. GET /userinfo (optional)")
-	// Only accept GET requests
+	// Only accept GET requests.
 	if r.Method != http.MethodGet {
 		h.writeError(w, "invalid_request", "Only GET method allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Extract access token from Authorization header
+	// Extract access token from Authorization header.
 	accessToken, err := h.extractBearerToken(r)
 	if err != nil {
 		h.writeError(w, "invalid_token", err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	// Validate access token
+	// Validate access token.
 	claims, err := h.jwtManager.ValidateAccessToken(accessToken)
 	if err != nil {
 		h.writeError(w, "invalid_token", "Access token validation failed", http.StatusUnauthorized)
 		return
 	}
 
-	// Get user from database
+	// Get user from database.
 	user, err := h.userStore.GetUser(r.Context(), claims.UserID)
 	if err != nil {
 		h.writeError(w, "server_error", "Failed to retrieve user", http.StatusInternalServerError)
 		return
 	}
 
-	// Build UserInfo response based on scope
+	// Build UserInfo response based on scope.
 	userInfo := h.buildUserInfoResponse(user, claims.Scope)
 
-	// Write response
+	// Write response.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(userInfo); err != nil {
@@ -65,14 +65,14 @@ func (h *UserInfoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// extractBearerToken extracts the Bearer token from Authorization header
+// extractBearerToken extracts the Bearer token from Authorization header.
 func (h *UserInfoHandler) extractBearerToken(r *http.Request) (string, error) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		return "", &UserInfoError{Code: "invalid_request", Description: "Missing Authorization header"}
 	}
 
-	// Authorization: Bearer <token>
+	// Authorization: Bearer <token>.
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 		return "", &UserInfoError{Code: "invalid_request", Description: "Invalid Authorization header format"}
@@ -81,14 +81,14 @@ func (h *UserInfoHandler) extractBearerToken(r *http.Request) (string, error) {
 	return parts[1], nil
 }
 
-// buildUserInfoResponse builds the UserInfo response based on scope
+// buildUserInfoResponse builds the UserInfo response based on scope.
 func (h *UserInfoHandler) buildUserInfoResponse(user *models.User, scope string) *models.UserInfoResponse {
-	// Subject is always included
+	// Subject is always included.
 	response := &models.UserInfoResponse{
 		Subject: user.ID,
 	}
 
-	// Add profile claims if profile scope requested
+	// Add profile claims if profile scope requested.
 	if models.HasScope(scope, models.ScopeProfile) {
 		response.Name = user.Name
 		response.GivenName = user.GivenName
@@ -97,7 +97,7 @@ func (h *UserInfoHandler) buildUserInfoResponse(user *models.User, scope string)
 		response.Profile = user.Profile
 	}
 
-	// Add email claims if email scope requested
+	// Add email claims if email scope requested.
 	if models.HasScope(scope, models.ScopeEmail) {
 		response.Email = user.Email
 		response.EmailVerified = user.EmailVerified
@@ -106,7 +106,7 @@ func (h *UserInfoHandler) buildUserInfoResponse(user *models.User, scope string)
 	return response
 }
 
-// UserInfoError represents a UserInfo endpoint error
+// UserInfoError represents a UserInfo endpoint error.
 type UserInfoError struct {
 	Code        string
 	Description string
@@ -116,7 +116,7 @@ func (e *UserInfoError) Error() string {
 	return e.Description
 }
 
-// writeError writes an error response
+// writeError writes an error response.
 func (h *UserInfoHandler) writeError(w http.ResponseWriter, errorCode, description string, httpStatus int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)

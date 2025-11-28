@@ -1,3 +1,4 @@
+// Package report provides vulnerability report formatting.
 package report
 
 import (
@@ -8,44 +9,44 @@ import (
 	"github.com/fatih/color"
 )
 
-// HumanReportGenerator generates human-readable terminal output
+// HumanReportGenerator generates human-readable terminal output.
 type HumanReportGenerator struct {
 	UseColor bool
 }
 
-// NewHumanReportGenerator creates a new human-readable report generator
+// NewHumanReportGenerator creates a new human-readable report generator.
 func NewHumanReportGenerator() *HumanReportGenerator {
 	return &HumanReportGenerator{
 		UseColor: true,
 	}
 }
 
-// Generate creates a human-readable report
+// Generate creates a human-readable report.
 func (h *HumanReportGenerator) Generate(result *models.ScanResult) ([]byte, error) {
 	var output strings.Builder
 
-	// Header
+	// Header.
 	output.WriteString(h.formatHeader(result))
 	output.WriteString("\n")
 
-	// Summary
+	// Summary.
 	output.WriteString(h.formatSummary(result))
 	output.WriteString("\n")
 
-	// Findings
+	// Findings.
 	if len(result.Findings) > 0 {
 		output.WriteString(h.formatFindings(result.Findings))
 	} else {
 		output.WriteString(h.colorize("✓ No security issues found!\n\n", color.FgGreen))
 	}
 
-	// Footer
+	// Footer.
 	output.WriteString(h.formatFooter(result))
 
 	return []byte(output.String()), nil
 }
 
-// Format returns the format name
+// Format returns the format name.
 func (h *HumanReportGenerator) Format() string {
 	return "human"
 }
@@ -69,7 +70,7 @@ func (h *HumanReportGenerator) formatSummary(result *models.ScanResult) string {
 
 	out.WriteString(h.colorize("\n━━━ Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n", color.FgCyan))
 
-	// Format summary with colors
+	// Format summary with colors.
 	if result.Summary.Critical > 0 {
 		out.WriteString(h.colorize(fmt.Sprintf("  Critical: %d\n", result.Summary.Critical), color.FgRed, color.Bold))
 	}
@@ -106,31 +107,31 @@ func (h *HumanReportGenerator) formatFindings(findings []models.Finding) string 
 	return out.String()
 }
 
-func (h *HumanReportGenerator) formatFinding(finding *models.Finding, number int) string {
+func (h *HumanReportGenerator) formatFinding(finding *models.Finding, _ int) string {
 	var out strings.Builder
 
-	// Finding header with severity badge
+	// Finding header with severity badge.
 	severityBadge := h.formatSeverityBadge(finding.Severity)
 	out.WriteString(fmt.Sprintf("%s %s\n", severityBadge, h.colorize(finding.Title, color.Bold)))
 
-	// Location
+	// Location.
 	location := fmt.Sprintf("%s:%d", finding.File, finding.Line)
 	out.WriteString(h.colorize("  Location: ", color.FgWhite) + location + "\n")
 	out.WriteString(h.colorize("  Rule ID:  ", color.FgWhite) + finding.RuleID + "\n")
 
-	// Description
+	// Description.
 	out.WriteString(h.colorize("\n  Description:\n", color.FgWhite))
 	out.WriteString(h.wrapText(finding.Description, "    "))
 	out.WriteString("\n")
 
-	// Risk
+	// Risk.
 	if finding.Risk != "" {
 		out.WriteString(h.colorize("\n  Risk:\n", color.FgYellow))
 		out.WriteString(h.wrapText(finding.Risk, "    "))
 		out.WriteString("\n")
 	}
 
-	// Remediation
+	// Remediation.
 	if len(finding.Remediation) > 0 {
 		out.WriteString(h.colorize("\n  Remediation:\n", color.FgGreen))
 		for _, step := range finding.Remediation {
@@ -138,7 +139,7 @@ func (h *HumanReportGenerator) formatFinding(finding *models.Finding, number int
 		}
 	}
 
-	// References
+	// References.
 	if len(finding.References) > 0 {
 		out.WriteString(h.colorize("\n  References:\n", color.FgCyan))
 		for _, ref := range finding.References {
@@ -192,7 +193,7 @@ func (h *HumanReportGenerator) formatFooter(result *models.ScanResult) string {
 }
 
 func (h *HumanReportGenerator) wrapText(text string, indent string) string {
-	// Simple word wrapping at 60 characters
+	// Simple word wrapping at 60 characters.
 	words := strings.Fields(text)
 	var lines []string
 	var currentLine string
