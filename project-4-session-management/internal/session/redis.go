@@ -82,8 +82,8 @@ func (rs *RedisStore) UpdateRefreshTokenLastUsed(ctx context.Context, tenantID, 
 	}
 
 	var token models.RefreshToken
-	if err := json.Unmarshal(data, &token); err != nil {
-		return fmt.Errorf("failed to unmarshal refresh token: %w", err)
+	if unmarshalErr := json.Unmarshal(data, &token); unmarshalErr != nil {
+		return fmt.Errorf("failed to unmarshal refresh token: %w", unmarshalErr)
 	}
 
 	// Update last used timestamp.
@@ -205,12 +205,12 @@ func (rs *RedisStore) StoreKeyPair(tenantID string, privateKeyPEM, publicKeyPEM 
 	privateKey := rs.privateKeyKey(tenantID)
 	publicKey := rs.publicKeyKey(tenantID)
 
-	// Store private key (no expiration - permanent until rotation)
+	// Store private key (no expiration - permanent until rotation).
 	if err := rs.client.Set(ctx, privateKey, privateKeyPEM, 0).Err(); err != nil {
 		return fmt.Errorf("failed to store private key: %w", err)
 	}
 
-	// Store public key (no expiration)
+	// Store public key (no expiration).
 	if err := rs.client.Set(ctx, publicKey, publicKeyPEM, 0).Err(); err != nil {
 		return fmt.Errorf("failed to store public key: %w", err)
 	}

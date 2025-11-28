@@ -208,7 +208,7 @@ func (jm *JWTManager) ValidateToken(tokenString string) (*models.TokenClaims, er
 	// Parse and validate token with public key.
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Verify signing method.
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+		if _, isRSA := token.Method.(*jwt.SigningMethodRSA); !isRSA {
 			return nil, fmt.Errorf("%w: %v", models.ErrUnexpectedSigningMethod, token.Header["alg"])
 		}
 		return publicKey, nil

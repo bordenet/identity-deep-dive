@@ -45,8 +45,8 @@ func main() {
 	// Initialize JWT manager.
 	jwtManager := tokens.NewJWTManager(
 		config.Issuer,
-		15*time.Minute,  // Access token TTL
-		30*24*time.Hour, // Refresh token TTL (30 days)
+		15*time.Minute,  // Access token TTL.
+		30*24*time.Hour, // Refresh token TTL (30 days).
 		keyManager,
 	)
 

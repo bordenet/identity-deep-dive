@@ -228,7 +228,7 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Generate new access token (same claims as refresh token)
+	// Generate new access token (same claims as refresh token).
 	accessToken, expiresAt, err := h.jwtManager.GenerateAccessToken(
 		storedToken.TenantID,
 		storedToken.UserID,
@@ -246,7 +246,7 @@ func (h *SessionHandler) RefreshSession(w http.ResponseWriter, r *http.Request) 
 		log.Warn().Err(err).Msg("Failed to update refresh token last used time")
 	}
 
-	// Build response (reuse same refresh token - no rotation for simplicity)
+	// Build response (reuse same refresh token - no rotation for simplicity).
 	response := models.TokenPair{
 		AccessToken:  accessToken,
 		RefreshToken: req.RefreshToken,
@@ -275,7 +275,7 @@ func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
 	// Validate token to extract claims.
 	claims, err := h.jwtManager.ValidateToken(req.Token)
 	if err != nil {
-		// Allow revoking already-expired tokens (for cleanup)
+		// Allow revoking already-expired tokens (for cleanup).
 		if !errors.Is(err, models.ErrTokenExpired) {
 			h.writeError(w, http.StatusBadRequest, models.ErrCodeInvalidToken,
 				fmt.Sprintf("Invalid token: %v", err))
@@ -283,16 +283,16 @@ func (h *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Calculate TTL (time until token would naturally expire)
+	// Calculate TTL (time until token would naturally expire).
 	var ttl time.Duration
 	if claims != nil {
 		expiresAt := time.Unix(claims.ExpiresAt, 0)
 		ttl = time.Until(expiresAt)
 		if ttl < 0 {
-			ttl = time.Hour // Already expired, but add to blocklist for 1 hour anyway
+			ttl = time.Hour // Already expired, but add to blocklist for 1 hour anyway.
 		}
 	} else {
-		ttl = time.Hour // If we can't parse expiration, use default TTL
+		ttl = time.Hour // If we can't parse expiration, use default TTL.
 	}
 
 	// Add to revocation blocklist.
