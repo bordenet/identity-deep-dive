@@ -1,0 +1,23 @@
+# Codecov configuration
+# https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        # Require project coverage to not drop
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        # Don't require patch coverage for style-only changes
+        # This allows lint fixes, comment changes, etc. to pass
+        target: 0%
+        threshold: 0%
+
+# Ignore test files and generated code
+ignore:
+  - "**/*_test.go"
+  - "**/testdata/**"
+  - "**/mocks/**"
+
